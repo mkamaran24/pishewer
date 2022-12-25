@@ -19,5 +19,5 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('test', function () {
-    return "Kwi Kaka Bashi";
+    return "Wasta esta kwa Basha ???";
 });
