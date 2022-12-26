@@ -2,6 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\JobController;
+use App\Http\Controllers\Api\AddonController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\SubcategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +22,14 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::get('test', function () {
-    return "Wasta esta kwa Basha ???";
-});
+
+//// Basic CRUD Operation API Routes ///////
+
+Route::apiResources([
+    'jobs' => JobController::class,
+    'addons' => AddonController::class,
+    'categories' => CategoryController::class,
+    'subcategories' => SubcategoryController::class
+]);
+
+////////////////////////////////////////////////
