@@ -23,10 +23,6 @@ class CategoryController extends Controller
 
             return CategoryResource::collection(Category::all());
 
-            // $all = Category::with('subcategories')->get();
-
-            // return $all;
-
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([
@@ -36,15 +32,7 @@ class CategoryController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -64,17 +52,6 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }

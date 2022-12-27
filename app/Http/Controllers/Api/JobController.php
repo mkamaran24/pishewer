@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Job as JobResource;
 use App\Models\Jobs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class JobController extends Controller
 {
@@ -16,31 +17,16 @@ class JobController extends Controller
      */
     public function index()
     {
-    
-        try 
-        {
 
+        try {
             return JobResource::collection(Jobs::all());
-
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([
-                'status'=>false,
-                'message'=>$th->getMessage(),
-            ],500);
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
         }
-
-
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -51,7 +37,49 @@ class JobController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Validations Rules //////////////////////////
+        $rules = array(
+            'title' => 'required',
+            'image' => 'required',
+            'description' => 'required',
+            'keyword' => 'required',
+            'price' => 'required',
+            'completein' => 'required',
+            'user_id' => 'required',
+            'categ_id' => 'required',
+            'subcateg_id' => 'required'
+        );
+        /// end of Validation Rules ////////////////////
+
+        //Validation Custom Messages
+        // $messages = array('title'=>'All data required');
+
+
+        // Validator Check //////////////////////////////
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $errors = $messages->all(); //convert them into one array
+            return response()->json([
+                'status' => false,
+                'reason' => 'Validation Fails',
+                'messages' => $errors,
+            ], 500);
+        } else {
+            # put data to DB after Succes Validation
+            try {
+                $jobs = Jobs::create($request->all());
+                return new JobResource($jobs);
+            } catch (\Throwable $th) {
+                //throw $th;
+                return response()->json([
+                    'status' => false,
+                    'message' => $th->getMessage(),
+                ], 500);
+            }
+        }
+        //// end of Validator Check ///////////////////////
+
     }
 
     /**
@@ -65,16 +93,6 @@ class JobController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
