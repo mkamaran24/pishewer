@@ -21,11 +21,14 @@ class JobController extends Controller
         try {
             return JobResource::collection(Jobs::all());
         } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage(),
-            ], 500);
+
+            abort(code:500,message:'fail to fetch');
+           
+            //throw $th; this throwble should be used for logs details
+            // return response()->json([
+            //     'status' => false,
+            //     'message' => $th->getMessage(),
+            // ], 500);
         }
     }
 
@@ -64,18 +67,19 @@ class JobController extends Controller
                 'status' => false,
                 'reason' => 'Validation Fails',
                 'messages' => $errors,
-            ], 500);
+            ], 422);
         } else {
             # put data to DB after Succes Validation
             try {
                 $jobs = Jobs::create($request->all());
                 return new JobResource($jobs);
             } catch (\Throwable $th) {
-                //throw $th;
-                return response()->json([
-                    'status' => false,
-                    'message' => $th->getMessage(),
-                ], 500);
+                abort(code:500,message:'fail to create');
+                // //throw $th;
+                // return response()->json([
+                //     'status' => false,
+                //     'message' => $th->getMessage(),
+                // ], 500);
             }
         }
         //// end of Validator Check ///////////////////////
