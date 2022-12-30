@@ -10,11 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class JobController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
 
@@ -32,12 +28,6 @@ class JobController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         //Validations Rules //////////////////////////
@@ -86,38 +76,139 @@ class JobController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
+        
+        try {
+            // Validation of $id should goes here
+
+
+            /////////////////////////////////////
+
+            $job = Jobs::find($id);
+            if ($job) {return new JobResource($job);}
+            else{
+                return response()->json([
+                    'status' => false,
+                    'messages' => "Object Not Found"
+                ], 404);
+            }
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            abort(code:500,message:'fail to find object');
+        }
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+        
+        try {
+            // Validation of $id should goes here
+
+
+            /////////////////////////////////////
+
+            // Validation of $request should goes here
+
+            //Validations Rules //////////////////////////
+            $rules = array(
+                'title' => 'required',
+                'image' => 'required',
+                'description' => 'required',
+                'keyword' => 'required',
+                'price' => 'required',
+                'completein' => 'required',
+                'user_id' => 'required',
+                'categ_id' => 'required',
+                'subcateg_id' => 'required'
+            );
+            /// end of Validation Rules ////////////////////
+
+            //Validation Custom Messages
+            // $messages = array('title'=>'All data required');
+
+
+            // Validator Check //////////////////////////////
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $messages = $validator->messages();
+                $errors = $messages->all(); //convert them into one array
+                return response()->json([
+                    'status' => false,
+                    'reason' => 'Validation Fails',
+                    'messages' => $errors,
+                ], 422);
+
+            }
+
+            /////////////////////////////////////
+
+            $job = Jobs::find($id);
+            if ($job) {
+                $job->update([
+                    'title' => $request->title,
+                    'image' => $request->image,
+                    'description' => $request->description,
+                    'keyword' => $request->keyword,
+                    'price' => $request->price,
+                    'completein' => $request->completein,
+                    'user_id' => $request->user_id,
+                    'categ_id' => $request->categ_id,
+                    'subcateg_id' => $request->subcateg_id
+                ]);
+                return new JobResource($job);
+            }
+            else{
+                return response()->json([
+                    'status' => false,
+                    'messages' => "Object Not Found"
+                ], 404);
+            }
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            abort(code:500,message:'fail to update');
+            //Logs implementation goes down herer
+
+
+            ////////////////////////////////////////////
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        // Validation of $id should goes here
+
+        //////////////////////////////////////
+
+        try {
+            //code...
+            $job = Jobs::where('id',$id)->delete();
+            if ($job) {
+                # code...
+                return response()->json([
+                    'status' => true,
+                    'messages' => "Delete Success",
+                    "data"=>[]
+                ], 200);
+            } else {
+                # code...
+                return response()->json([
+                    'status' => false,
+                    'messages' => "Object Not Found"
+                ], 404);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            abort(code:500,message:'fail to delete');
+            //Logs implementation goes down herer
+
+
+            ////////////////////////////////////////////
+        }
+        
+
     }
+    
 }
