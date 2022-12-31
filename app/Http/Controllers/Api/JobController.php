@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Job as JobResource;
 use App\Models\Jobs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class JobController extends Controller
@@ -33,7 +34,7 @@ class JobController extends Controller
         //Validations Rules //////////////////////////
         $rules = array(
             'title' => 'required',
-            'image' => 'required',
+            'image' => 'required|image',
             'description' => 'required',
             'keyword' => 'required',
             'price' => 'required',
@@ -61,8 +62,34 @@ class JobController extends Controller
         } else {
             # put data to DB after Succes Validation
             try {
-                $jobs = Jobs::create($request->all());
+
+                // get image and put a new name by time and extension /////////
+                $img = $request->image;
+                $img_name = time() . '.' . $img->getClientOriginalExtension();
+                ///////////////////////////////////////////////////////////////
+
+                // save $req to DB //////////////////////////////
+                $jobs = Jobs::create([
+                    'title' => $request->title,
+                    'image' => $img_name,
+                    'description' => $request->description,
+                    'keyword' => $request->keyword,
+                    'price' => $request->price,
+                    'completein' => $request->completein,
+                    'user_id' => $request->user_id,
+                    'categ_id' => $request->categ_id,
+                    'subcateg_id' => $request->subcateg_id
+                ]);
+                /////////////////////////////////////////////////
+                
+                // save image in laravel Private Storage ///////////////////////////////////
+                Storage::disk('public')->put($img_name,file_get_contents($request->image));
+                /////////////////////////////////////////////////////////////////////////////
+
+                // return Job API Resource JSON Response //////////////
                 return new JobResource($jobs);
+                ///////////////////////////////////////////////////////
+
             } catch (\Throwable $th) {
                 abort(code:500,message:'fail to create');
                 // //throw $th;
