@@ -17,7 +17,7 @@ class Job extends JsonResource
         return [
             'id' => (string)$this->id,
             'title' => $this->title,
-            'image' => $this->image,
+            'image' => explode(',',$this->image),
             'description' => $this->description,
             'keyword' => $this->keyword,
             'price' => $this->price,

@@ -19,8 +19,8 @@ class JobController extends Controller
             return JobResource::collection(Jobs::all());
         } catch (\Throwable $th) {
 
-            abort(code:500,message:'fail to fetch');
-           
+            abort(code: 500, message: 'fail to fetch');
+
             //throw $th; this throwble should be used for logs details
             // return response()->json([
             //     'status' => false,
@@ -31,10 +31,11 @@ class JobController extends Controller
 
     public function store(Request $request)
     {
+
         //Validations Rules //////////////////////////
         $rules = array(
             'title' => 'required',
-            'image' => 'required|image',
+            'image' => 'required',
             'description' => 'required',
             'keyword' => 'required',
             'price' => 'required',
@@ -63,15 +64,23 @@ class JobController extends Controller
             # put data to DB after Succes Validation
             try {
 
-                // get image and put a new name by time and extension /////////
-                $img = $request->image;
-                $img_name = time() . '.' . $img->getClientOriginalExtension();
-                ///////////////////////////////////////////////////////////////
+                if ($request->hasFile('image')) {
+                    $imgs = $request->file('image');
+                    $all_imgs_path = '';
+                    foreach ($imgs as $img) {
+                        $new_img_name = random_int(100000, 999999) . '.' . $img->getClientOriginalExtension();
+                        // save image in laravel Private Storage ///////////////////////////////////
+                        Storage::disk('public')->put($new_img_name, file_get_contents($img));
+                        /////////////////////////////////////////////////////////////////////////////
+                        $all_imgs_path = $all_imgs_path . $new_img_name . ',';
+                    }
+                    $trim_imgs_path = substr($all_imgs_path, 0, -1);
+                }
 
                 // save $req to DB //////////////////////////////
                 $jobs = Jobs::create([
                     'title' => $request->title,
-                    'image' => $img_name,
+                    'image' => $trim_imgs_path,
                     'description' => $request->description,
                     'keyword' => $request->keyword,
                     'price' => $request->price,
@@ -81,22 +90,18 @@ class JobController extends Controller
                     'subcateg_id' => $request->subcateg_id
                 ]);
                 /////////////////////////////////////////////////
-                
-                // save image in laravel Private Storage ///////////////////////////////////
-                Storage::disk('public')->put($img_name,file_get_contents($request->image));
-                /////////////////////////////////////////////////////////////////////////////
 
                 // return Job API Resource JSON Response //////////////
                 return new JobResource($jobs);
                 ///////////////////////////////////////////////////////
 
             } catch (\Throwable $th) {
-                abort(code:500,message:'fail to create');
+                // abort(code:500,message:'fail to create');
                 // //throw $th;
-                // return response()->json([
-                //     'status' => false,
-                //     'message' => $th->getMessage(),
-                // ], 500);
+                return response()->json([
+                    'status' => false,
+                    'message' => $th->getMessage(),
+                ], 500);
             }
         }
         //// end of Validator Check ///////////////////////
@@ -105,7 +110,7 @@ class JobController extends Controller
 
     public function show($id)
     {
-        
+
         try {
             // Validation of $id should goes here
 
@@ -113,23 +118,23 @@ class JobController extends Controller
             /////////////////////////////////////
 
             $job = Jobs::find($id);
-            if ($job) {return new JobResource($job);}
-            else{
+            if ($job) {
+                return new JobResource($job);
+            } else {
                 return response()->json([
                     'status' => false,
                     'messages' => "Object Not Found"
                 ], 404);
             }
-
         } catch (\Throwable $th) {
             //throw $th;
-            abort(code:500,message:'fail to find object');
+            abort(code: 500, message: 'fail to find object');
         }
     }
 
     public function update(Request $request, $id)
     {
-        
+
         try {
             // Validation of $id should goes here
 
@@ -166,7 +171,6 @@ class JobController extends Controller
                     'reason' => 'Validation Fails',
                     'messages' => $errors,
                 ], 422);
-
             }
 
             /////////////////////////////////////
@@ -185,17 +189,15 @@ class JobController extends Controller
                     'subcateg_id' => $request->subcateg_id
                 ]);
                 return new JobResource($job);
-            }
-            else{
+            } else {
                 return response()->json([
                     'status' => false,
                     'messages' => "Object Not Found"
                 ], 404);
             }
-
         } catch (\Throwable $th) {
             //throw $th;
-            abort(code:500,message:'fail to update');
+            abort(code: 500, message: 'fail to update');
             //Logs implementation goes down herer
 
 
@@ -211,13 +213,13 @@ class JobController extends Controller
 
         try {
             //code...
-            $job = Jobs::where('id',$id)->delete();
+            $job = Jobs::where('id', $id)->delete();
             if ($job) {
                 # code...
                 return response()->json([
                     'status' => true,
                     'messages' => "Delete Success",
-                    "data"=>[]
+                    "data" => []
                 ], 200);
             } else {
                 # code...
@@ -228,14 +230,11 @@ class JobController extends Controller
             }
         } catch (\Throwable $th) {
             //throw $th;
-            abort(code:500,message:'fail to delete');
+            abort(code: 500, message: 'fail to delete');
             //Logs implementation goes down herer
 
 
             ////////////////////////////////////////////
         }
-        
-
     }
-    
 }
