@@ -19,7 +19,7 @@ class Job extends JsonResource
             'title' => $this->title,
             'image' => explode(',',$this->image),
             'description' => $this->description,
-            'keyword' => $this->keyword,
+            'keyword' => explode(',',$this->keyword),
             'price' => $this->price,
             'completein' => $this->completein,
             'user' => $this->user_id,

@@ -31,7 +31,6 @@ class JobController extends Controller
 
     public function store(Request $request)
     {
-
         //Validations Rules //////////////////////////
         $rules = array(
             'title' => 'required',
@@ -49,7 +48,6 @@ class JobController extends Controller
         //Validation Custom Messages
         // $messages = array('title'=>'All data required');
 
-
         // Validator Check //////////////////////////////
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -64,17 +62,23 @@ class JobController extends Controller
             # put data to DB after Succes Validation
             try {
 
+                $trim_imgs_path = '';
+
                 if ($request->hasFile('image')) {
                     $imgs = $request->file('image');
                     $all_imgs_path = '';
-                    foreach ($imgs as $img) {
-                        $new_img_name = random_int(100000, 999999) . '.' . $img->getClientOriginalExtension();
+                    foreach ($imgs as $key => $img) {
+                        $new_img_name = random_int(100000, 999999) . $key . '.' . $img->getClientOriginalExtension();
                         // save image in laravel Private Storage ///////////////////////////////////
                         Storage::disk('public')->put($new_img_name, file_get_contents($img));
                         /////////////////////////////////////////////////////////////////////////////
                         $all_imgs_path = $all_imgs_path . $new_img_name . ',';
+
                     }
                     $trim_imgs_path = substr($all_imgs_path, 0, -1);
+                }
+                else {
+                    $trim_imgs_path = "File Not Found";
                 }
 
                 // save $req to DB //////////////////////////////
@@ -82,7 +86,7 @@ class JobController extends Controller
                     'title' => $request->title,
                     'image' => $trim_imgs_path,
                     'description' => $request->description,
-                    'keyword' => $request->keyword,
+                    'keyword' => implode(',',$request->keyword),
                     'price' => $request->price,
                     'completein' => $request->completein,
                     'user_id' => $request->user_id,
