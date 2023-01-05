@@ -62,8 +62,9 @@ class JobController extends Controller
             # put data to DB after Succes Validation
             try {
 
+                // start of image logics ////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////////////
                 $trim_imgs_path = '';
-
                 if ($request->hasFile('image')) {
                     $imgs = $request->file('image');
                     $all_imgs_path = '';
@@ -80,13 +81,23 @@ class JobController extends Controller
                 else {
                     $trim_imgs_path = "File Not Found";
                 }
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                // end of Image Logics /////////////////////////////////////////////////////////////////////////////////
+
+                $converted_keyword = '';
+                if (is_array($request->keyword)) {
+                    $converted_keyword = implode(',',$request->keyword);
+                }
+                else {
+                    $converted_keyword = $request->keyword;
+                }
 
                 // save $req to DB //////////////////////////////
                 $jobs = Jobs::create([
                     'title' => $request->title,
                     'image' => $trim_imgs_path,
                     'description' => $request->description,
-                    'keyword' => implode(',',$request->keyword),
+                    'keyword' => $converted_keyword,
                     'price' => $request->price,
                     'completein' => $request->completein,
                     'user_id' => $request->user_id,
