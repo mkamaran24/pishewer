@@ -16,7 +16,7 @@ class JobController extends Controller
     {
 
         try {
-            return JobResource::collection(Jobs::all());
+            return JobResource::collection(Jobs::paginate(9));
         } catch (\Throwable $th) {
 
             abort(code: 500, message: 'fail to fetch');
@@ -111,12 +111,12 @@ class JobController extends Controller
                 ///////////////////////////////////////////////////////
 
             } catch (\Throwable $th) {
-                // abort(code:500,message:'fail to create');
+                abort(code:500,message:'fail to create');
                 // //throw $th;
-                return response()->json([
-                    'status' => false,
-                    'message' => $th->getMessage(),
-                ], 500);
+                // return response()->json([
+                //     'status' => false,
+                //     'message' => $th->getMessage(),
+                // ], 500);
             }
         }
         //// end of Validator Check ///////////////////////
