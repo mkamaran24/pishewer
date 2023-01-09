@@ -63,34 +63,40 @@ class JobController extends Controller
             try {
 
                 // start of image logics ////////////////////////////////////////////////////////////////
-                /////////////////////////////////////////////////////////////////////////////////////////
                 $trim_imgs_path = '';
                 if ($request->hasFile('image')) {
                     $imgs = $request->file('image');
                     $all_imgs_path = '';
-                    foreach ($imgs as $key => $img) {
-                        $new_img_name = random_int(100000, 999999) . $key . '.' . $img->getClientOriginalExtension();
+                    if (is_array($imgs)) {
+                        foreach ($imgs as $key => $img) {
+                            $new_img_name = random_int(100000, 999999) . $key . '.' . $img->getClientOriginalExtension();
+                            // save image in laravel Private Storage ///////////////////////////////////
+                            Storage::disk('public')->put($new_img_name, file_get_contents($img));
+                            /////////////////////////////////////////////////////////////////////////////
+                            $all_imgs_path = $all_imgs_path . $new_img_name . ',';
+                        }
+                        $trim_imgs_path = substr($all_imgs_path, 0, -1);
+                    } else {
+                        $one_img = $request->image;
+                        $trim_imgs_path = random_int(100000, 999999) . '.' . $one_img->getClientOriginalExtension();
                         // save image in laravel Private Storage ///////////////////////////////////
-                        Storage::disk('public')->put($new_img_name, file_get_contents($img));
+                        Storage::disk('public')->put($trim_imgs_path, file_get_contents($one_img));
                         /////////////////////////////////////////////////////////////////////////////
-                        $all_imgs_path = $all_imgs_path . $new_img_name . ',';
-
                     }
-                    $trim_imgs_path = substr($all_imgs_path, 0, -1);
-                }
-                else {
+                } else {
                     $trim_imgs_path = "File Not Found";
                 }
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////
                 // end of Image Logics /////////////////////////////////////////////////////////////////////////////////
 
+                // start of Keword Logic ////////////////////////////////////////////////////////////////////////////
                 $converted_keyword = '';
                 if (is_array($request->keyword)) {
-                    $converted_keyword = implode(',',$request->keyword);
-                }
-                else {
+                    $converted_keyword = implode(',', $request->keyword);
+                } else {
                     $converted_keyword = $request->keyword;
                 }
+                // end of Keyword Logic //////////////////////////////////////////////////////////////////////////////
+                
 
                 // save $req to DB //////////////////////////////
                 $jobs = Jobs::create([
@@ -107,11 +113,14 @@ class JobController extends Controller
                 /////////////////////////////////////////////////
 
                 // return Job API Resource JSON Response //////////////
-                return new JobResource($jobs);
+                return response()->json([
+                    'status' => true,
+                    'messages' => "Object Created",
+                ], 201);
                 ///////////////////////////////////////////////////////
 
             } catch (\Throwable $th) {
-                abort(code:500,message:'fail to create');
+                abort(code: 500, message: 'fail to create');
                 // //throw $th;
                 // return response()->json([
                 //     'status' => false,

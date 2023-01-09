@@ -32,4 +32,8 @@ class Jobs extends Model
         return $this->belongsTo(Subcategory::class, 'subcateg_id');
     }
 
+    public function addons(){
+        return $this->hasMany(Addons::class, 'job_id');
+    }
+
 }

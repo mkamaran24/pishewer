@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\AddonController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SubcategoryController;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,7 @@ use App\Http\Controllers\Api\SubcategoryController;
 //// Basic CRUD Operation API Routes ///////
 
 Route::apiResources([
+    'users' => UserController::class,
     'jobs' => JobController::class,
     'addons' => AddonController::class,
     'categories' => CategoryController::class,

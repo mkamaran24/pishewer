@@ -15,6 +15,12 @@ return new class extends Migration
     {
         Schema::create('addons', function (Blueprint $table) {
             $table->id();
+            $table->string("title");
+            $table->string("price",50);
+            $table->unsignedBigInteger('job_id')->index();
+            $table->foreign('job_id')->references('id')->on('jobs')
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
             $table->timestamps();
         });
     }

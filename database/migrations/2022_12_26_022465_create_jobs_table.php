@@ -21,13 +21,16 @@ return new class extends Migration
             $table->text('keyword');
             $table->string("price",50);
             $table->string("completein",50);
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('categ_id')->index();
             $table->unsignedBigInteger('subcateg_id')->index();
             $table->foreign('categ_id')->references('id')->on('categories')
             ->onUpdate('cascade')
             ->onDelete('cascade');
             $table->foreign('subcateg_id')->references('id')->on('subcategories')
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')
             ->onUpdate('cascade')
             ->onDelete('cascade');
             $table->timestamps();

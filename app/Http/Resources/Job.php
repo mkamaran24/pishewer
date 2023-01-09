@@ -25,6 +25,7 @@ class Job extends JsonResource
             'user' => $this->user_id,
             'category' => $this->category,
             'subcategory' => $this->subcategory,
+            'addons'=>$this->addons
         ];
     }
 }
