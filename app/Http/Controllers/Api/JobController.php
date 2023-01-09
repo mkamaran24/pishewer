@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Job as JobResource;
+use App\Models\Addons as AddonModel;
 use App\Models\Jobs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -31,6 +32,7 @@ class JobController extends Controller
 
     public function store(Request $request)
     {
+
         //Validations Rules //////////////////////////
         $rules = array(
             'title' => 'required',
@@ -39,6 +41,7 @@ class JobController extends Controller
             'keyword' => 'required',
             'price' => 'required',
             'completein' => 'required',
+            'addons' => 'required',
             'user_id' => 'required',
             'categ_id' => 'required',
             'subcateg_id' => 'required'
@@ -96,7 +99,7 @@ class JobController extends Controller
                     $converted_keyword = $request->keyword;
                 }
                 // end of Keyword Logic //////////////////////////////////////////////////////////////////////////////
-                
+
 
                 // save $req to DB //////////////////////////////
                 $jobs = Jobs::create([
@@ -112,12 +115,31 @@ class JobController extends Controller
                 ]);
                 /////////////////////////////////////////////////
 
+                // start of addon logic //////////////
+
+                if (is_array($request->addons)) {
+
+                    foreach ($request->addons as $key => $addon) {
+                        AddonModel::create([
+                            "title" => $addon["title"],
+                            "price" => $addon['price'],
+                            "job_id" => $jobs->id
+                        ]);
+                    }
+                } else {
+                    return "Addon is not Array";
+                }
+
+                //////////////////////////////////////
+
                 // return Job API Resource JSON Response //////////////
                 return response()->json([
                     'status' => true,
                     'messages' => "Object Created",
+                    'data' => $jobs->id
                 ], 201);
                 ///////////////////////////////////////////////////////
+
 
             } catch (\Throwable $th) {
                 abort(code: 500, message: 'fail to create');
@@ -175,6 +197,7 @@ class JobController extends Controller
                 'keyword' => 'required',
                 'price' => 'required',
                 'completein' => 'required',
+                "addons" => "required",
                 'user_id' => 'required',
                 'categ_id' => 'required',
                 'subcateg_id' => 'required'
@@ -212,6 +235,22 @@ class JobController extends Controller
                     'categ_id' => $request->categ_id,
                     'subcateg_id' => $request->subcateg_id
                 ]);
+                // start of addon logic //////////////
+
+                if (is_array($request->addons)) {
+                    $addon = AddonModel::where('job_id',$job->id)->get();
+                    foreach ($request->addons as $key => $addon) {
+                        $addon->update([
+                            "title" => $addon["title"],
+                            "price" => $addon['price'],
+                            "job_id" => $job->id
+                        ]);
+                    }
+                } else {
+                    return "Addon is not Array";
+                }
+
+                //////////////////////////////////////
                 return new JobResource($job);
             } else {
                 return response()->json([
