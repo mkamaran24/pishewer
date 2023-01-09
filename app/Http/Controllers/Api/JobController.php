@@ -142,12 +142,12 @@ class JobController extends Controller
 
 
             } catch (\Throwable $th) {
-                abort(code: 500, message: 'fail to create');
-                // //throw $th;
-                // return response()->json([
-                //     'status' => false,
-                //     'message' => $th->getMessage(),
-                // ], 500);
+                // abort(code: 500, message: 'fail to create');
+                //throw $th;
+                return response()->json([
+                    'status' => false,
+                    'message' => $th->getMessage(),
+                ], 500);
             }
         }
         //// end of Validator Check ///////////////////////
