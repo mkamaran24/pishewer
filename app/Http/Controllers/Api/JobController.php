@@ -20,7 +20,7 @@ class JobController extends Controller
             return JobResource::collection(Jobs::paginate(9));
         } catch (\Throwable $th) {
 
-            abort(code: 500, message: 'fail to fetch');
+            // abort(code: 500, message: 'fail to fetch');
 
             //throw $th; this throwble should be used for logs details
             // return response()->json([
