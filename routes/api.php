@@ -34,4 +34,6 @@ Route::apiResources([
     'subcategories' => SubcategoryController::class
 ]);
 
+Route::post('updatejob/{id}',[JobController::class,"updatejob"]);
+
 ////////////////////////////////////////////////

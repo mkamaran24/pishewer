@@ -16,9 +16,7 @@ return new class extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string("title");
-            $table->text("image");
             $table->text('description');
-            $table->text('keyword');
             $table->string("price",50);
             $table->string("completein",50);
             $table->unsignedBigInteger('user_id')->index();

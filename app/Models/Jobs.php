@@ -21,6 +21,10 @@ class Jobs extends Model
         'subcateg_id'
     ];
 
+    protected $casts = [
+        'keyword' => 'array',
+    ];
+
 
     public function category()
     {
@@ -34,6 +38,14 @@ class Jobs extends Model
 
     public function addons(){
         return $this->hasMany(Addons::class, 'job_id');
+    }
+
+    public function jobimages(){
+        return $this->hasMany(Jobimage::class, 'job_id');
+    }
+
+    public function keywords(){
+        return $this->hasMany(Keyword::class, 'job_id');
     }
 
 }

@@ -17,14 +17,14 @@ class Job extends JsonResource
         return [
             'id' => (string)$this->id,
             'title' => $this->title,
-            'image' => explode(',',$this->image),
+            'image' => Jobimage::collection($this->jobimages),
             'description' => $this->description,
-            'keyword' => explode(',',$this->keyword),
+            'keyword' => Keyword::collection($this->keywords),
             'price' => $this->price,
             'completein' => $this->completein,
             'user' => $this->user_id,
-            'category' => $this->category,
-            'subcategory' => $this->subcategory,
+            'category' => new Category($this->category),
+            'subcategory' => new Subcategory($this->subcategory),
             'addons'=>$this->addons
         ];
     }

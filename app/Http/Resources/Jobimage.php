@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Category extends JsonResource
+class Jobimage extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +15,8 @@ class Category extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => (string)$this->id,
-            'Categ_Name' => $this->name,
-            // 'Subcategories'=>$this->subcategories
+            'id'=>(string)$this->id,
+            'image_name'=>$this->name
         ];
     }
 }
