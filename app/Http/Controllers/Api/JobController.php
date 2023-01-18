@@ -355,6 +355,7 @@ class JobController extends Controller
     public function updatejob(Request $request, $id)
     {
         try {
+            // its working fine
             $req_obj = [];
             foreach ($request->all() as $db_feild => $req_feild) {
                 if ($db_feild == "title") {
