@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\AddonController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\City;
+use App\Http\Controllers\Api\Profile;
 use App\Http\Controllers\Api\SubcategoryController;
 use App\Http\Controllers\Api\UserController;
 
@@ -31,7 +33,9 @@ Route::apiResources([
     'jobs' => JobController::class,
     'addons' => AddonController::class,
     'categories' => CategoryController::class,
-    'subcategories' => SubcategoryController::class
+    'subcategories' => SubcategoryController::class,
+    'profiles' => Profile::class,
+    'city' => City::class
 ]);
 
 Route::post('updatejob/{id}',[JobController::class,"updatejob"]);

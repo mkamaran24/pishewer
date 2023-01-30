@@ -21,9 +21,9 @@ class Jobs extends Model
         'subcateg_id'
     ];
 
-    protected $casts = [
-        'keyword' => 'array',
-    ];
+    // protected $casts = [
+    //     'keyword' => 'array',
+    // ];
 
 
     public function category()
