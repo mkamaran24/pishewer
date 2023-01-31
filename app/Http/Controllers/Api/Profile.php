@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Profile as ResourcesProfile;
 use App\Models\Profile as ModelsProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -56,36 +57,45 @@ class Profile extends Controller
         } else {
             # put data to DB after Succes Validation
             try {
-                $Global_Natid = '';
+
+                $one_natid = $request->nationalid;
+                $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
+                // set NatID into Global String VAR ///////////////////////////////////////////////////////////
+                // $Global_Natid = $new_one_natid . ',';
+                ////////////////////////////////////////////////////////////////////////////
+                // save image in laravel Private Storage ///////////////////////////////////
+                Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
+                /////////////////////////////////////////////////////////////////////////////
+
                 // start of NationalID logics ////////////////////////////////////////////////////////////////
-                if ($request->hasFile('nationalid')) {
-                    $natinal_id = $request->file('nationalid');
-                    if (is_array($natinal_id)) {
-                        foreach ($natinal_id as $key => $nat_id) {
+                // if ($request->hasFile('nationalid')) {
+                //     $natinal_id = $request->file('nationalid');
+                //     if (is_array($natinal_id)) {
+                //         foreach ($natinal_id as $key => $nat_id) {
 
-                            $new_natid_name = random_int(100000, 999999) . $key . '.' . $nat_id->getClientOriginalExtension();
+                //             $new_natid_name = random_int(100000, 999999) . $key . '.' . $nat_id->getClientOriginalExtension();
 
-                            // convert NatID from Array to String Logic ///////////////////////////////////////////////////////////
-                            $Global_Natid = $Global_Natid . $new_natid_name . ',';
-                            ////////////////////////////////////////////////////////////////////////////
+                //             // convert NatID from Array to String Logic ///////////////////////////////////////////////////////////
+                //             $Global_Natid = $Global_Natid . $new_natid_name . ',';
+                //             ////////////////////////////////////////////////////////////////////////////
 
-                            // save image in laravel Private Storage ///////////////////////////////////
-                            Storage::disk('public')->put($new_natid_name, file_get_contents($nat_id));
-                            /////////////////////////////////////////////////////////////////////////////
-                        }
-                    } else {
-                        $one_natid = $request->nationalid;
-                        $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
-                        // set NatID into Global String VAR ///////////////////////////////////////////////////////////
-                        $Global_Natid = $new_one_natid . ',';
-                        ////////////////////////////////////////////////////////////////////////////
-                        // save image in laravel Private Storage ///////////////////////////////////
-                        Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
-                        /////////////////////////////////////////////////////////////////////////////
-                    }
-                } else {
-                    return "File Not Found";
-                }
+                //             // save image in laravel Private Storage ///////////////////////////////////
+                //             Storage::disk('public')->put($new_natid_name, file_get_contents($nat_id));
+                //             /////////////////////////////////////////////////////////////////////////////
+                //         }
+                //     } else {
+                //         $one_natid = $request->nationalid;
+                //         $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
+                //         // set NatID into Global String VAR ///////////////////////////////////////////////////////////
+                //         $Global_Natid = $new_one_natid . ',';
+                //         ////////////////////////////////////////////////////////////////////////////
+                //         // save image in laravel Private Storage ///////////////////////////////////
+                //         Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
+                //         /////////////////////////////////////////////////////////////////////////////
+                //     }
+                // } else {
+                //     return "File Not Found";
+                // }
                 // end of NationalID Logics /////////////////////////////////////////////////////////////////////////////////
 
                 // save $req to DB //////////////////////////////
@@ -95,7 +105,7 @@ class Profile extends Controller
                     'skills' => implode(',', $request->skills),
                     'langs' => implode(',', $request->langs),
                     'certification' => $request->certification,
-                    'nationalid' => substr($Global_Natid, 0, -1),
+                    'nationalid' => $new_one_natid,
                     'city_id' => $request->city_id,
                     'age' => $request->age,
                     'gender' => $request->gender,
@@ -140,9 +150,110 @@ class Profile extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+
+    public function updateprofile(Request $request, $id)
     {
         //
+        //Validations Rules //////////////////////////
+        $rules = array(
+            'title' => 'required',
+            'description' => 'required',
+            'skills' => 'required',
+            'langs' => 'required',
+            'certification' => 'required',
+            'city_id' => 'required',
+            'age' => 'required',
+            'gender' => 'required',
+            'user_id' => 'required'
+        );
+        /// end of Validation Rules ////////////////////
+
+        // Validator Check //////////////////////////////
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            $errors = $messages->all(); //convert them into one array
+            return response()->json([
+                'status' => false,
+                'reason' => 'Validation Fails',
+                'messages' => $errors,
+            ], 422);
+        } else {
+            # put data to DB after Succes Validation
+            try {
+
+                $one_natid = $request->nationalid;
+                $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
+                // set NatID into Global String VAR ///////////////////////////////////////////////////////////
+                // $Global_Natid = $new_one_natid . ',';
+                ////////////////////////////////////////////////////////////////////////////
+                // save image in laravel Private Storage ///////////////////////////////////
+                Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
+                /////////////////////////////////////////////////////////////////////////////
+
+                // $Global_Natid = '';
+                // // start of NationalID logics ////////////////////////////////////////////////////////////////
+                // if ($request->hasFile('nationalid')) {
+                //     $natinal_id = $request->file('nationalid');
+                //     if (is_array($natinal_id)) {
+                //         foreach ($natinal_id as $key => $nat_id) {
+
+                //             $new_natid_name = random_int(100000, 999999) . $key . '.' . $nat_id->getClientOriginalExtension();
+
+                //             // convert NatID from Array to String Logic ///////////////////////////////////////////////////////////
+                //             $Global_Natid = $Global_Natid . $new_natid_name . ',';
+                //             ////////////////////////////////////////////////////////////////////////////
+
+                //             // save image in laravel Private Storage ///////////////////////////////////
+                //             Storage::disk('public')->put($new_natid_name, file_get_contents($nat_id));
+                //             /////////////////////////////////////////////////////////////////////////////
+                //         }
+                //     } else {
+                //         $one_natid = $request->nationalid;
+                //         $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
+                //         // set NatID into Global String VAR ///////////////////////////////////////////////////////////
+                //         $Global_Natid = $new_one_natid . ',';
+                //         ////////////////////////////////////////////////////////////////////////////
+                //         // save image in laravel Private Storage ///////////////////////////////////
+                //         Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
+                //         /////////////////////////////////////////////////////////////////////////////
+                //     }
+                // } else {
+                //     return "File Not Found";
+                // }
+                // end of NationalID Logics /////////////////////////////////////////////////////////////////////////////////
+
+                // update $req to DB //////////////////////////////
+                $profile = ModelsProfile::find($id);
+
+                $profile->title= $request->title;
+                $profile->description= $request->description;
+                $profile->skills= implode(',', $request->skills);
+                $profile->langs= implode(',', $request->langs);
+                $profile->certification= $request->certification;
+                $profile->nationalid= $new_one_natid;
+                $profile->city_id= $request->city_id;
+                $profile->age= $request->age;
+                $profile->gender= $request->gender;
+                $profile->user_id= $request->user_id;
+
+                $profile->save();
+                /////////////////////////////////////////////////
+
+                // return Job API Resource JSON Response //////////////
+                return new ResourcesProfile($profile);
+                ///////////////////////////////////////////////////////
+
+
+            } catch (\Throwable $th) {
+                // abort(code: 500, message: 'fail to create');
+                //throw $th;
+                // return response()->json([
+                //     'status' => false,
+                //     'message' => $th->getMessage(),
+                // ], 500);
+            }
+        }
     }
 
     /**
