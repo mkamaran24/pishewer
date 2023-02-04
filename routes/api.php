@@ -37,18 +37,20 @@ Route::post('/auth/login', [AuthController::class, 'loginUser']);
 
 //// Basic CRUD Operation API Routes ///////
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResources([
-        'users' => UserController::class,
-        'jobs' => JobController::class,
-        'addons' => AddonController::class,
-        'categories' => CategoryController::class,
-        'subcategories' => SubcategoryController::class,
-        'profiles' => Profile::class,
-        'city' => City::class
-    ]);
-    Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
-    Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
-});
+// Route::middleware('auth:sanctum')->group(function () {
+
+// });
+
+Route::apiResources([
+    'users' => UserController::class,
+    'jobs' => JobController::class,
+    'addons' => AddonController::class,
+    'categories' => CategoryController::class,
+    'subcategories' => SubcategoryController::class,
+    'profiles' => Profile::class,
+    'city' => City::class
+]);
+Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
+Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
 
 ////////////////////////////////////////////////
