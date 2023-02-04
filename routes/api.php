@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\City;
 use App\Http\Controllers\Api\Profile;
 use App\Http\Controllers\Api\SubcategoryController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,19 +27,28 @@ use App\Http\Controllers\Api\UserController;
 // });
 
 
+// Auth Routes ///////////////////////////
+
+Route::post('/auth/register', [AuthController::class, 'createUser']);
+Route::post('/auth/login', [AuthController::class, 'loginUser']);
+
+//////////////////////////////////////////
+
+
 //// Basic CRUD Operation API Routes ///////
 
-Route::apiResources([
-    'users' => UserController::class,
-    'jobs' => JobController::class,
-    'addons' => AddonController::class,
-    'categories' => CategoryController::class,
-    'subcategories' => SubcategoryController::class,
-    'profiles' => Profile::class,
-    'city' => City::class
-]);
-
-Route::post('updatejob/{id}',[JobController::class,"updatejob"]);
-Route::post('updateprofile/{id}',[Profile::class,"updateprofile"]);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResources([
+        'users' => UserController::class,
+        'jobs' => JobController::class,
+        'addons' => AddonController::class,
+        'categories' => CategoryController::class,
+        'subcategories' => SubcategoryController::class,
+        'profiles' => Profile::class,
+        'city' => City::class
+    ]);
+    Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
+    Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
+});
 
 ////////////////////////////////////////////////

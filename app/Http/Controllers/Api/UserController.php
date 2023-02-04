@@ -23,57 +23,6 @@ class UserController extends Controller
         }
     }
 
-
-    public function store(Request $request)
-    {
-
-        //Validations Rules //////////////////////////
-        $rules = array(
-            'email' => 'required',
-            'fullname' => 'required',
-            'username' => 'required',
-            'fastpay_acc_num' => 'required',
-            'phone_number' => 'required',
-        );
-        /// end of Validation Rules ////////////////////
-
-        //Validation Custom Messages
-        // $messages = array('title'=>'All data required');
-
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            $messages = $validator->messages();
-            $errors = $messages->all(); //convert them into one array
-            return response()->json([
-                'status' => false,
-                'reason' => 'Validation Fails',
-                'messages' => $errors,
-            ], 422);
-        } else {
-            # put data into DB
-            try {
-                $hashed_pass = array("password" => Hash::make($request->password));
-
-                UserModel::create(array_merge($request->except(['password']), $hashed_pass));
-                // return User API Resource JSON Response //////////////
-                return response()->json([
-                    'status' => true,
-                    'messages' => "Object Created"
-                ], 201);
-                ///////////////////////////////////////////////////////
-
-            } catch (\Throwable $th) {
-                //throw $th;
-                // abort(code: 500, message: 'fail to create');
-                return response()->json([
-                    'status' => false,
-                    'message' => $th->getMessage(),
-                ], 500);
-            }
-        }
-    }
-
-
     public function show($id)
     {
         try {
