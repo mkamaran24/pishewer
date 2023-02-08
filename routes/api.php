@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Profile;
 use App\Http\Controllers\Api\SubcategoryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\isMailVerifiedController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,12 @@ use App\Http\Controllers\Api\AuthController;
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
+
+//////////////////////////////////////////
+
+// Email Verfied Middleware //////////////
+
+Route::get('isEmailVerfied/{id}', [isMailVerifiedController::class, 'checkVerifiedField']);
 
 //////////////////////////////////////////
 

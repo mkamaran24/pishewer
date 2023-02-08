@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User as UserModel;
+use App\Models\UserVerify;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -43,10 +46,24 @@ class AuthController extends Controller
                 $hashed_pass = array("password" => Hash::make($request->password));
 
                 $user = UserModel::create(array_merge($request->except(['password']), $hashed_pass));
+
+                $token = Str::random(64);
+
+                UserVerify::create([
+                    'user_id' => $user->id,
+                    'token' => $token
+                ]);
+
+                Mail::send('email.emailVerificationEmail', ['token' => $token], function ($message) use ($request) {
+                    $message->to($request->email);
+                    $message->subject('Email Verification Mail');
+                });
+
                 // return User API Resource JSON Response //////////////
                 return response()->json([
                     'status' => true,
                     'messages' => "Object Created",
+                    "mail message" => "Mail Verfication Sent To Your Gmail",
                     'token' => $user->createToken("API TOKEN")->plainTextToken
                 ], 201);
                 ///////////////////////////////////////////////////////
@@ -100,6 +117,22 @@ class AuthController extends Controller
                 'status' => false,
                 'message' => $th->getMessage()
             ], 500);
+        }
+    }
+
+    public function verifyAccount($token)
+    {
+        $verifyUser = UserVerify::where('token', $token)->first();
+
+
+        if (!is_null($verifyUser)) {
+            $user = $verifyUser->user;
+            if (!$user->email_verified_at) {
+                $verifyUser->user->email_verified_at = now();
+                $verifyUser->user->is_email_verfied = true;
+                $verifyUser->user->save();
+            }
+            return redirect('verfiedMessage');
         }
     }
 }

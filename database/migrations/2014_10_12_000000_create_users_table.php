@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('fastpay_acc_num');
             $table->string('phone_number');
+            $table->boolean('is_email_verfied')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

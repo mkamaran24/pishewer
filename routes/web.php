@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('verfiedMessage', function () {
+    return view('email.verifiedMesage');
 });
+
+Route::get('account/verify/{token}', [AuthController::class, 'verifyAccount'])->name('user.verify');
