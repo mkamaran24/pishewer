@@ -10,10 +10,10 @@ use App\Http\Controllers\Api\Profile;
 use App\Http\Controllers\Api\SubcategoryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CodeCheckController;
+use App\Http\Controllers\Api\ForgetPasswordController;
 use App\Http\Controllers\Api\isMailVerifiedController;
-use App\Http\Controllers\CodeCheckController;
-use App\Http\Controllers\ForgetPasswordController;
-use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\Api\ResetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +48,7 @@ Route::get('isEmailVerfied/{id}', [isMailVerifiedController::class, 'checkVerifi
 
 Route::post('auth/forgetpassword', [ForgetPasswordController::class, '__invoke']);
 Route::post('auth/resetcode/check', [CodeCheckController::class, '__invoke']);
-Route::post('auth/password/reset', [ResetPasswordController::class, '__invoke']);
+Route::post('auth/password/reset/{otpcode}', [ResetPasswordController::class, '__invoke']);
 
 ///////////////////////////////////////////
 

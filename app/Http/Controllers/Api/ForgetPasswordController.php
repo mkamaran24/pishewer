@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Mail\SendCodeResetPassword;
 use App\Models\ResetPasswordCode;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ class ForgetPasswordController extends Controller
      */
     public function __invoke(Request $request)
     {
+        //
         $data = $request->validate([
             'email' => 'required',
         ]);
