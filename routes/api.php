@@ -11,6 +11,9 @@ use App\Http\Controllers\Api\SubcategoryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\isMailVerifiedController;
+use App\Http\Controllers\CodeCheckController;
+use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\ResetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +43,14 @@ Route::post('/auth/login', [AuthController::class, 'loginUser']);
 Route::get('isEmailVerfied/{id}', [isMailVerifiedController::class, 'checkVerifiedField']);
 
 //////////////////////////////////////////
+
+// Reset Password Routes /////////////////
+
+Route::post('auth/forgetpassword', [ForgetPasswordController::class, '__invoke']);
+Route::post('auth/resetcode/check', [CodeCheckController::class, '__invoke']);
+Route::post('auth/password/reset', [ResetPasswordController::class, '__invoke']);
+
+///////////////////////////////////////////
 
 
 //// Basic CRUD Operation API Routes ///////
