@@ -54,16 +54,17 @@ class AuthController extends Controller
                     'token' => $token
                 ]);
 
-                Mail::send('email.emailVerificationEmail', ['token' => $token], function ($message) use ($request) {
-                    $message->to($request->email);
-                    $message->subject('Email Verification Mail');
-                });
+                // Mail::send('email.emailVerificationEmail', ['token' => $token], function ($message) use ($request) {
+                //     $message->to($request->email);
+                //     $message->subject('Email Verification Mail');
+                // });
 
                 // return User API Resource JSON Response //////////////
                 return response()->json([
                     'status' => true,
                     'messages' => "Object Created",
                     "mail message" => "Mail Verfication Sent To Your Gmail",
+                    "verify mail link" => $request->getSchemeAndHttpHost() . "api/account/verify/" . $token,
                     'token' => $user->createToken("API TOKEN")->plainTextToken
                 ], 201);
                 ///////////////////////////////////////////////////////
