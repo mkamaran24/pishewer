@@ -13,6 +13,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CodeCheckController;
 use App\Http\Controllers\Api\ForgetPasswordController;
 use App\Http\Controllers\Api\isMailVerifiedController;
+use App\Http\Controllers\Api\JobListMessageController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ResetPasswordController;
 
 /*
@@ -72,3 +74,13 @@ Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
 Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
 
 ////////////////////////////////////////////////
+
+
+// Messages Route Logic ////////////////////////
+Route::post('joblistmessage', [JobListMessageController::class, "store"]);
+Route::post('message', [MessageController::class, "store"]);
+// Route::get('joblistmessage', [JobListMessageController::class, "show"]);
+Route::get('joblistmessage/getuserjoblist/{userid}', [JobListMessageController::class, "getuserjoblist"]);
+Route::get('joblistmessage/textmessagesperjoblist/{joblistid}', [JobListMessageController::class, "textmessagesperjoblist"]);
+
+///////////////////////////////////////////////////
