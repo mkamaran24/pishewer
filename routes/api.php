@@ -96,5 +96,10 @@ Route::get('review/getrev/{jobid}',[ReviewController::class,"getrevperjob"]);
 
 Route::get("HelloWordl");
 
+Route::get("HelloWordl222");
+
+
+Route::get("HelloWordl3334");
+
 
 ////////////////////////////////////////////////////
