@@ -15,7 +15,9 @@ use App\Http\Controllers\Api\ForgetPasswordController;
 use App\Http\Controllers\Api\isMailVerifiedController;
 use App\Http\Controllers\Api\JobListMessageController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\ReplyReviewController;
 use App\Http\Controllers\Api\ResetPasswordController;
+use App\Http\Controllers\Api\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,9 +43,7 @@ Route::post('/auth/login', [AuthController::class, 'loginUser']);
 //////////////////////////////////////////
 
 // Email Verfied Middleware //////////////
-
 Route::get('isEmailVerfied/{id}', [isMailVerifiedController::class, 'checkVerifiedField']);
-
 //////////////////////////////////////////
 
 // Reset Password Routes /////////////////
@@ -84,3 +84,14 @@ Route::get('joblistmessage/getuserjoblist/{userid}', [JobListMessageController::
 Route::get('joblistmessage/textmessagesperjoblist/{joblistid}', [JobListMessageController::class, "textmessagesperjoblist"]);
 
 ///////////////////////////////////////////////////
+
+
+// Review & ReplyReview Route Logic ///////////////
+
+Route::post('review', [ReviewController::class,"store"]);
+Route::post('replyreview', [ReplyReviewController::class,"store"]);
+
+Route::get('review/getrev/{jobid}',[ReviewController::class,"getrevperjob"]);
+
+
+////////////////////////////////////////////////////
