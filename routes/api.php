@@ -93,5 +93,7 @@ Route::post('replyreview', [ReplyReviewController::class,"store"]);
 
 Route::get('review/getrev/{jobid}',[ReviewController::class,"getrevperjob"]);
 
+Route::get('test');
+
 
 ////////////////////////////////////////////////////
