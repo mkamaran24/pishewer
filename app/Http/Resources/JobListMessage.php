@@ -19,9 +19,9 @@ class JobListMessage extends JsonResource
     {
         return [
             'id'=>(string)$this->id,
-            'seller_id'=>new Seller($this->seller),
-            'buyer_id'=>new Buyer($this->buyer),
-            'job_id'=>new Job($this->job),
+            'seller'=>new Seller($this->seller),
+            'buyer'=>new Buyer($this->buyer),
+            'job'=>new Job($this->job),
             'timestamp'=>$this->created_at
         ];
     }
