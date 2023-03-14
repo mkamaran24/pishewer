@@ -82,12 +82,25 @@ class JobListMessageController extends Controller
     {
         try {
 
-            $getJBL = DB::table('job_list_messages')->where('seller_id', $userid)->orWhere('buyer_id',$userid)->get();
+            // $getJBL = DB::table('job_list_messages')->where('seller_id', $userid)->orWhere('buyer_id',$userid)->get();
+
+            $getJBL = JLM::where('seller_id',$userid)->orWhere('buyer_id',$userid)->get();
+
+
+            // $getSeller = DB::table('users')->select('email','fullname')->where('id',$getJBL->seller_id)->get();
+
+            // return response()->json([
+            //     'seller' => $getJBL
+            // ],200);
 
             return JLR::collection($getJBL);
             
         } catch (\Throwable $th) {
             //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
         }
     }
 

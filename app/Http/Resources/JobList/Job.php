@@ -1,13 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\JobList;
 
-use App\Http\Resources\JobList\Buyer;
-use App\Http\Resources\JobList\Job;
-use App\Http\Resources\JobList\Seller;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class JobListMessage extends JsonResource
+class Job extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,10 +16,7 @@ class JobListMessage extends JsonResource
     {
         return [
             'id'=>(string)$this->id,
-            'seller_id'=>new Seller($this->seller),
-            'buyer_id'=>new Buyer($this->buyer),
-            'job_id'=>new Job($this->job),
-            'timestamp'=>$this->created_at
+            'title'=>$this->title
         ];
     }
 }
