@@ -165,12 +165,11 @@ class JobController extends Controller
 
 
             } catch (\Throwable $th) {
-                abort(code: 500, message: 'fail to create');
                 //throw $th;
-                // return response()->json([
-                //     'status' => false,
-                //     'message' => $th->getMessage(),
-                // ], 500);
+                return response()->json([
+                    'status' => false,
+                    'message' => $th->getMessage(),
+                ], 500);
             }
         }
         //// end of Validator Check ///////////////////////
@@ -197,7 +196,6 @@ class JobController extends Controller
             }
         } catch (\Throwable $th) {
             //throw $th;
-            abort(code: 500, message: 'fail to find object');
         }
     }
 
@@ -565,7 +563,6 @@ class JobController extends Controller
             // end of delete in DB //////////////
         } catch (\Throwable $th) {
             //throw $th;
-            abort(code: 500, message: 'fail to delete');
             //Logs implementation goes down herer
 
 
