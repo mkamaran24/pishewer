@@ -572,4 +572,33 @@ class JobController extends Controller
             ////////////////////////////////////////////
         }
     }
+
+    public function updatestatus($id)
+    {
+        try {
+            $job = Jobs::find($id);
+
+            $job->status = 1;
+    
+            $job->save();
+    
+            return response()->json([
+                "status" => "success",
+                "message" => "Job Approved Successfully"
+            ],200);
+        } catch (\Throwable $th) {
+            //throw $th;
+
+        }
+    }
+
+    public function getjobstatus($id)
+    {
+        try {
+            $status = DB::select('select status from jobs where id = :id', ['id' => $id]);
+            return response()->json($status);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 }

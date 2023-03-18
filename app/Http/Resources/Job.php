@@ -16,6 +16,7 @@ class Job extends JsonResource
     {
         return [
             'id' => (string)$this->id,
+            'status' => $this->status,
             'title' => $this->title,
             'image' => Jobimage::collection($this->jobimages),
             'description' => $this->description,

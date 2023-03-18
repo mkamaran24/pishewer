@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->string("price",50);
             $table->string("completein",50);
+            $table->boolean('status')->default(false);
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('categ_id')->index();
             $table->unsignedBigInteger('subcateg_id')->index();

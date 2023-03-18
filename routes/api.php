@@ -73,6 +73,9 @@ Route::apiResources([
 Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
 Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
 
+Route::get('jobs/updatestatus/{jobid}',[JobController::class, "updatestatus"]);
+Route::get('jobs/getjobstatus/{jobid}',[JobController::class, "getjobstatus"]);
+
 ////////////////////////////////////////////////
 
 
