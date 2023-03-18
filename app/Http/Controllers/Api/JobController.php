@@ -35,146 +35,150 @@ class JobController extends Controller
     public function store(Request $request)
     {
 
-        //Validations Rules //////////////////////////
-        $rules = array(
-            'title' => 'required',
-            'image' => 'required',
-            'description' => 'required',
-            'keywords' => 'required',
-            'price' => 'required',
-            'completein' => 'required',
-            'addons' => 'required',
-            'user_id' => 'required',
-            'categ_id' => 'required',
-            'subcateg_id' => 'required'
-        );
-        /// end of Validation Rules ////////////////////
+        try {
+            //Validations Rules //////////////////////////
+            $rules = array(
+                'title' => 'required',
+                'image' => 'required',
+                'description' => 'required',
+                'keywords' => 'required',
+                'price' => 'required',
+                'completein' => 'required',
+                'addons' => 'required',
+                'user_id' => 'required',
+                'categ_id' => 'required',
+                'subcateg_id' => 'required'
+            );
+            /// end of Validation Rules ////////////////////
 
-        //Validation Custom Messages
-        // $messages = array('title'=>'All data required');
+            //Validation Custom Messages
+            // $messages = array('title'=>'All data required');
 
-        // Validator Check //////////////////////////////
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            $messages = $validator->messages();
-            $errors = $messages->all(); //convert them into one array
-            return response()->json([
-                'status' => false,
-                'reason' => 'Validation Fails',
-                'messages' => $errors,
-            ], 422);
-        } else {
-            # put data to DB after Succes Validation
-            try {
+            // Validator Check //////////////////////////////
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $messages = $validator->messages();
+                $errors = $messages->all(); //convert them into one array
+                return response()->json([
+                    'status' => false,
+                    'reason' => 'Validation Fails',
+                    'messages' => $errors,
+                ], 422);
+            } else {
+                # put data to DB after Succes Validation
+                try {
 
-                // save $req to DB //////////////////////////////
-                $jobs = Jobs::create([
-                    'title' => $request->title,
-                    'description' => $request->description,
-                    'price' => $request->price,
-                    'completein' => $request->completein,
-                    'user_id' => $request->user_id,
-                    'categ_id' => $request->categ_id,
-                    'subcateg_id' => $request->subcateg_id
-                ]);
-                /////////////////////////////////////////////////
+                    // save $req to DB //////////////////////////////
+                    $jobs = Jobs::create([
+                        'title' => $request->title,
+                        'description' => $request->description,
+                        'price' => $request->price,
+                        'completein' => $request->completein,
+                        'user_id' => $request->user_id,
+                        'categ_id' => $request->categ_id,
+                        'subcateg_id' => $request->subcateg_id
+                    ]);
+                    /////////////////////////////////////////////////
 
-                // start of image logics ////////////////////////////////////////////////////////////////
-                if ($request->hasFile('image')) {
-                    $imgs = $request->file('image');
-                    if (is_array($imgs)) {
-                        foreach ($imgs as $key => $img) {
+                    // start of image logics ////////////////////////////////////////////////////////////////
+                    if ($request->hasFile('image')) {
+                        $imgs = $request->file('image');
+                        if (is_array($imgs)) {
+                            foreach ($imgs as $key => $img) {
 
-                            $new_img_name = random_int(100000, 999999) . $key . '.' . $img->getClientOriginalExtension();
+                                $new_img_name = random_int(100000, 999999) . $key . '.' . $img->getClientOriginalExtension();
 
+                                // save image name into DB ///////////////////////////////////////////////////////////
+                                Jobimage::create([
+                                    'name' => $new_img_name,
+                                    'job_id' => $jobs->id
+                                ]);
+                                ////////////////////////////////////////////////////////////////////////////
+
+                                // save image in laravel Private Storage ///////////////////////////////////
+                                Storage::disk('public')->put($new_img_name, file_get_contents($img));
+                                /////////////////////////////////////////////////////////////////////////////
+                            }
+                        } else {
+                            $one_img = $request->image;
+                            $new_one_img = random_int(100000, 999999) . '.' . $one_img->getClientOriginalExtension();
                             // save image name into DB ///////////////////////////////////////////////////////////
                             Jobimage::create([
-                                'name' => $new_img_name,
+                                'name' => $new_one_img,
                                 'job_id' => $jobs->id
                             ]);
                             ////////////////////////////////////////////////////////////////////////////
-
                             // save image in laravel Private Storage ///////////////////////////////////
-                            Storage::disk('public')->put($new_img_name, file_get_contents($img));
+                            Storage::disk('public')->put($new_one_img, file_get_contents($one_img));
                             /////////////////////////////////////////////////////////////////////////////
                         }
                     } else {
-                        $one_img = $request->image;
-                        $new_one_img = random_int(100000, 999999) . '.' . $one_img->getClientOriginalExtension();
-                        // save image name into DB ///////////////////////////////////////////////////////////
                         Jobimage::create([
-                            'name' => $new_one_img,
+                            'name' => "File Not Founde",
                             'job_id' => $jobs->id
                         ]);
-                        ////////////////////////////////////////////////////////////////////////////
-                        // save image in laravel Private Storage ///////////////////////////////////
-                        Storage::disk('public')->put($new_one_img, file_get_contents($one_img));
-                        /////////////////////////////////////////////////////////////////////////////
                     }
-                } else {
-                    Jobimage::create([
-                        'name' => "File Not Founde",
-                        'job_id' => $jobs->id
-                    ]);
-                }
-                // end of Image Logics /////////////////////////////////////////////////////////////////////////////////
+                    // end of Image Logics /////////////////////////////////////////////////////////////////////////////////
 
-                // start of Keword Logic ////////////////////////////////////////////////////////////////////////////
-                if (is_array($request->keywords)) {
+                    // start of Keword Logic ////////////////////////////////////////////////////////////////////////////
+                    if (is_array($request->keywords)) {
 
-                    foreach ($request->keywords as $keyword) {
+                        foreach ($request->keywords as $keyword) {
+                            Keyword::create([
+                                'keyname' => $keyword,
+                                'job_id' => $jobs->id
+                            ]);
+                        }
+                    } else {
                         Keyword::create([
-                            'keyname' => $keyword,
+                            'keyname' => $request->keywords,
                             'job_id' => $jobs->id
                         ]);
                     }
-                } else {
-                    Keyword::create([
-                        'keyname' => $request->keywords,
-                        'job_id' => $jobs->id
-                    ]);
-                }
-                // end of Keyword Logic //////////////////////////////////////////////////////////////////////////////
+                    // end of Keyword Logic //////////////////////////////////////////////////////////////////////////////
 
-                // start of addon logic //////////////
+                    // start of addon logic //////////////
 
-                if (is_array($request->addons)) {
+                    if (is_array($request->addons)) {
 
-                    foreach ($request->addons as $addon) {
+                        foreach ($request->addons as $addon) {
 
-                        $decoded_addon = json_decode($addon);
+                            $decoded_addon = json_decode($addon);
 
-                        AddonModel::create([
-                            "title" => $decoded_addon->title,
-                            "price" => $decoded_addon->price,
-                            "job_id" => $jobs->id
-                        ]);
+                            AddonModel::create([
+                                "title" => $decoded_addon->title,
+                                "price" => $decoded_addon->price,
+                                "job_id" => $jobs->id
+                            ]);
+                        }
+                    } else {
+                        return "Addon is not Array";
                     }
-                } else {
-                    return "Addon is not Array";
+
+                    //////////////////////////////////////
+
+                    // return Job API Resource JSON Response //////////////
+                    return response()->json([
+                        'status' => true,
+                        'messages' => "Object Created"
+                    ], 201);
+                    ///////////////////////////////////////////////////////
+
+
+                } catch (\Throwable $th) {
+                    // abort(code: 500, message: 'fail to create');
+                    //throw $th;
+                    return response()->json([
+                        'status' => false,
+                        'message' => $th->getMessage(),
+                    ], 500);
                 }
-
-                //////////////////////////////////////
-
-                // return Job API Resource JSON Response //////////////
-                return response()->json([
-                    'status' => true,
-                    'messages' => "Object Created"
-                ], 201);
-                ///////////////////////////////////////////////////////
-
-
-            } catch (\Throwable $th) {
-                // abort(code: 500, message: 'fail to create');
-                //throw $th;
-                return response()->json([
-                    'status' => false,
-                    'message' => $th->getMessage(),
-                ], 500);
             }
+            //// end of Validator Check ///////////////////////
+        } catch (\Throwable $th) {
+            //throw $th;
+            abort(code: 500, message: 'failed to create');
         }
-        //// end of Validator Check ///////////////////////
-
     }
 
     public function show($id)
@@ -579,13 +583,13 @@ class JobController extends Controller
             $job = Jobs::find($id);
 
             $job->status = 1;
-    
+
             $job->save();
-    
+
             return response()->json([
                 "status" => "success",
                 "message" => "Job Approved Successfully"
-            ],200);
+            ], 200);
         } catch (\Throwable $th) {
             //throw $th;
 
