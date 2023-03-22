@@ -19,8 +19,14 @@ return new class extends Migration
             $table->tinyInteger('commun_followup');
             $table->tinyInteger('panctual_delevery');
             $table->text('description');
-            $table->tinyInteger('buyer_id');
-            $table->tinyInteger('job_id');
+            $table->unsignedBigInteger('user_id')->index();
+            $table->foreign('user_id')->references('id')->on('users')
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
+            $table->unsignedBigInteger('job_id')->index();
+            $table->foreign('job_id')->references('id')->on('jobs')
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -48,4 +48,9 @@ class Jobs extends Model
         return $this->hasMany(Keyword::class, 'job_id');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'job_id');
+    }
+
 }

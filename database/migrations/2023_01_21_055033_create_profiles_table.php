@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('langs');
             $table->string('certification');
             $table->string('nationalid');
+            $table->string('imageprofile');
             $table->unsignedBigInteger('city_id')->index();
             $table->foreign('city_id')->references('id')->on('cities')
             ->onUpdate('cascade')

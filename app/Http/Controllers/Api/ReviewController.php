@@ -63,12 +63,29 @@ class ReviewController extends Controller
         }
     }
 
-    public function getrevperjob(Request $request)
+    public function getallrev()
     {
 
         try {
             //code...
             return ResourcesReview::collection(ModelReview::all());
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+
+        
+    }
+
+    public function getrevperjob($id)
+    {
+
+        try {
+            //code...
+            return ResourcesReview::collection(ModelReview::where('job_id',$id)->get());
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([

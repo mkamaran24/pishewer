@@ -9,13 +9,23 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['service_quality','commun_followup','panctual_delevery','description','buyer_id','job_id'];
+    protected $fillable = ['service_quality','commun_followup','panctual_delevery','description','user_id','job_id'];
 
     // public $timestamps = false;
 
     public function replyreview()
     {
         return $this->hasOne(ReplyReview::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function job()
+    {
+        return $this->belongsTo(Jobs::class,'job_id');
     }
 
 }

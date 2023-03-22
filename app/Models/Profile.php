@@ -16,6 +16,7 @@ class Profile extends Model
         'langs',
         'certification',
         'nationalid',
+        'imageprofile',
         'city_id',
         'age',
         'gender',

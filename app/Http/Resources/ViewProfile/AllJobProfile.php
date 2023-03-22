@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\ViewProfile;
 
-use App\Http\Resources\ViewJob\ReviewCollection;
+use App\Http\Resources\Jobimage;
+use App\Http\Resources\Keyword;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Job extends JsonResource
+class AllJobProfile extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,12 +24,6 @@ class Job extends JsonResource
             'description' => $this->description,
             'keyword' => Keyword::collection($this->keywords),
             'price' => $this->price,
-            'completein' => $this->completein,
-            'user' => $this->user_id,
-            'category' => new Category($this->category),
-            // 'subcategory' => new Subcategory($this->subcategory),
-            'addons'=>$this->addons,
-            'reviews' => new ReviewCollection($this->reviews)
-        ];
+            'completein' => $this->completein,        ];
     }
 }

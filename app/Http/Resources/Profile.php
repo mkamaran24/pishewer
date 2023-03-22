@@ -22,6 +22,7 @@ class Profile extends JsonResource
             'langs' => explode(',', $this->langs),
             'certification' => $this->certification,
             'nationalid' => $this->nationalid,
+            'imageprofile' => $this->imageprofile,
             'city_id' => new City($this->city),
             'age' => $this->age,
             'gender' => $this->gender

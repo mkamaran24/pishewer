@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\ViewJob;
 
+use App\Http\Resources\ReplyReview;
 use App\Http\Resources\ViewProfile\Buyer;
-use App\Http\Resources\ViewProfile\JobProfile;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Review extends JsonResource
+class ReviewResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,7 +23,7 @@ class Review extends JsonResource
             "panctual_delevery"=>(string)$this->panctual_delevery,
             "description"=>$this->description,
             "buyer"=>new Buyer($this->user),
-            "job"=>new JobProfile($this->job),
+            // "job"=>new JobProfile($this->job),
             "reply"=> new ReplyReview($this->replyreview)
         ];
     }

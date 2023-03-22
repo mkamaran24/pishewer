@@ -94,15 +94,7 @@ Route::get('joblistmessage/textmessagesperjoblist/{joblistid}', [JobListMessageC
 Route::post('review', [ReviewController::class,"store"]);
 Route::post('replyreview', [ReplyReviewController::class,"store"]);
 
-Route::get('review/getrev/{jobid}',[ReviewController::class,"getrevperjob"]);
-
-
-Route::get("HelloWordl");
-
-Route::get("HelloWordl222");
-
-
-Route::get("HelloWordl3334");
-
+Route::get('review/getallrev',[ReviewController::class,"getallrev"]);
+Route::get('review/getrevbyjob/{jobid}',[ReviewController::class,"getrevperjob"]);
 
 ////////////////////////////////////////////////////
