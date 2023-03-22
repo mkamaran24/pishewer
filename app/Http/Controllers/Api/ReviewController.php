@@ -20,7 +20,7 @@ class ReviewController extends Controller
             'commun_followup' => 'required',
             'panctual_delevery' => 'required',
             'description' => 'required',
-            'buyer_id' => 'required',
+            'user_id' => 'required',
             'job_id' => 'required'
 
         );
