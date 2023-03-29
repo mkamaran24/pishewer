@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\JobListMessage as JLR;
 use App\Models\JobListMessage as JLM;
 use App\Http\Resources\Message as MSR;
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -82,10 +83,13 @@ class JobListMessageController extends Controller
     {
         try {
 
-            // $getJBL = DB::table('job_list_messages')->where('seller_id', $userid)->orWhere('buyer_id',$userid)->get();
+            // $getJBL = DB::table('job_list_messages')->select('id')->where('seller_id', $userid)->orWhere('buyer_id',$userid)->get();
 
             $getJBL = JLM::where('seller_id',$userid)->orWhere('buyer_id',$userid)->get();
 
+            // dd($getJBL[0]->id);
+
+            // $getunreadmsg = Message::where('job_list_msg_id', 2)->where('sender_id',$userid)->orWhere('recever_id',$userid)->count();
 
             // $getSeller = DB::table('users')->select('email','fullname')->where('id',$getJBL->seller_id)->get();
 

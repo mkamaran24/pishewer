@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ReplyReviewController;
 use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Models\Blog;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,3 +99,10 @@ Route::get('review/getallrev',[ReviewController::class,"getallrev"]);
 Route::get('review/getrevbyjob/{jobid}',[ReviewController::class,"getrevperjob"]);
 
 ////////////////////////////////////////////////////
+
+
+Route::get('blogs',function(){
+
+    return Blog::with('comments.replies.replies')->get();
+
+});

@@ -26,4 +26,10 @@ class JobListMessage extends Model
         return $this->belongsTo(User::class,'buyer_id');
     }
 
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class,'job_list_msg_id');
+    }
+
 }

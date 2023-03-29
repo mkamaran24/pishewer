@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Resources\JobList\Buyer;
 use App\Http\Resources\JobList\Job;
 use App\Http\Resources\JobList\Seller;
+use App\Models\Message as ModelsMessage;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class JobListMessage extends JsonResource
@@ -22,6 +23,7 @@ class JobListMessage extends JsonResource
             'seller'=>new Seller($this->seller),
             'buyer'=>new Buyer($this->buyer),
             'job'=>new Job($this->job),
+            'count_unread_messages' => ModelsMessage::where('status', '=', false)->where('job_list_msg_id',$this->id)->count(),
             'timestamp'=>$this->created_at
         ];
     }
