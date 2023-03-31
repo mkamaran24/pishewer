@@ -10,6 +10,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class JobListMessage extends JsonResource
 {
+
+
     /**
      * Transform the resource into an array.
      *
@@ -18,12 +20,13 @@ class JobListMessage extends JsonResource
      */
     public function toArray($request)
     {
+        
         return [
             'id'=>(string)$this->id,
             'seller'=>new Seller($this->seller),
             'buyer'=>new Buyer($this->buyer),
             'job'=>new Job($this->job),
-            'count_unread_messages' => ModelsMessage::where('status', '=', false)->where('job_list_msg_id',$this->id)->count(),
+            'count_unread_messages' => ModelsMessage::where('status', '=', false)->where('job_list_msg_id',$this->id)->where('recever_id',$this->user_id)->count(),
             'timestamp'=>$this->created_at
         ];
     }

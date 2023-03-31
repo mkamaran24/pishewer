@@ -85,7 +85,7 @@ Route::post('joblistmessage', [JobListMessageController::class, "store"]);
 Route::post('message', [MessageController::class, "store"]);
 // Route::get('joblistmessage', [JobListMessageController::class, "show"]);
 Route::get('joblistmessage/getuserjoblist/{userid}', [JobListMessageController::class, "getuserjoblist"]);
-Route::get('joblistmessage/textmessagesperjoblist/{joblistid}', [JobListMessageController::class, "textmessagesperjoblist"]);
+Route::get('joblistmessage/textmessagesperjoblist/{joblistid}/{userid}', [JobListMessageController::class, "textmessagesperjoblist"]);
 
 ///////////////////////////////////////////////////
 
