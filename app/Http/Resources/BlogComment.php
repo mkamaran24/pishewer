@@ -2,10 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\ViewProfile\Buyer;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ReplyReview extends JsonResource
+class BlogComment extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +15,13 @@ class ReplyReview extends JsonResource
     public function toArray($request)
     {
         return [
-            "id"=>(string)$this->id,
-            "description"=>$this->description,
-            "seller"=> new Buyer($this->user)
+            "id" => (string)$this->id,
+            "body" => $this->body,
+            "blog_id" => $this->blog_id,
+            "user_id" => $this->user_id,
+            "parent_id" => $this->parent_id,
+            "created_at" => $this->created_at,
+            "replies" => BlogComment::collection($this->replies)
         ];
     }
 }

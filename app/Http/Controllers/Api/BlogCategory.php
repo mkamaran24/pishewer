@@ -3,32 +3,34 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Category as CategoryResource;
-use App\Models\Category as CategoryModel;
-use App\Models\Subcategory;
+use App\Http\Resources\BlogCategory as ResourcesBlogCategory;
+use App\Models\BlogCategory as ModelsBlogCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-
-class CategoryController extends Controller
+class BlogCategory extends Controller
 {
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         //
         try {
-
-            return CategoryResource::collection(CategoryModel::all());
+            return ResourcesBlogCategory::collection(ModelsBlogCategory::all());
         } catch (\Throwable $th) {
-            abort(code: 500, message: 'fail to fetch');
             //throw $th;
-            // return response()->json([
-            //     'status'=>false,
-            //     'message'=>$th->getMessage(),
-            // ],500);
         }
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         //
@@ -53,17 +55,18 @@ class CategoryController extends Controller
             try {
 
                 // Save to DB ///////////////////////////////////////////
-                $sub_categ = CategoryModel::create([
+                $blog_categ = ModelsBlogCategory::create([
                     'name' => $request->name,
                 ]);
                 /////////////////////////////////////////////////////////
 
                 // return Job API Resource JSON Response //////////////
-                return new CategoryResource($sub_categ);
+                return response()->json([
+                    "message" => "Object Created"
+                ], 201);
                 ///////////////////////////////////////////////////////
 
             } catch (\Throwable $th) {
-                abort(code: 500, message: 'fail to create');
                 // //throw $th;
                 // return response()->json([
                 //     'status' => false,
@@ -74,30 +77,27 @@ class CategoryController extends Controller
         //// end of Validator Check ///////////////////////
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
-        try {
-            // Validation of $id should goes here
-
-
-            /////////////////////////////////////
-            $categ = CategoryModel::find($id);
-            if ($categ) {
-                return new CategoryResource($categ);
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'messages' => "Object Not Found"
-                ], 404);
-            }
-        } catch (\Throwable $th) {
-            //throw $th;
-            abort(code: 500, message: 'fail to find object');
-        }
+        //
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, $id)
     {
+        //
         try {
             // Validation of $id should goes here
 
@@ -130,12 +130,12 @@ class CategoryController extends Controller
 
             /////////////////////////////////////
 
-            $categ = CategoryModel::find($id);
-            if ($categ) {
-                $categ->update([
+            $blog_categ = ModelsBlogCategory::find($id);
+            if ($blog_categ) {
+                $blog_categ->update([
                     'name' => $request->name,
                 ]);
-                return new CategoryResource($categ);
+                return new ResourcesBlogCategory($blog_categ);
             } else {
                 return response()->json([
                     'status' => false,
@@ -152,11 +152,17 @@ class CategoryController extends Controller
         }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
         //
         try {
-            $categ = CategoryModel::where('id', $id)->delete();
+            $categ = ModelsBlogCategory::where('id', $id)->delete();
             if ($categ) {
                 return response()->json([
                     'status' => true,
@@ -172,7 +178,6 @@ class CategoryController extends Controller
             }
         } catch (\Throwable $th) {
             //throw $th;
-            abort(code: 500, message: 'fail to delete');
             //Logs implementation goes down herer
 
 

@@ -10,6 +10,9 @@ use App\Http\Controllers\Api\Profile;
 use App\Http\Controllers\Api\SubcategoryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BlogCategory;
+use App\Http\Controllers\Api\BlogCommentController;
+use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CodeCheckController;
 use App\Http\Controllers\Api\ForgetPasswordController;
 use App\Http\Controllers\Api\isMailVerifiedController;
@@ -69,10 +72,14 @@ Route::apiResources([
     'categories' => CategoryController::class,
     'subcategories' => SubcategoryController::class,
     'profiles' => Profile::class,
-    'city' => City::class
+    'city' => City::class,
+    'blogcategory' => BlogCategory::class,
+    'blogs' => BlogController::class
 ]);
 Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
 Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
+Route::post('updateblog/{id}', [BlogController::class, "updateblog"]);
+Route::post('blogs/comment', [BlogCommentController::class, "store"]);
 
 Route::get('jobs/updatestatus/{jobid}',[JobController::class, "updatestatus"]);
 Route::get('jobs/getjobstatus/{jobid}',[JobController::class, "getjobstatus"]);
@@ -101,8 +108,8 @@ Route::get('review/getrevbyjob/{jobid}',[ReviewController::class,"getrevperjob"]
 ////////////////////////////////////////////////////
 
 
-Route::get('blogs',function(){
+// Route::get('blogs',function(){
 
-    return Blog::with('comments.replies.replies')->get();
+//     return Blog::with('comments.replies.replies')->get();
 
-});
+// });

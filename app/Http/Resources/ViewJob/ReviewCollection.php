@@ -15,15 +15,20 @@ class ReviewCollection extends ResourceCollection
     public function toArray($request)
     {
 
-        $total_rev_collection = array();
-        for ($i=0; $i < count($this->collection); $i++) 
-        { 
-            $total_rev = ($this->collection[$i]->service_quality + $this->collection[$i]->commun_followup + $this->collection[$i]->panctual_delevery)/3;
-            $total_rev_collection[$i] = floor($total_rev);
+        $rev_avg_total_stars = 0;
+        if (count($this->collection) != 0) {
+            $total_rev_collection = array();
+            for ($i=0; $i < count($this->collection); $i++) 
+            { 
+                $total_rev = ($this->collection[$i]->service_quality + $this->collection[$i]->commun_followup + $this->collection[$i]->panctual_delevery)/3;
+                $total_rev_collection[$i] = floor($total_rev);
+            }
+
+            $rev_avg_total_stars = round(array_sum($total_rev_collection)/count($total_rev_collection));
         }
-        
+              
         return [
-            'avg_of_total_stars' => round(array_sum($total_rev_collection)/count($total_rev_collection)),
+            'avg_of_total_stars' => $rev_avg_total_stars,
             'data' => $this->collection
         ];
     }
