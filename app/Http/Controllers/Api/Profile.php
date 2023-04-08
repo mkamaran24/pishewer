@@ -154,20 +154,26 @@ class Profile extends Controller
     public function show($id)
     {
         //
-
-
         try {
             //code...
             $profile = DB::select('select * from profiles where user_id = ?', [$id]);
             $city_name = DB::select('select cityname from cities where id = ?', [$profile[0]->city_id]);
             $user = DB::select('select * from users where id = ?', [$id]);
-            $jobs = Jobs::where('user_id',$id)->get();
-            $rev = Review::where('job_id',$id)->get();
+            $jobs = Jobs::where('user_id', $id)->get();
 
+            $job_reviews = [];
+            
+            foreach ($jobs as $job) {
+                $reviews = Review::where('job_id', $job->id)->get();
+                $job_reviews[] = $reviews;
+            }
+            $reviews_collection = collect($job_reviews)->flatten();
+            
             $total_rev_collection = array();
-            for ($i=0; $i < count($rev); $i++) 
+            
+            for ($i=0; $i < count($reviews_collection); $i++) 
             { 
-                $total_rev = ($rev[$i]->service_quality + $rev[$i]->commun_followup + $rev[$i]->panctual_delevery)/3;
+                $total_rev = ($reviews_collection[$i]->service_quality + $reviews_collection[$i]->commun_followup + $reviews_collection[$i]->panctual_delevery)/3;
                 $total_rev_collection[$i] = floor($total_rev);
             }
 
@@ -183,13 +189,12 @@ class Profile extends Controller
                 "description" => $profile[0]->description,
                 "skills" => $profile[0]->skills,
                 "certification" => $profile[0]->certification,
-                "total_review_number" => count($rev),
-                "all_rev_avg_stars" => round(array_sum($total_rev_collection)/count($total_rev_collection),1),
-                "reviews" => ResourcesReview::collection($rev),
+                "total_review_number" => count($reviews_collection),
+                "all_rev_avg_stars" => $c = (count($total_rev_collection) != 0) ? round(array_sum($total_rev_collection)/count($total_rev_collection),1) : 0,
+                "reviews" => ResourcesReview::collection($reviews_collection),
                 "Jobs" => AllJobProfile::collection($jobs),
-            ]);
+            ],200);
 
-            // return new ResourcesProfile($users);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([
