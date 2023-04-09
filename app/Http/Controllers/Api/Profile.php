@@ -8,6 +8,7 @@ use App\Http\Resources\Profile as ResourcesProfile;
 use App\Http\Resources\Review as ResourcesReview;
 use App\Http\Resources\ViewProfile\AllJobProfile;
 use App\Models\Jobs;
+use App\Models\Message;
 use App\Models\Profile as ModelsProfile;
 use App\Models\Review;
 use Carbon\Carbon;
@@ -161,9 +162,37 @@ class Profile extends Controller
                 $city_name = DB::select('select cityname from cities where id = ?', [$profile[0]->city_id]);
                 $user = DB::select('select * from users where id = ?', [$id]);
                 $jobs = Jobs::where('user_id', $id)->get();
+                $messages = DB::select('select msg_time,resp_time from messages where recever_id = ? AND status = ?', [$id, 1]);
 
+                $avg_resp_time = null;
+                if ($messages) {
+                    // avg_resp time logic ///////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////
+                    $seconds = array();
+                    for ($i = 0; $i < count($messages); $i++) {
+                        $seconds[$i] = strtotime($messages[$i]->resp_time) - strtotime($messages[$i]->msg_time);
+                    }
+
+
+                    $avg_resp_time_in_sec = array_sum($seconds) / count($seconds);
+
+                    if ($avg_resp_time_in_sec < 3600 && $avg_resp_time_in_sec >= 60) {
+                        $avg_resp_time_in_min = $avg_resp_time_in_sec / 60;
+                        $avg_resp_time = round($avg_resp_time_in_min)  . "minute";
+                    } elseif ($avg_resp_time_in_sec >= 3600) {
+                        $avg_resp_time_in_min = $avg_resp_time_in_sec / 60;
+                        $avg_resp_time_in_hour = $avg_resp_time_in_min / 60;
+                        $avg_resp_time = round($avg_resp_time_in_hour) . "hour";
+                    } else {
+                        $avg_resp_time = round($avg_resp_time_in_sec) . "second";
+                    }
+                }
+                // end of avg resp time log //////////////////////////////////////
+                /////////////////////////////////////////////////////////////////
+
+                // get all review of all jobs logic /////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////
                 $job_reviews = [];
-
                 foreach ($jobs as $job) {
                     $reviews = Review::where('job_id', $job->id)->get();
                     $job_reviews[] = $reviews;
@@ -176,6 +205,9 @@ class Profile extends Controller
                     $total_rev = ($reviews_collection[$i]->service_quality + $reviews_collection[$i]->commun_followup + $reviews_collection[$i]->panctual_delevery) / 3;
                     $total_rev_collection[$i] = floor($total_rev);
                 }
+                // end of get all review of all jobs logic /////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////
+
 
                 $new_date = Carbon::createFromFormat('Y-m-d H:i:s', $user[0]->created_at)->format('d-m-Y');
 
@@ -185,7 +217,7 @@ class Profile extends Controller
                     "title" => $profile[0]->title,
                     "location" => $city_name[0]->cityname,
                     "member_since" => $new_date,
-                    "avg_response_time" => "3Hours",
+                    "avg_response_time" => $avg_resp_time,
                     "description" => $profile[0]->description,
                     "skills" => $profile[0]->skills,
                     "certification" => $profile[0]->certification,

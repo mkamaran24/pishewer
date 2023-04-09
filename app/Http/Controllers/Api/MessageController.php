@@ -7,6 +7,7 @@ use App\Models\Message as MSG;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 
 class MessageController extends Controller
@@ -45,7 +46,8 @@ class MessageController extends Controller
                     'text_msg' => $request->text_mesg,
                     'sender_id' => $request->sender_id,
                     'recever_id' => $request->recever_id,
-                    'job_list_msg_id' => $request->job_list_msg_id
+                    'job_list_msg_id' => $request->job_list_msg_id,
+                    'msg_time' => Carbon::now()
                 ]);
                 /////////////////////////////////////////////////////////
 

@@ -7,6 +7,7 @@ use App\Http\Resources\JobListMessage as JLR;
 use App\Models\JobListMessage as JLM;
 use App\Http\Resources\Message as MSR;
 use App\Models\Message as MSM;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -122,6 +123,7 @@ class JobListMessageController extends Controller
             $status_msgs = MSM::where('job_list_msg_id', $joblistid)->where('recever_id', $userid)->get();
             foreach ($status_msgs as $update_status) {
                 $update_status->status = 1;
+                $update_status->resp_time = Carbon::now();
                 // Update other columns as needed
                 $update_status->save(); // Save the changes to the database
             }
