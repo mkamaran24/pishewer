@@ -18,11 +18,10 @@ use App\Http\Controllers\Api\ForgetPasswordController;
 use App\Http\Controllers\Api\isMailVerifiedController;
 use App\Http\Controllers\Api\JobListMessageController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\ReplyReviewController;
 use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\ReviewController;
-use App\Models\Blog;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -74,15 +73,15 @@ Route::apiResources([
     'profiles' => Profile::class,
     'city' => City::class,
     'blogcategory' => BlogCategory::class,
-    'blogs' => BlogController::class
+    'blogs' => BlogController::class,
+    'offers' => OfferController::class
 ]);
 Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
 Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
 Route::post('updateblog/{id}', [BlogController::class, "updateblog"]);
 Route::post('blogs/comment', [BlogCommentController::class, "store"]);
-
-Route::get('jobs/updatestatus/{jobid}',[JobController::class, "updatestatus"]);
-Route::get('jobs/getjobstatus/{jobid}',[JobController::class, "getjobstatus"]);
+Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"]);
+Route::get('jobs/getjobstatus/{jobid}', [JobController::class, "getjobstatus"]);
 
 ////////////////////////////////////////////////
 
@@ -99,17 +98,59 @@ Route::get('joblistmessage/textmessagesperjoblist/{joblistid}/{userid}', [JobLis
 
 // Review & ReplyReview Route Logic ///////////////
 
-Route::post('review', [ReviewController::class,"store"]);
-Route::post('replyreview', [ReplyReviewController::class,"store"]);
+Route::post('review', [ReviewController::class, "store"]);
+Route::post('replyreview', [ReplyReviewController::class, "store"]);
 
-Route::get('review/getallrev',[ReviewController::class,"getallrev"]);
-Route::get('review/getrevbyjob/{jobid}',[ReviewController::class,"getrevperjob"]);
+Route::get('review/getallrev', [ReviewController::class, "getallrev"]);
+Route::get('review/getrevbyjob/{jobid}', [ReviewController::class, "getrevperjob"]);
 
 ////////////////////////////////////////////////////
 
 
-// Route::get('blogs',function(){
+// Test Part /////////////////////////////
 
-//     return Blog::with('comments.replies.replies')->get();
+// Route::post('/test', function (Request $req) {
+
+
+
+//     try {
+//         //code...
+//         $path = $req->file('zip')->store('testfile');
+
+
+//         // Create a new ZipArchive instance
+//         $zip = new ZipArchive;
+
+//         // Open the zip file for reading
+//         if ($zip->open($path) === TRUE) {
+//             // Validate the contents of the zip file
+//             $isValid = true;
+//             for ($i = 0; $i < $zip->numFiles; $i++) {
+//                 $file = $zip->statIndex($i);
+//                 if (preg_match('/\.(php|pl|py|sh|rb)$/i', $file['name'])) {
+//                     $isValid = false;
+//                     break;
+//                 }
+//             }
+
+//             // Close the zip file
+//             $zip->close();
+
+//             // Return the validation result
+//             return response()->json(['isValid' => $isValid]);
+//         } else {
+//             // Error opening the zip file
+//             return response()->json(['error' => 'Failed to open the zip file']);
+//         }
+//     } catch (\Throwable $th) {
+//         //throw $th;
+//         return response()->json([
+//             'status' => false,
+//             'message' => $th->getMessage(),
+//         ], 500);
+//     }
 
 // });
+
+
+// end of test part ///////////////////////
