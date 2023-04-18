@@ -82,6 +82,7 @@ Route::post('updateblog/{id}', [BlogController::class, "updateblog"]);
 Route::post('blogs/comment', [BlogCommentController::class, "store"]);
 Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"]);
 Route::get('jobs/getjobstatus/{jobid}', [JobController::class, "getjobstatus"]);
+Route::get('jobs/getjobsbycategory/{categid}',[JobController::class, "getjobsbycateg"]);
 
 ////////////////////////////////////////////////
 
@@ -92,7 +93,6 @@ Route::post('message', [MessageController::class, "store"]);
 // Route::get('joblistmessage', [JobListMessageController::class, "show"]);
 Route::get('joblistmessage/getuserjoblist/{userid}', [JobListMessageController::class, "getuserjoblist"]);
 Route::get('joblistmessage/textmessagesperjoblist/{joblistid}/{userid}', [JobListMessageController::class, "textmessagesperjoblist"]);
-
 ///////////////////////////////////////////////////
 
 

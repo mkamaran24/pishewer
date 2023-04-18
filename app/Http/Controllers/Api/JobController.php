@@ -598,4 +598,14 @@ class JobController extends Controller
             //throw $th;
         }
     }
+
+    public function getjobsbycateg($id)
+    {
+        try {
+            $jobs = Jobs::where('categ_id', $id)->paginate(3);
+            return JobResource::collection($jobs);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 }
