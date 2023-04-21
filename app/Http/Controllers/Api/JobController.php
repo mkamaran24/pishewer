@@ -576,13 +576,13 @@ class JobController extends Controller
             $job = Jobs::find($id);
 
             $job->status = 1;
-    
+
             $job->save();
-    
+
             return response()->json([
                 "status" => "success",
                 "message" => "Job Approved Successfully"
-            ],200);
+            ], 200);
         } catch (\Throwable $th) {
             //throw $th;
 
@@ -606,6 +606,62 @@ class JobController extends Controller
             return JobResource::collection($jobs);
         } catch (\Throwable $th) {
             //throw $th;
+        }
+    }
+
+    public function searchjobs(Request $request)
+    {
+       
+        try {
+            
+            $keyword = $request->query('keyword');
+            $categ_id = $request->query('category_id');
+            $sub_categ_id = $request->query('subcategory_id');
+            $min = $request->query('budget_min');
+            $max = $request->query('budget_max');
+            $dd = $request->query('delivery_time');
+            $top_rated_seller = $request->query('top_rated_seller');
+            $new_sller = $request->query('new_seller');
+
+            $jobsQuery = Jobs::query();
+
+            if ($keyword != 0) {
+                $jobsQuery->whereHas('keywords', function ($query) use ($keyword) {
+                    $query->where('keyname', 'like', "%$keyword%");
+                });
+            }
+
+            if ($top_rated_seller != 0) {
+                $jobsQuery->whereHas('reviews', function ($query) use ($keyword) {
+                    $query->where('total_rev', '>=', 4);
+                });
+            }
+
+            if ($min != 0 && $max != 0) {
+                $jobsQuery->whereBetween('price', [$min, $max]);
+            }
+
+            if ($categ_id != 0) {
+                $jobsQuery->where('categ_id', $categ_id);
+            }
+
+            if ($sub_categ_id != 0) {
+                $jobsQuery->where('subcateg_id', $sub_categ_id);
+            }
+
+            if ($dd != 0) {
+                $jobsQuery->where('completein', '>=', $dd);
+            }
+
+            $jobs = $jobsQuery->paginate(10);
+
+            return JobResource::collection($jobs);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
         }
     }
 }

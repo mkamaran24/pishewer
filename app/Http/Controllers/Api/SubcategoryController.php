@@ -17,9 +17,9 @@ class SubcategoryController extends Controller
         //
         try {
 
-            return SubcategoryResource::collection(ModelsSubcategory::paginate(9));
+            return SubcategoryResource::collection(ModelsSubcategory::all());
         } catch (\Throwable $th) {
-            abort(code: 500, message: 'fail to fetch');
+            // abort(code: 500, message: 'fail to fetch');
             // //throw $th;
             // return response()->json([
             //     'status'=>false,

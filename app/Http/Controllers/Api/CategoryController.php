@@ -20,7 +20,7 @@ class CategoryController extends Controller
 
             return CategoryResource::collection(CategoryModel::all());
         } catch (\Throwable $th) {
-            abort(code: 500, message: 'fail to fetch');
+            // abort(code: 500, message: 'fail to fetch');
             //throw $th;
             // return response()->json([
             //     'status'=>false,
