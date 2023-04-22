@@ -625,30 +625,41 @@ class JobController extends Controller
 
             $jobsQuery = Jobs::query();
 
+            // Keywrod 
             if ($keyword != 0) {
                 $jobsQuery->whereHas('keywords', function ($query) use ($keyword) {
                     $query->where('keyname', 'like', "%$keyword%");
                 });
             }
 
+            // Top rated Seller
             if ($top_rated_seller != 0) {
                 $jobsQuery->whereHas('reviews', function ($query) use ($keyword) {
                     $query->where('total_rev', '>=', 4);
                 });
             }
 
+            // New Seller
+            if ($new_sller != 0) {
+                $jobsQuery->where('sold', 1);
+            }
+
+            // min and max price
             if ($min != 0 && $max != 0) {
                 $jobsQuery->whereBetween('price', [$min, $max]);
             }
 
+            // category
             if ($categ_id != 0) {
                 $jobsQuery->where('categ_id', $categ_id);
             }
 
+            // Subcategory
             if ($sub_categ_id != 0) {
                 $jobsQuery->where('subcateg_id', $sub_categ_id);
             }
 
+            // Delivery Time
             if ($dd != 0) {
                 $jobsQuery->where('completein', '>=', $dd);
             }
