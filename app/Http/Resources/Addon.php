@@ -17,7 +17,8 @@ class Addon extends JsonResource
         return [
             'id'=>(string)$this->id,
             'title'=>$this->title,
-            'job_id'=>$this->job
+            'price'=>$this->price,
+            // 'job_id'=>$this->job
         ];
     }
 }

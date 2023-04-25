@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\isMailVerifiedController;
 use App\Http\Controllers\Api\JobListMessageController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OfferController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ReplyReviewController;
 use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\ReviewController;
@@ -77,7 +78,8 @@ Route::apiResources([
     'city' => City::class,
     'blogcategory' => BlogCategory::class,
     'blogs' => BlogController::class,
-    'offers' => OfferController::class
+    'offers' => OfferController::class,
+    'orders' => OrderController::class
 ]);
 Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
 Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
@@ -109,6 +111,7 @@ Route::get('review/getallrev', [ReviewController::class, "getallrev"]);
 Route::get('review/getrevbyjob/{jobid}', [ReviewController::class, "getrevperjob"]);
 
 ////////////////////////////////////////////////////
+
 
 
 // Test Part /////////////////////////////

@@ -3,23 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Addon;
-use App\Http\Resources\Offer as ResourceOffer;
-use App\Models\Offer as ModelsOffer;
+use App\Http\Resources\Order as ResourceOrder;
+use App\Models\Order as ModelsOrder;
+use App\Models\OfferAddon as AddonModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-
-class OfferController extends Controller
+class OrderController extends Controller
 {
 
     public function index()
     {
-        try {
-            return ResourceOffer::collection(ModelsOffer::all());
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
+        //
+        return ResourceOrder::collection(ModelsOrder::all());
     }
 
 
@@ -27,12 +23,13 @@ class OfferController extends Controller
     {
         //Validations Rules //////////////////////////
         $rules = array(
-            'title' => 'required',
-            'price' => 'required',
-            'delivery_date' => 'required',
-            'seller_id' => 'required',
+            'fastpay_number' => 'required',
+            'total_price' => 'required',
+            'offer_price' => 'required',
+            'total_addon_price' => 'required',
+            'comision_fee' => 'required',
             'buyer_id' => 'required',
-            'job_id' => 'required',
+            'offer_id' => 'required'
         );
         /// end of Validation Rules ////////////////////
 
@@ -51,15 +48,34 @@ class OfferController extends Controller
             try {
 
                 // save $req to DB //////////////////////////////
-                $offer = new ModelsOffer();
-                $offer->title = $request->title;
-                $offer->price = $request->price;
-                $offer->delivery_date = $request->delivery_date;
-                $offer->seller_id = $request->seller_id;
-                $offer->buyer_id = $request->buyer_id;
-                $offer->job_id = $request->job_id;
-                $offer->save();
+                $order = new ModelsOrder();
+                $order->fastpay_number = $request->fastpay_number;
+                $order->total_price = $request->total_price;
+                $order->offer_price = $request->offer_price;
+                $order->total_addon_price = $request->total_addon_price;
+                $order->comision_fee = $request->comision_fee;
+                $order->buyer_id = $request->buyer_id;
+                $order->offer_id = $request->offer_id;
+                $order->save();
                 /////////////////////////////////////////////////
+
+                // start of addon logic //////////////
+
+                if (is_array($request->addons)) {
+
+                    foreach ($request->addons as $addon) {
+
+                        AddonModel::create([
+                            "title" => $addon['title'],
+                            "price" => $addon['price'],
+                            "order_id" => $order->id
+                        ]);
+                    }
+                } else {
+                    return "Addon is not Array";
+                }
+
+                //////////////////////////////////////
 
                 // return Job API Resource JSON Response //////////////
                 return response()->json([
@@ -80,7 +96,6 @@ class OfferController extends Controller
         }
     }
 
-
     public function show($id)
     {
         try {
@@ -89,9 +104,9 @@ class OfferController extends Controller
 
             /////////////////////////////////////
 
-            $offer = ModelsOffer::find($id);
-            if ($offer) {
-                return new ResourceOffer($offer);
+            $order = ModelsOrder::find($id);
+            if ($order) {
+                return new ResourceOrder($order);
             } else {
                 return response()->json([
                     'status' => false,
@@ -106,27 +121,14 @@ class OfferController extends Controller
 
     public function update(Request $request, $id)
     {
-        //
         try {
-            $offer = ModelsOffer::find($id);
-            $offer->status = 1;
-            $offer->offer_state = "payment";
-            $offer->save();
-            $commission_fee = $offer->price * 0.05;
-            $total_price = $offer->price + $offer->price * 0.05;
-            return response()->json([
-                'status' => true,
-                'messages' => "Offer Accepted Successfully",
-                'data' => [
-                    'offer_id' => (string)$offer->id,
-                    'offer_title' => $offer->title,
-                    'seller_name' => $offer->user->username,
-                    'addons' => Addon::collection($offer->job->addons),
-                    'offer_price' => $offer->price,
-                    'commission_fee' => (string) $commission_fee,
-                    'total_price' => (string) $total_price
-                ]
-            ], 200);
+            
+            $order = ModelsOrder::find($id);
+            $order->status = 1;
+            $order->save();
+
+            return new ResourceOrder($order);
+
         } catch (\Throwable $th) {
             //throw $th;
         }
