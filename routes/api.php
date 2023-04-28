@@ -89,6 +89,7 @@ Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"]);
 Route::get('jobs/getjobstatus/{jobid}', [JobController::class, "getjobstatus"]);
 Route::get('jobs/getjobsbycategory/{categid}', [JobController::class, "getjobsbycateg"]);
 Route::get('jobs/search/query', [JobController::class, "searchjobs"]);
+Route::get('categories/{categid}/subcategories',[CategoryController::class,"getSubcategory"]);
 
 ////////////////////////////////////////////////
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Category as CategoryResource;
+use App\Http\Resources\Subcategory as ResourcesSubcategory;
 use App\Models\Category as CategoryModel;
 use App\Models\Subcategory;
 use Illuminate\Http\Request;
@@ -179,4 +180,18 @@ class CategoryController extends Controller
             ////////////////////////////////////////////
         }
     }
+
+    public function getSubcategory($id)
+    {
+
+        try {
+            $categ = CategoryModel::find($id);
+            $sub_categ = $categ->subcategories;
+            return ResourcesSubcategory::collection($sub_categ);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
 }
