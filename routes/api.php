@@ -37,9 +37,7 @@ use App\Models\Jobs;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+
 
 
 // Auth Routes ///////////////////////////
@@ -62,156 +60,68 @@ Route::post('auth/password/reset/{otpcode}', [ResetPasswordController::class, '_
 ///////////////////////////////////////////
 
 
-//// Basic CRUD Operation API Routes ///////
-
-// Route::middleware('auth:sanctum')->group(function () {
-
-// });
-
-Route::apiResources([
-    'users' => UserController::class,
-    'jobs' => JobController::class,
-    'addons' => AddonController::class,
-    'categories' => CategoryController::class,
-    'subcategories' => SubcategoryController::class,
-    'profiles' => Profile::class,
-    'city' => City::class,
-    'blogcategory' => BlogCategory::class,
-    'blogs' => BlogController::class,
-    'offers' => OfferController::class,
-    'orders' => OrderController::class
-]);
-Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
-Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
-Route::post('updateblog/{id}', [BlogController::class, "updateblog"]);
-Route::post('blogs/comment', [BlogCommentController::class, "store"]);
-Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"]);
-Route::get('jobs/getjobstatus/{jobid}', [JobController::class, "getjobstatus"]);
-Route::get('jobs/getjobsbycategory/{categid}', [JobController::class, "getjobsbycateg"]);
-Route::get('jobs/search/query', [JobController::class, "searchjobs"]);
-Route::get('categories/{categid}/subcategories',[CategoryController::class,"getSubcategory"]);
-
-////////////////////////////////////////////////
 
 
-// Messages Route Logic ////////////////////////
-Route::post('joblistmessage', [JobListMessageController::class, "store"]);
-Route::post('message', [MessageController::class, "store"]);
-// Route::get('joblistmessage', [JobListMessageController::class, "show"]);
-Route::get('joblistmessage/getuserjoblist/{userid}', [JobListMessageController::class, "getuserjoblist"]);
-Route::get('joblistmessage/textmessagesperjoblist/{joblistid}/{userid}', [JobListMessageController::class, "textmessagesperjoblist"]);
-///////////////////////////////////////////////////
+Route::middleware('auth:sanctum')->group(function () {
+
+    //// CRUD Operation API Routes ///////
+    Route::apiResources([
+        'users' => UserController::class,
+        'jobs' => JobController::class,
+        'addons' => AddonController::class,
+        'categories' => CategoryController::class,
+        'subcategories' => SubcategoryController::class,
+        'profiles' => Profile::class,
+        'city' => City::class,
+        'blogcategory' => BlogCategory::class,
+        'blogs' => BlogController::class,
+        'offers' => OfferController::class,
+        'orders' => OrderController::class
+    ]);
+    Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
+    Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
+    Route::post('updateblog/{id}', [BlogController::class, "updateblog"]);
+    Route::post('blogs/comment', [BlogCommentController::class, "store"]);
+    Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"]);
+    Route::get('jobs/getjobstatus/{jobid}', [JobController::class, "getjobstatus"]);
+    Route::get('jobs/getjobsbycategory/{categid}', [JobController::class, "getjobsbycateg"]);
+    Route::get('jobs/search/query', [JobController::class, "searchjobs"]);
+    Route::post('jobs/{job_id}/favorite', [JobController::class, "favorite"]);
+    Route::delete('jobs/{job_id}/unfavorite', [JobController::class, "unfavorite"]);
+    Route::get('categories/{categid}/subcategories', [CategoryController::class, "getSubcategory"]);
+
+    ////////////////////////////////////////////////
 
 
-// Review & ReplyReview Route Logic ///////////////
+    // Messages Route Logic ////////////////////////
+    Route::post('joblistmessage', [JobListMessageController::class, "store"]);
+    Route::post('message', [MessageController::class, "store"]);
+    // Route::get('joblistmessage', [JobListMessageController::class, "show"]);
+    Route::get('joblistmessage/getuserjoblist/{userid}', [JobListMessageController::class, "getuserjoblist"]);
+    Route::get('joblistmessage/textmessagesperjoblist/{joblistid}/{userid}', [JobListMessageController::class, "textmessagesperjoblist"]);
+    ///////////////////////////////////////////////////
 
-Route::post('review', [ReviewController::class, "store"]);
-Route::post('replyreview', [ReplyReviewController::class, "store"]);
 
-Route::get('review/getallrev', [ReviewController::class, "getallrev"]);
-Route::get('review/getrevbyjob/{jobid}', [ReviewController::class, "getrevperjob"]);
+    // Review & ReplyReview Route Logic ///////////////
 
-////////////////////////////////////////////////////
+    Route::post('review', [ReviewController::class, "store"]);
+    Route::post('replyreview', [ReplyReviewController::class, "store"]);
+
+    Route::get('review/getallrev', [ReviewController::class, "getallrev"]);
+    Route::get('review/getrevbyjob/{jobid}', [ReviewController::class, "getrevperjob"]);
+
+    ////////////////////////////////////////////////////
+
+});
+
+
 
 
 
 // Test Part /////////////////////////////
 
-// Route::get('/test', function (Request $req) {
-
-
-
-//     // try {
-//     //     //code...
-//     //     $path = $req->file('zip')->store('testfile');
-
-
-//     //     // Create a new ZipArchive instance
-//     //     $zip = new ZipArchive;
-
-//     //     // Open the zip file for reading
-//     //     if ($zip->open($path) === TRUE) {
-//     //         // Validate the contents of the zip file
-//     //         $isValid = true;
-//     //         for ($i = 0; $i < $zip->numFiles; $i++) {
-//     //             $file = $zip->statIndex($i);
-//     //             if (preg_match('/\.(php|pl|py|sh|rb)$/i', $file['name'])) {
-//     //                 $isValid = false;
-//     //                 break;
-//     //             }
-//     //         }
-
-//     //         // Close the zip file
-//     //         $zip->close();
-
-//     //         // Return the validation result
-//     //         return response()->json(['isValid' => $isValid]);
-//     //     } else {
-//     //         // Error opening the zip file
-//     //         return response()->json(['error' => 'Failed to open the zip file']);
-//     //     }
-//     // } catch (\Throwable $th) {
-//     //     //throw $th;
-//     //     return response()->json([
-//     //         'status' => false,
-//     //         'message' => $th->getMessage(),
-//     //     ], 500);
-//     // }
-
-
-
-//     try {
-//         //code...
-//         $keyword = $req->query('keyword');
-//         $categ_id = $req->query('category_id');
-//         $sub_categ_id = $req->query('subcategory_id');     
-//         $min = $req->query('budget_min');
-//         $max = $req->query('budget_max');
-//         $dd = $req->query('delivery_time');
-//         $top_rated_seller = $req->query('top_rated_seller');
-//         $new_sller = $req->query('new_seller');
-
-//         $jobsQuery = Jobs::query();
-
-//         if ($keyword != 0) {
-//             $jobsQuery->whereHas('keywords', function ($query) use ($keyword) {
-//                 $query->where('keyname', 'like', "%$keyword%");
-//             });
-//         }
-
-//         if ($top_rated_seller != 0) {
-//             $jobsQuery->whereHas('reviews', function ($query) use ($keyword) {
-//                 $query->where('total_rev', '>=', 4);
-//             });
-//         }
-
-//         if ($min != 0 && $max != 0) {
-//             $jobsQuery->whereBetween('price', [$min, $max]);
-//         }
-
-//         if ($categ_id != 0) {
-//             $jobsQuery->where('categ_id', $categ_id);
-//         }
-
-//         if ($sub_categ_id != 0) {
-//             $jobsQuery->where('subcateg_id', $sub_categ_id);
-//         }
-
-//         if ($dd != 0) {
-//             $jobsQuery->where('completein', '>=' ,$dd);
-//         }
-
-//         $jobs = $jobsQuery->paginate(2);
-
-//         return Job::collection($jobs);
-
-//     } catch (\Throwable $th) {
-//         //throw $th;
-//         return response()->json([
-//             'status' => false,
-//             'message' => $th->getMessage(),
-//         ], 500);
-//     }
+// Route::middleware('auth:sanctum')->get('/test', function (Request $request) {
+//     return $request->user();
 // });
 
 

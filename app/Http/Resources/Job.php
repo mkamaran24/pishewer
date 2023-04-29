@@ -3,21 +3,29 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\ViewJob\ReviewCollection;
+use App\Models\Favorite;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Request;
 
 class Job extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
+
     public function toArray($request)
     {
+        $favs = Favorite::all();
+        
+        // $req = new Request();
+        // $user = $req->user();
+
+
+        $user = $request->user();
+
         return [
+            // 'user' => $user,
             'id' => (string)$this->id,
             'status' => $this->status,
+            'favs_count' => $this->favorites_count,
+            'favorited_by_user' => $user ? $this->favorites->contains('user_id',$user->id) : false,
             'title' => $this->title,
             'image' => Jobimage::collection($this->jobimages),
             'description' => $this->description,

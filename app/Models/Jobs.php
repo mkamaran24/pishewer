@@ -36,15 +36,18 @@ class Jobs extends Model
         return $this->belongsTo(Subcategory::class, 'subcateg_id');
     }
 
-    public function addons(){
+    public function addons()
+    {
         return $this->hasMany(Addons::class, 'job_id');
     }
 
-    public function jobimages(){
+    public function jobimages()
+    {
         return $this->hasMany(Jobimage::class, 'job_id');
     }
 
-    public function keywords(){
+    public function keywords()
+    {
         return $this->hasMany(Keyword::class, 'job_id');
     }
 
@@ -53,4 +56,13 @@ class Jobs extends Model
         return $this->hasMany(Review::class, 'job_id');
     }
 
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class,'job_id');
+    }
+
+    // public function favorites()
+    // {
+    //     return $this->belongsToMany(User::class, 'job_favorites', 'job_id', 'user_id');
+    // }
 }

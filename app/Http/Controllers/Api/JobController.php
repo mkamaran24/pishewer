@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Job as JobResource;
 use App\Models\Addons as AddonModel;
+use App\Models\Favorite;
 use App\Models\Jobimage;
 use App\Models\Jobs;
 use App\Models\Keyword;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPUnit\Framework\isEmpty;
+
 class JobController extends Controller
 {
 
@@ -20,7 +23,7 @@ class JobController extends Controller
     {
 
         try {
-            return JobResource::collection(Jobs::paginate(9));
+            return JobResource::collection(Jobs::withCount('favorites')->get());
         } catch (\Throwable $th) {
 
             abort(code: 500, message: 'fail to fetch');
@@ -185,7 +188,7 @@ class JobController extends Controller
 
             /////////////////////////////////////
 
-            $job = Jobs::find($id);
+            $job = Jobs::withCount('favorites')->find($id);
             if ($job) {
                 return new JobResource($job);
             } else {
@@ -611,9 +614,9 @@ class JobController extends Controller
 
     public function searchjobs(Request $request)
     {
-       
+
         try {
-            
+
             $keyword = $request->query('keyword');
             $categ_id = $request->query('category_id');
             $sub_categ_id = $request->query('subcategory_id');
@@ -673,6 +676,64 @@ class JobController extends Controller
                 'status' => false,
                 'message' => $th->getMessage(),
             ], 500);
+        }
+    }
+
+    public function favorite(Request $request, $id)
+    {
+        try {
+            $user = $request->user();
+            $fav_status = Favorite::where('user_id', $user->id)->where('job_id', $id)->get();
+            if ($fav_status->isEmpty()) {
+                // save $req to DB //////////////////////////////
+                $fav = new Favorite();
+                $fav->job_id = $id;
+                $fav->user_id = $user->id;
+                $fav->save();
+                /////////////////////////////////////////////////
+
+                // return Job API Resource JSON Response //////////////
+                return response()->json([
+                    'status' => true,
+                    'messages' => "Object Created"
+                ], 201);
+                ///////////////////////////////////////////////////////
+            } else {
+                return response()->json([
+                    "status" => true,
+                    "message" => "recorde already exist"
+                ], 409);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function unfavorite(Request $request, $id)
+    {
+
+        try {
+            
+            $user = $request->user();
+            $fav_status = Favorite::where('user_id', $user->id)->where('job_id', $id)->delete();
+            if ($fav_status) {
+
+                return response()->json([
+                    "status" => true,
+                    "message" => "Delete Success"
+                ], 200);
+            } else {
+
+
+                // return Job API Resource JSON Response //////////////
+                return response()->json([
+                    'status' => false,
+                    'messages' => "recorde not found"
+                ], 404);
+                ///////////////////////////////////////////////////////
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
         }
     }
 }
