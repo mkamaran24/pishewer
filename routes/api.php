@@ -163,6 +163,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Public Jobs Route /////////////////////////////
 Route::get('jobs', [JobController::class, "index"]);
+Route::get('jobs/{job_id}', [JobController::class, "show"]);
 Route::get('jobs/getjobsbycategory/{categid}', [JobController::class, "getjobsbycateg"]);
 Route::get('jobs/search/query', [JobController::class, "searchjobs"]);
 // end of Public Jobs Route /////////////////////////
