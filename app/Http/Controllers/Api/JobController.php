@@ -202,157 +202,6 @@ class JobController extends Controller
         }
     }
 
-    // public function update(Request $request, $id)
-    // {
-
-    //     // $size = sizeof($request->all());
-
-    //     // return $size;
-
-
-
-    //     try {
-    //         // Validation of $id should goes here
-    //         // Jobs::where('id',$id)->update($request->all());
-
-    //         return $request->all();
-
-    //         /////////////////////////////////////
-
-    //         // Validation of $request should goes here
-
-    //         //Validations Rules //////////////////////////
-    //         $rules = array(
-    //             'title' => 'required',
-    //             'description' => 'required',
-    //             'keyword' => 'required',
-    //             'price' => 'required',
-    //             'completein' => 'required',
-    //             'user_id' => 'required',
-    //             'categ_id' => 'required',
-    //             'subcateg_id' => 'required'
-    //         );
-    //         /// end of Validation Rules ////////////////////
-
-    //         //Validation Custom Messages
-    //         // $messages = array('title'=>'All data required');
-
-
-    //         // Validator Check //////////////////////////////
-    //         $validator = Validator::make($request->all(), $rules);
-    //         if ($validator->fails()) {
-    //             $messages = $validator->messages();
-    //             $errors = $messages->all(); //convert them into one array
-    //             return response()->json([
-    //                 'status' => false,
-    //                 'reason' => 'Validation Fails',
-    //                 'messages' => $errors,
-    //             ], 422);
-    //         }
-
-    //         /////////////////////////////////////
-
-    //         // start of image logic /////
-    //         $trim_imgs_path = '';
-    //         if ($request->hasFile('image')) {
-    //             $imgs = $request->file('image');
-    //             $all_imgs_path = '';
-    //             if (is_array($imgs)) {
-    //                 foreach ($imgs as $key => $img) {
-    //                     $new_img_name = random_int(100000, 999999) . $key . '.' . $img->getClientOriginalExtension();
-    //                     // save image in laravel Private Storage ///////////////////////////////////
-    //                     Storage::disk('public')->put($new_img_name, file_get_contents($img));
-    //                     /////////////////////////////////////////////////////////////////////////////
-    //                     $all_imgs_path = $all_imgs_path . $new_img_name . ',';
-    //                 }
-    //                 $trim_imgs_path = substr($all_imgs_path, 0, -1);
-    //             } else {
-    //                 $one_img = $request->image;
-    //                 $trim_imgs_path = random_int(100000, 999999) . '.' . $one_img->getClientOriginalExtension();
-    //                 // save image in laravel Private Storage ///////////////////////////////////
-    //                 Storage::disk('public')->put($trim_imgs_path, file_get_contents($one_img));
-    //                 /////////////////////////////////////////////////////////////////////////////
-    //             }
-    //         } else {
-    //             $trim_imgs_path = "File Not Found";
-    //         }
-
-
-    //         // $all_img_name = '';
-    //         // if (is_array($request->image)) {
-    //         //     foreach ($request->image as $key => $img) {
-    //         //         $all_img_name = $all_img_name . $img . ',';
-    //         //     }
-    //         //     $trim_all_img_name = substr($all_img_name, 0, -1);
-    //         // } else {
-    //         //     return "image field should be array";
-    //         // }
-
-    //         // end of image logic /////
-
-    //         // start of Keword Logic ////////////////////////////////////////////////////////////////////////////
-    //         $converted_keyword = '';
-    //         if (is_array($request->keyword)) {
-    //             $converted_keyword = implode(',', $request->keyword);
-    //         } else {
-    //             $converted_keyword = $request->keyword;
-    //         }
-    //         // end of Keyword Logic //////////////////////////////////////////////////////////////////////////////
-
-    //         // update selected job based on $id ////////////////////
-    //         $job = Jobs::find($id);
-    //         if ($job) {
-
-    //             $job->title = $request->title;
-    //             // $job->image = $trim_all_img_name;
-    //             $job->description = $request->description;
-    //             $job->keyword = $converted_keyword;
-    //             $job->price = $request->price;
-    //             $job->completein = $request->completein;
-    //             $job->user_id = $request->user_id;
-    //             $job->categ_id = $request->categ_id;
-    //             $job->subcateg_id = $request->subcateg_id;
-
-    //             $job->save();
-
-    //             // end of updated selected job based on $id ////////////////
-
-    //             // start of addon logic //////////////
-    //             if (is_array($request->addons)) {
-    //                 foreach ($request->addons as $key => $addonArray) {
-    //                     AddonModel::where('job_id', $job->id)
-    //                         ->where('id', $addonArray['id'])
-    //                         ->update([
-    //                             'title' => $addonArray['title'],
-    //                             'price' => $addonArray['price'],
-    //                             'job_id' => $job->id
-    //                         ]);
-    //                 }
-    //             } else {
-    //                 return "Addon is not Array";
-    //             }
-    //             //////////////////////////////////////
-
-    //             return new JobResource($job);
-    //         } else {
-    //             return response()->json([
-    //                 'status' => false,
-    //                 'messages' => "Object Not Found"
-    //             ], 404);
-    //         }
-    //     } catch (\Throwable $th) {
-    //         //throw $th;
-    //         // abort(code: 500, message: 'fail to update');
-    //         //Logs implementation goes down herer
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => $th->getMessage(),
-    //         ], 500);
-
-    //         ////////////////////////////////////////////
-    //     }
-    // }
-
     public function updatejob(Request $request, $id)
     {
         try {
@@ -732,6 +581,16 @@ class JobController extends Controller
                 ], 404);
                 ///////////////////////////////////////////////////////
             }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function getJobsperUser($user_id)
+    {
+        try {
+           $jobs_per_user = Jobs::where('user_id',$user_id)->get();
+           return JobResource::collection($jobs_per_user);
         } catch (\Throwable $th) {
             //throw $th;
         }

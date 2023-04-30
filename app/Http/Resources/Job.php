@@ -12,12 +12,6 @@ class Job extends JsonResource
 
     public function toArray($request)
     {
-        $favs = Favorite::all();
-        
-        // $req = new Request();
-        // $user = $req->user();
-
-
         $user = $request->user();
 
         return [
