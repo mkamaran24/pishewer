@@ -10,6 +10,7 @@ use App\Models\Jobimage;
 use App\Models\Jobs;
 use App\Models\Keyword;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -589,7 +590,7 @@ class JobController extends Controller
     public function getJobsperUser($user_id)
     {
         try {
-           $jobs_per_user = Jobs::where('user_id',$user_id)->get();
+           $jobs_per_user = Jobs::withCount('favorites')->where('user_id',$user_id)->get();
            return JobResource::collection($jobs_per_user);
         } catch (\Throwable $th) {
             //throw $th;

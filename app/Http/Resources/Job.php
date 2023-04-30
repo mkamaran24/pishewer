@@ -12,10 +12,9 @@ class Job extends JsonResource
 
     public function toArray($request)
     {
-        $user = $request->user();
+        $user = auth('sanctum')->user();
 
         return [
-            // 'user' => $user,
             'id' => (string)$this->id,
             'status' => $this->status,
             'favs_count' => $this->favorites_count,

@@ -52,23 +52,25 @@ Route::post('auth/resetcode/check', [CodeCheckController::class, '__invoke']);
 Route::post('auth/password/reset/{otpcode}', [ResetPasswordController::class, '__invoke']);
 ///////////////////////////////////////////
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Middleware Filter for Private Access //////////////////////////////////////////////////////////////////////////////////////
 Route::middleware('auth:sanctum')->group(function () {
 
-    // // Private Jobs /////////////////////////////////////////////////////////////////////////
-    // Route::get('jobs', [JobController::class, "index"]);
-    // Route::get('jobs/{job_id}', [JobController::class, "show"]);
-    // Route::get('jobs/user/{user_id}', [JobController::class, "getJobsperUser"]);
-    // Route::post('jobs', [JobController::class, "store"]);
-    // Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
-    // Route::delete('jobs/{job_id}', [JobController::class, "destroy"]);
-    // Route::post('jobs/{job_id}/favorite', [JobController::class, "favorite"]);
-    // Route::delete('jobs/{job_id}/unfavorite', [JobController::class, "unfavorite"]);
-    // Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"]);
-    // Route::get('jobs/getjobstatus/{jobid}', [JobController::class, "getjobstatus"]);
-    // ///////////////////////////////////////////////////////////////////////////////////////////
+    // Private Jobs /////////////////////////////////////////////////////////////////////////
+    Route::get('jobs', [JobController::class, "index"]);
+    Route::get('jobs/{job_id}', [JobController::class, "show"]);
+    Route::get('jobs/user/{user_id}', [JobController::class, "getJobsperUser"]);
+    Route::post('jobs', [JobController::class, "store"]);
+    Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
+    Route::delete('jobs/{job_id}', [JobController::class, "destroy"]);
+    Route::post('jobs/{job_id}/favorite', [JobController::class, "favorite"]);
+    Route::delete('jobs/{job_id}/unfavorite', [JobController::class, "unfavorite"]);
+    Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"]);
+    Route::get('jobs/getjobstatus/{jobid}', [JobController::class, "getjobstatus"]);
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
     // Private User Route ////////////////////////////////
     Route::get('users', [UserController::class, "index"]);
@@ -159,27 +161,11 @@ Route::middleware('auth:sanctum')->group(function () {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// Private Jobs /////////////////////////////////////////////////////////////////////////
-Route::get('jobs', [JobController::class, "index"]);
-Route::get('jobs/{job_id}', [JobController::class, "show"]);
-Route::get('jobs/user/{user_id}', [JobController::class, "getJobsperUser"]);
-Route::post('jobs', [JobController::class, "store"]);
-Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
-Route::delete('jobs/{job_id}', [JobController::class, "destroy"]);
-Route::post('jobs/{job_id}/favorite', [JobController::class, "favorite"]);
-Route::delete('jobs/{job_id}/unfavorite', [JobController::class, "unfavorite"]);
-Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"]);
-Route::get('jobs/getjobstatus/{jobid}', [JobController::class, "getjobstatus"]);
-///////////////////////////////////////////////////////////////////////////////////////////
-
 // Public Jobs Route /////////////////////////////
-// Route::get('publicjobs', [JobController::class, "index"]);
-// Route::get('publicjobs/{job_id}', [JobController::class, "show"]);
+Route::get('jobs', [JobController::class, "index"]);
 Route::get('jobs/getjobsbycategory/{categid}', [JobController::class, "getjobsbycateg"]);
 Route::get('jobs/search/query', [JobController::class, "searchjobs"]);
 // end of Public Jobs Route /////////////////////////
-
-
 
 // Addon Route ///////////////////////////////
 Route::get('addons', [AddonController::class, "index"]);
