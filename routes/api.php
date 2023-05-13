@@ -86,7 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // end of Private Category Route ////////////
 
     // Private Subcategory Route //////////////////////////////////////////////////////////////
-    Route::post('subcategories', [SubcategoryController::class, "store"]);
+    Route::post('subcategories/{categ_id}', [SubcategoryController::class, "store"]);
     Route::get('subcategories/{subcateg_id}', [SubcategoryController::class, "show"]);
     Route::put('subcategories/{subcateg_id}', [SubcategoryController::class, "update"]);
     Route::delete('subcategories/{subcateg_id}', [SubcategoryController::class, "destroy"]);

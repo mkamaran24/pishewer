@@ -35,7 +35,7 @@ class SubcategoryController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(Request $request,$categ_id)
     {
 
 
@@ -44,6 +44,7 @@ class SubcategoryController extends Controller
             // Save to DB ///////////////////////////////////////////
 
             $sub_categ = new ModelsSubcategory();
+            $sub_categ->categ_id = $categ_id;
             $sub_categ->save();
 
             foreach ($request->all() as $key => $req) {
