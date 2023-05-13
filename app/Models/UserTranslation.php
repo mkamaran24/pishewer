@@ -12,6 +12,7 @@ class UserTranslation extends Model
     protected $fillable = [
         'fullname',
         'username',
-        'user_id'
+        'user_id',
+        'locale'
     ];
 }

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 use App\Mail\VerificationEmail;
+use App\Models\UserTranslation;
+use Illuminate\Support\Facades\App;
 
 class AuthController extends Controller
 {
@@ -47,7 +49,14 @@ class AuthController extends Controller
             try {
                 $hashed_pass = array("password" => Hash::make($request->password));
 
-                $user = UserModel::create(array_merge($request->except(['password']), $hashed_pass));
+                $user = UserModel::create(array_merge($request->except(['password','username','fullname']), $hashed_pass));
+
+                UserTranslation::create([
+                    'username' => $request->username,
+                    'fullname' => $request->fullname,
+                    'locale' => App::getLocale(),
+                    'user_id' => $user->id
+                ]);
 
                 $token = Str::random(64);
 
