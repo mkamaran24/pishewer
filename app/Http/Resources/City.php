@@ -16,7 +16,7 @@ class City extends JsonResource
     {
         return [
             'id'=>$this->id,
-            'cityName'=>$this->cityname
+            'city_translation'=>$this->citytranslations
         ];
     }
 }

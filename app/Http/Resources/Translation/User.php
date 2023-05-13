@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\ViewProfile;
+namespace App\Http\Resources\Translation;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class JobProfile extends JsonResource
+class User extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +15,9 @@ class JobProfile extends JsonResource
     public function toArray($request)
     {
         return [
-            "job_title_translation" => JobTranslation::collection($this->jobtrans)
+            'fullname'=>$this->fullname,
+            'username'=>$this->username,
+            'locale'=>$this->locale
         ];
     }
 }

@@ -19,10 +19,11 @@ class Offer extends JsonResource
             'title'=>$this->title,
             'price'=>$this->price,
             'delivery_date'=>$this->delivery_date,
-            'buyer_status'=>$this->status,
+            // 'buyer_status'=>$this->status,
             'offer_state'=>$this->offer_state,
-            'seller_id'=>$this->seller_id,
-            'buyer_id'=>$this->buyer_id,
+            'seller'=>new User($this->seller),
+            'buyer'=>new User($this->buyer),
+            'order' => new Order($this->order),
             'job_id'=>$this->job_id
         ];
     }

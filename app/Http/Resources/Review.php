@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Http\Resources\ViewProfile\Buyer;
 use App\Http\Resources\ViewProfile\JobProfile;
+use App\Http\Resources\ViewProfile\UserTranslation;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class Review extends JsonResource
@@ -22,7 +23,7 @@ class Review extends JsonResource
             "commun_followup"=>(string)$this->commun_followup,
             "panctual_delevery"=>(string)$this->panctual_delevery,
             "description"=>$this->description,
-            "buyer"=>new Buyer($this->user),
+            "buyer"=>new UserTranslation($this->user),
             "job"=>new JobProfile($this->job),
             "reply"=> new ReplyReview($this->replyreview)
         ];

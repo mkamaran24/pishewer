@@ -8,9 +8,10 @@ use App\Models\Addons as AddonModel;
 use App\Models\Favorite;
 use App\Models\Jobimage;
 use App\Models\Jobs;
+use App\Models\JobTrans;
 use App\Models\Keyword;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -24,15 +25,18 @@ class JobController extends Controller
     {
 
         try {
+
+            // return Jobs::with('jobtrans')->get();
+
             return JobResource::collection(Jobs::withCount('favorites')->get());
         } catch (\Throwable $th) {
 
-            abort(code: 500, message: 'fail to fetch');
+            // abort(code: 500, message: 'fail to fetch');
             //throw $th; this throwble should be used for logs details
-            // return response()->json([
-            //     'status' => false,
-            //     'message' => $th->getMessage(),
-            // ], 500);
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
         }
     }
 
@@ -71,16 +75,25 @@ class JobController extends Controller
             # put data to DB after Succes Validation
             try {
 
+
+
                 // save $req to DB //////////////////////////////
                 $jobs = Jobs::create([
-                    'title' => $request->title,
-                    'description' => $request->description,
-                    'price' => $request->price,
-                    'completein' => $request->completein,
                     'user_id' => $request->user_id,
                     'categ_id' => $request->categ_id,
                     'subcateg_id' => $request->subcateg_id
                 ]);
+
+
+                $job_translation = JobTrans::create([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'price' => $request->price,
+                    'completein' => $request->completein,
+                    'locale' => App::getLocale(),
+                    'job_id' => $jobs->id
+                ]);
+
                 /////////////////////////////////////////////////
 
                 // start of image logics ////////////////////////////////////////////////////////////////
@@ -563,7 +576,7 @@ class JobController extends Controller
     {
 
         try {
-            
+
             $user = $request->user();
             $fav_status = Favorite::where('user_id', $user->id)->where('job_id', $id)->delete();
             if ($fav_status) {
@@ -590,8 +603,32 @@ class JobController extends Controller
     public function getJobsperUser($user_id)
     {
         try {
-           $jobs_per_user = Jobs::withCount('favorites')->where('user_id',$user_id)->get();
-           return JobResource::collection($jobs_per_user);
+            $jobs_per_user = Jobs::withCount('favorites')->where('user_id', $user_id)->get();
+            return JobResource::collection($jobs_per_user);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function updatelang(Request $request, $job_id)
+    {
+        try {
+            JobTrans::create([
+                'title' => $request->title,
+                'description' => $request->description,
+                'price' => $request->price,
+                'completein' => $request->completein,
+                'locale' => $request->locale,
+                'job_id' => $job_id
+            ]);
+
+            // return Job API Resource JSON Response //////////////
+            return response()->json([
+                'status' => true,
+                'messages' => "Object Created"
+            ], 201);
+            ///////////////////////////////////////////////////////
+
         } catch (\Throwable $th) {
             //throw $th;
         }

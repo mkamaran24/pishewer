@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Translation\Category;
+use App\Http\Resources\Translation\Job as TranslationJob;
+use App\Http\Resources\Translation\Subcategory;
 use App\Http\Resources\ViewJob\ReviewCollection;
 use App\Models\Favorite;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -19,15 +22,12 @@ class Job extends JsonResource
             'status' => $this->status,
             'favs_count' => $this->favorites_count,
             'favorited_by_user' => $user ? $this->favorites->contains('user_id',$user->id) : false,
-            'title' => $this->title,
-            'image' => Jobimage::collection($this->jobimages),
-            'description' => $this->description,
-            'keyword' => Keyword::collection($this->keywords),
-            'price' => $this->price,
-            'completein' => $this->completein,
+            'job_translation' => TranslationJob::collection($this->jobtrans),
             'user' => $this->user_id,
-            'category' => new Category($this->category),
-            // 'subcategory' => new Subcategory($this->subcategory),
+            'category_translation' => Category::collection($this->category->categorytrans),
+            'subcategory_translation' => Subcategory::collection($this->subcategory->subcategorytrans),
+            'image' => Jobimage::collection($this->jobimages),
+            'keyword' => Keyword::collection($this->keywords),
             'addons'=>$this->addons,
             'reviews' => new ReviewCollection($this->reviews)
         ];

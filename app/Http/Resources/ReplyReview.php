@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\ViewProfile\Buyer;
+use App\Http\Resources\ViewProfile\UserTranslation;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ReplyReview extends JsonResource
@@ -18,7 +18,7 @@ class ReplyReview extends JsonResource
         return [
             "id"=>(string)$this->id,
             "description"=>$this->description,
-            "seller"=> new Buyer($this->user)
+            "seller"=> new UserTranslation($this->user)
         ];
     }
 }

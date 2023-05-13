@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Category as CategoryResource;
 use App\Http\Resources\Subcategory as ResourcesSubcategory;
 use App\Models\Category as CategoryModel;
+use App\Models\CategoryTrans;
 use App\Models\Subcategory;
+use App\Models\SubcategoryTrans;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -19,59 +22,94 @@ class CategoryController extends Controller
         //
         try {
 
-            return CategoryResource::collection(CategoryModel::all());
+            $locale =  App::getLocale();
+            
+
+            // return CategoryTrans::with('subcategorytrans')->where('locale','en')->get();
+            // return CategoryModel::with('categorytrans')->where('locale','en')->get();
+            // return CategoryModel::whereHas('categorytrans', function($query) {
+            //     $query->where('locale', 'en');
+            // })->get();
+
+            // $category =  CategoryModel::join('category_trans', 'categories.id', '=', 'category_trans.categ_id')
+            //     ->where('category_trans.locale', $locale)
+            //     ->get(['categories.*', 'category_trans.name','category_trans.locale']);
+
+            // $categories = CategoryModel::with(['categorytrans' => function ($query) use ($locale){
+            //     $query->where('locale', $locale);
+            // }])->get();
+
+            $categories = CategoryModel::with('categorytrans')->get();
+            return CategoryResource::collection($categories);
+
         } catch (\Throwable $th) {
             // abort(code: 500, message: 'fail to fetch');
             //throw $th;
-            // return response()->json([
-            //     'status'=>false,
-            //     'message'=>$th->getMessage(),
-            // ],500);
+            return response()->json([
+                'status'=>false,
+                'message'=>$th->getMessage(),
+            ],500);
         }
     }
 
     public function store(Request $request)
     {
-        //
+
+        try {
+
+            // Save to DB ///////////////////////////////////////////
+            $categ = new CategoryModel();
+            $categ->save();
+
+            foreach ($request->all() as $key => $req) {
+
+                CategoryTrans::create([
+                    'name'=>$req['name'],
+                    'locale'=>$req['locale'],
+                    'categ_id'=>$categ->id
+                ]);
+                
+            }
+
+
+            /////////////////////////////////////////////////////////
+
+            // return Job API Resource JSON Response //////////////
+            return response()->json([
+                'status' => true,
+                'message' => 'Object Created'
+            ]);
+            ///////////////////////////////////////////////////////
+
+        } catch (\Throwable $th) {
+            // abort(code: 500, message: 'fail to create');
+            // //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+
         //Validations Rules //////////////////////////
-        $rules = array(
-            'name' => 'required',
-        );
+        // $rules = array(
+        //     'name' => 'required',
+        // );
         /// end of Validation Rules ////////////////////
 
         // Validator Check /////////////////////////////
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            $messages = $validator->messages();
-            $errors = $messages->all(); //convert them into one array
-            return response()->json([
-                'status' => false,
-                'reason' => 'Validation Fails',
-                'messages' => $errors,
-            ], 422);
-        } else {
+        // $validator = Validator::make($request->all(), $rules);
+        // if ($validator->fails()) {
+        //     $messages = $validator->messages();
+        //     $errors = $messages->all(); //convert them into one array
+        //     return response()->json([
+        //         'status' => false,
+        //         'reason' => 'Validation Fails',
+        //         'messages' => $errors,
+        //     ], 422);
+        // } else {
             # put data to DB after Succes Validation
-            try {
 
-                // Save to DB ///////////////////////////////////////////
-                $sub_categ = CategoryModel::create([
-                    'name' => $request->name,
-                ]);
-                /////////////////////////////////////////////////////////
-
-                // return Job API Resource JSON Response //////////////
-                return new CategoryResource($sub_categ);
-                ///////////////////////////////////////////////////////
-
-            } catch (\Throwable $th) {
-                abort(code: 500, message: 'fail to create');
-                // //throw $th;
-                // return response()->json([
-                //     'status' => false,
-                //     'message' => $th->getMessage(),
-                // ], 500);
-            }
-        }
+        // }
         //// end of Validator Check ///////////////////////
     }
 
@@ -185,12 +223,21 @@ class CategoryController extends Controller
     {
 
         try {
-            $categ = CategoryModel::find($id);
-            $sub_categ = $categ->subcategories;
-            return ResourcesSubcategory::collection($sub_categ);
+
+            $locale = App::getLocale();
+            
+            $subcateg_trans = Subcategory::with(['subcategorytrans' => function ($query) use ($locale) {
+                $query->where('locale', $locale);
+            }])->get();
+
+            return ResourcesSubcategory::collection($subcateg_trans);
 
         } catch (\Throwable $th) {
             //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
         }
     }
 

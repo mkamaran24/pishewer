@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Order as ResourceOrder;
+use App\Models\Offer;
 use App\Models\Order as ModelsOrder;
 use App\Models\OfferAddon as AddonModel;
 use Illuminate\Http\Request;
@@ -122,13 +123,13 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            
             $order = ModelsOrder::find($id);
+            $offer = Offer::find($order->offer_id);
             $order->status = 1;
+            $offer->offer_state = "inProgress";
             $order->save();
-
+            $offer->save();
             return new ResourceOrder($order);
-
         } catch (\Throwable $th) {
             //throw $th;
         }

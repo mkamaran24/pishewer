@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Subcategory as SubcategoryResource;
 use App\Models\Subcategory as ModelsSubcategory;
+use App\Models\SubcategoryTrans;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -14,10 +16,15 @@ class SubcategoryController extends Controller
 
     public function index()
     {
+        $locale =  App::getLocale();
         //
         try {
 
-            return SubcategoryResource::collection(ModelsSubcategory::all());
+            // $sub_category =  ModelsSubcategory::join('subcategory_trans', 'subcategories.id', '=', 'subcategory_trans.subcateg_id')
+            //     ->where('subcategory_trans.locale', $locale)
+            //     ->get(['subcategories.*', 'subcategory_trans.name', 'subcategory_trans.locale']);
+
+            // return SubcategoryResource::collection($sub_category);
         } catch (\Throwable $th) {
             // abort(code: 500, message: 'fail to fetch');
             // //throw $th;
@@ -30,47 +37,64 @@ class SubcategoryController extends Controller
 
     public function store(Request $request)
     {
-        //Validations Rules //////////////////////////
-        $rules = array(
-            'name' => 'required',
-            'categ_id' => 'required',
-        );
-        /// end of Validation Rules ////////////////////
 
-        // Validator Check /////////////////////////////
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            $messages = $validator->messages();
-            $errors = $messages->all(); //convert them into one array
+
+        try {
+
+            // Save to DB ///////////////////////////////////////////
+
+            $sub_categ = new ModelsSubcategory();
+            $sub_categ->save();
+
+            foreach ($request->all() as $key => $req) {
+                SubcategoryTrans::create([
+                    'name' => $req['name'],
+                    'locale' => $req['locale'],
+                    'subcateg_id' => $sub_categ->id
+                ]);
+            }
+
+            /////////////////////////////////////////////////////////
+
+            // return Job API Resource JSON Response //////////////
+            // return new SubcategoryResource($sub_categ);
+            return response()->json([
+                'status' => true,
+                'message' => 'Object Created'
+            ]);
+            ///////////////////////////////////////////////////////
+
+        } catch (\Throwable $th) {
+            // abort(code: 500, message: 'fail to create');
+            // //throw $th;
             return response()->json([
                 'status' => false,
-                'reason' => 'Validation Fails',
-                'messages' => $errors,
-            ], 422);
-        } else {
-            # put data to DB after Succes Validation
-            try {
-
-                // Save to DB ///////////////////////////////////////////
-                $sub_categ = ModelsSubcategory::create([
-                    'name' => $request->name,
-                    'categ_id' => $request->categ_id
-                ]);
-                /////////////////////////////////////////////////////////
-
-                // return Job API Resource JSON Response //////////////
-                return new SubcategoryResource($sub_categ);
-                ///////////////////////////////////////////////////////
-
-            } catch (\Throwable $th) {
-                abort(code: 500, message: 'fail to create');
-                // //throw $th;
-                // return response()->json([
-                //     'status' => false,
-                //     'message' => $th->getMessage(),
-                // ], 500);
-            }
+                'message' => $th->getMessage(),
+            ], 500);
         }
+
+
+        //Validations Rules //////////////////////////
+        // $rules = array(
+        //     'name' => 'required',
+        //     'categ_id' => 'required',
+        // );
+        // /// end of Validation Rules ////////////////////
+
+        // // Validator Check /////////////////////////////
+        // $validator = Validator::make($request->all(), $rules);
+        // if ($validator->fails()) {
+        //     $messages = $validator->messages();
+        //     $errors = $messages->all(); //convert them into one array
+        //     return response()->json([
+        //         'status' => false,
+        //         'reason' => 'Validation Fails',
+        //         'messages' => $errors,
+        //     ], 422);
+        // } else {
+        //     # put data to DB after Succes Validation
+
+        // }
         //// end of Validator Check ///////////////////////
     }
 

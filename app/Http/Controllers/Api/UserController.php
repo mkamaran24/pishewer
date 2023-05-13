@@ -20,6 +20,10 @@ class UserController extends Controller
             return UserResource::collection(UserModel::paginate(9));
         } catch (\Throwable $th) {
             //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
         }
     }
 

@@ -250,17 +250,18 @@
                 <td class="wrapper">
                   <table border="0" cellpadding="0" cellspacing="0">
                     <tr>
-                      <td>
+                      <td class="align-center">
+                        <img src="https://pishewer.com/logo.jpg" alt="pishewer logo" height="50px" width="50px">
                         <h1>Confirm your email</h1>
                         <h2>You are just one step away</h2>
                         <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <tbody>
                             <tr>
-                              <td align="left">
+                              <td align="center">
                                 <table border="0" cellpadding="0" cellspacing="0">
                                   <tbody>
                                     <tr>
-                                      <td> <a href="{{ route('user.verify', $token) }}" target="_blank">confirm email</a> </td>
+                                      <td style="text-align: center;"> <a href="{{ route('user.verify', $token) }}" target="_blank">confirm email</a> </td>
                                     </tr>
                                   </tbody>
                                 </table>

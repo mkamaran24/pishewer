@@ -4,7 +4,7 @@ namespace App\Http\Resources\ViewProfile;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class JobProfile extends JsonResource
+class UserTranslation extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +15,8 @@ class JobProfile extends JsonResource
     public function toArray($request)
     {
         return [
-            "job_title_translation" => JobTranslation::collection($this->jobtrans)
+            "username_transalation" => BuyerTranslation::collection($this->usertranslations),
+            "profile" => new BuyerProfile($this->profile)
         ];
     }
 }

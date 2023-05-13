@@ -4,22 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 
 class Profile extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'description',
-        'skills',
-        'langs',
-        'certification',
         'nationalid',
         'imageprofile',
         'city_id',
-        'age',
-        'gender',
         'user_id'
     ];
 
@@ -29,6 +23,11 @@ class Profile extends Model
 
     public function city(){
         return $this->belongsTo(City::class,'city_id');
+    }
+
+    public function profiletranslation()
+    {
+        return $this->hasMany(ProfileTranslation::class,'profile_id')->where('locale',App::getLocale());
     }
 
 }

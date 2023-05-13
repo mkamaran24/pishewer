@@ -7,12 +7,15 @@ use App\Http\Resources\Job;
 use App\Http\Resources\Profile as ResourcesProfile;
 use App\Http\Resources\Review as ResourcesReview;
 use App\Http\Resources\ViewProfile\AllJobProfile;
+use App\Models\City;
 use App\Models\Jobs;
 use App\Models\Message;
 use App\Models\Profile as ModelsProfile;
 use App\Models\Review;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -157,10 +160,11 @@ class Profile extends Controller
         //
         try {
             //code...
-            $profile = DB::select('select * from profiles where user_id = ?', [$id]);
+            $profile = ModelsProfile::where('user_id',$id)->get();
+            // return isset($profile[0]->profiletranslation[0]->title);
             if ($profile) {
-                $city_name = DB::select('select cityname from cities where id = ?', [$profile[0]->city_id]);
-                $user = DB::select('select * from users where id = ?', [$id]);
+                $city_name = City::where('id',$profile[0]->city_id)->get();
+                $user = User::where('id',$id)->get();
                 $jobs = Jobs::where('user_id', $id)->get();
                 $messages = DB::select('select msg_time,resp_time from messages where recever_id = ? AND status = ?', [$id, 1]);
 
@@ -210,19 +214,25 @@ class Profile extends Controller
 
 
                 $new_date = Carbon::createFromFormat('Y-m-d H:i:s', $user[0]->created_at)->format('d-m-Y');
+                
 
+                $delimiters = ['-', ',', '٬','،']; // Array of delimiters
+                $escapedDelimiters = array_map('preg_quote', $delimiters);
+                $pattern = implode('|', $escapedDelimiters);
+                
                 return response()->json([
+                    "locale" => App::getLocale(),
                     "image_profile" => $profile[0]->imageprofile,
-                    "username" => $city_name[0]->cityname,
-                    "title" => $profile[0]->title,
-                    "location" => $city_name[0]->cityname,
+                    "username" => isset($user[0]->usertranslations[0]->username) ? $user[0]->usertranslations[0]->username : null,
+                    "title" => (isset($profile[0]->profiletranslation[0]->title)) ? $profile[0]->profiletranslation[0]->title : null ,
+                    "location" => isset($city_name[0]->citytranslations[0]->cityname) ? $city_name[0]->citytranslations[0]->cityname : null,
                     "member_since" => $new_date,
                     "avg_response_time" => $avg_resp_time,
-                    "description" => $profile[0]->description,
-                    "skills" => $profile[0]->skills,
-                    "certification" => $profile[0]->certification,
+                    "description" => isset($profile[0]->profiletranslation[0]->description) ? $profile[0]->profiletranslation[0]->description : null,
+                    "skills" => isset($profile[0]->profiletranslation[0]->skills) ? preg_split("/$pattern/u", $profile[0]->profiletranslation[0]->skills) : null,
+                    "certification" => isset($profile[0]->profiletranslation[0]->certification) ? $profile[0]->profiletranslation[0]->certification : null,
                     "total_review_number" => count($reviews_collection),
-                    "all_rev_avg_stars" => $c = (count($total_rev_collection) != 0) ? round(array_sum($total_rev_collection) / count($total_rev_collection), 1) : 0,
+                    "all_rev_avg_stars" => (count($total_rev_collection) != 0) ? round(array_sum($total_rev_collection) / count($total_rev_collection), 1) : 0,
                     "reviews" => ResourcesReview::collection($reviews_collection),
                     "Jobs" => AllJobProfile::collection($jobs),
                 ], 200);

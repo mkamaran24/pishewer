@@ -4,6 +4,9 @@ namespace App\Http\Resources\ViewProfile;
 
 use App\Http\Resources\Jobimage;
 use App\Http\Resources\Keyword;
+use App\Http\Resources\Translation\Category;
+use App\Http\Resources\Translation\Job as TranslationJob;
+use App\Http\Resources\Translation\Subcategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AllJobProfile extends JsonResource
@@ -16,14 +19,19 @@ class AllJobProfile extends JsonResource
      */
     public function toArray($request)
     {
+        $user = auth('sanctum')->user();
         return [
             'id' => (string)$this->id,
             'status' => $this->status,
-            'title' => $this->title,
+            'favs_count' => $this->favorites_count,
+            'favorited_by_user' => $user ? $this->favorites->contains('user_id',$user->id) : false,
+            'job_translation' => TranslationJob::collection($this->jobtrans),
+            'user' => $this->user_id,
+            'category_translation' => Category::collection($this->category->categorytrans),
+            'subcategory_translation' => Subcategory::collection($this->subcategory->subcategorytrans),
             'image' => Jobimage::collection($this->jobimages),
-            'description' => $this->description,
             'keyword' => Keyword::collection($this->keywords),
-            'price' => $this->price,
-            'completein' => $this->completein,        ];
+            // 'addons'=>$this->addons,        
+        ];
     }
 }

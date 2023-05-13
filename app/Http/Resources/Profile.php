@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Translation\Profile as TranslationProfile;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class Profile extends JsonResource
@@ -16,16 +17,10 @@ class Profile extends JsonResource
     {
         return [
             'id'=>(string)$this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'skills' => explode(',', $this->skills),
-            'langs' => explode(',', $this->langs),
-            'certification' => $this->certification,
             'nationalid' => $this->nationalid,
             'imageprofile' => $this->imageprofile,
             'city_id' => new City($this->city),
-            'age' => $this->age,
-            'gender' => $this->gender
+            'profile_translation' => TranslationProfile::collection($this->profiletranslation)
         ];
     }
 }

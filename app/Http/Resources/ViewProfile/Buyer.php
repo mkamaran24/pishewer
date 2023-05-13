@@ -15,7 +15,7 @@ class Buyer extends JsonResource
     public function toArray($request)
     {
         return [
-            "username" => $this->username,
+            "username_transalation" => $this->usertranslations,
             "profile" => new BuyerProfile($this->profile)
         ];
     }

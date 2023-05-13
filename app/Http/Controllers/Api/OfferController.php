@@ -120,7 +120,7 @@ class OfferController extends Controller
                 'data' => [
                     'offer_id' => (string)$offer->id,
                     'offer_title' => $offer->title,
-                    'seller_name' => $offer->user->username,
+                    // 'seller_name' => $offer->user->username,
                     'addons' => Addon::collection($offer->job->addons),
                     'offer_price' => $offer->price,
                     'commission_fee' => (string) $commission_fee,

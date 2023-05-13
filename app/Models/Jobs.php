@@ -4,37 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 
 class Jobs extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'image',
-        'description',
-        'keyword',
-        'price',
-        'completein',
-        'user_id',
-        'categ_id',
-        'subcateg_id'
-    ];
+    protected $fillable = ['status', 'sold', 'categ_id' , 'subcateg_id' , 'user_id'];
 
     // protected $casts = [
     //     'keyword' => 'array',
     // ];
 
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class, 'categ_id');
-    }
-
-    public function subcategory()
-    {
-        return $this->belongsTo(Subcategory::class, 'subcateg_id');
-    }
 
     public function addons()
     {
@@ -58,11 +39,29 @@ class Jobs extends Model
 
     public function favorites()
     {
-        return $this->hasMany(Favorite::class,'job_id');
+        return $this->hasMany(Favorite::class, 'job_id');
     }
 
-    // public function favorites()
+    public function jobtrans()
+    {
+        $locale = App::getLocale();
+        return $this->hasMany(JobTrans::class, 'job_id')->where('locale', $locale);
+    }
+
+    // public function category()
     // {
-    //     return $this->belongsToMany(User::class, 'job_favorites', 'job_id', 'user_id');
+    //     return $this->belongsTo(CategoryTrans::class, 'categ_id')
+    //         ->where('locale', 'en');
     // }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class,'categ_id');
+    }
+
+    public function subcategory()
+    {
+        return $this->belongsTo(Subcategory::class,'subcateg_id');
+    }
+
 }

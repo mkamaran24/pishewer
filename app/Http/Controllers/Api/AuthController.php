@@ -12,6 +12,8 @@ use App\Models\UserVerify;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
+use App\Mail\VerificationEmail;
+
 class AuthController extends Controller
 {
     //
@@ -54,10 +56,12 @@ class AuthController extends Controller
                     'token' => $token
                 ]);
 
-                // Mail::send('email.emailVerificationEmail', ['token' => $token], function ($message) use ($request) {
-                //     $message->to($request->email);
-                //     $message->subject('Email Verification Mail');
-                // });
+                // Mail::to($request->email)->send(new VerificationEmail("Ahmed", "account/verify/"));
+
+                Mail::send('email.emailVerificationEmail', ['token' => $token], function ($message) use ($request) {
+                    $message->to($request->email);
+                    $message->subject('Reset Password Mail');
+                });
 
                 // return User API Resource JSON Response //////////////
                 return response()->json([

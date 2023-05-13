@@ -18,7 +18,6 @@ class Order extends Model
 
     public function offer()
     {
-        return $this->belongsTo(Offer::class,'offer_id');
+        return $this->belongsTo(Offer::class);
     }
-
 }
