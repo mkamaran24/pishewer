@@ -41,7 +41,7 @@ class ForgetPasswordController extends Controller
 
         Mail::send('email.send-code-reset-password', ['code' => $gen_code], function ($message) use ($request) {
             $message->to($request->email);
-            $message->subject('Email Verification Mail');
+            $message->subject('Reset Password Mail');
         });
 
         //semd resposne
