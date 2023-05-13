@@ -147,7 +147,7 @@ class AuthController extends Controller
                 $verifyUser->user->is_email_verfied = true;
                 $verifyUser->user->save();
             }
-            return redirect('https://pishewer.com/verifiedMesage.php');
+            return redirect('https://pishewer.com/verifiedMesage.html');
         }
     }
 }
