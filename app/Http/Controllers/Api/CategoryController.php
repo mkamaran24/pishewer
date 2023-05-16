@@ -11,6 +11,7 @@ use App\Models\Subcategory;
 use App\Models\SubcategoryTrans;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -23,7 +24,7 @@ class CategoryController extends Controller
         try {
 
             $locale =  App::getLocale();
-            
+
 
             // return CategoryTrans::with('subcategorytrans')->where('locale','en')->get();
             // return CategoryModel::with('categorytrans')->where('locale','en')->get();
@@ -41,14 +42,13 @@ class CategoryController extends Controller
 
             $categories = CategoryModel::with('categorytrans')->get();
             return CategoryResource::collection($categories);
-
         } catch (\Throwable $th) {
             // abort(code: 500, message: 'fail to fetch');
             //throw $th;
             return response()->json([
-                'status'=>false,
-                'message'=>$th->getMessage(),
-            ],500);
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
         }
     }
 
@@ -57,21 +57,27 @@ class CategoryController extends Controller
 
         try {
 
+            // add image to storage ////////////////////////////////
+            $catge_image = $request->image;
+            $new_categ_image = random_int(100000, 999999) . '.' . $catge_image->getClientOriginalExtension();
+            Storage::disk('public')->put($new_categ_image, file_get_contents($catge_image));
+
             // Save to DB ///////////////////////////////////////////
             $categ = new CategoryModel();
+            $categ->image = $new_categ_image;
             $categ->save();
 
-            foreach ($request->all() as $key => $req) {
+            if (is_array($request->categ_trans)) {
+                foreach ($request->categ_trans as $key => $ct) {
+                    $decoded_ct = json_decode($ct);
+                    CategoryTrans::create([
+                        'name' => $decoded_ct->name,
+                        'locale' => $decoded_ct->locale,
+                        'categ_id' => $categ->id
+                    ]);
+                }
 
-                CategoryTrans::create([
-                    'name'=>$req['name'],
-                    'locale'=>$req['locale'],
-                    'categ_id'=>$categ->id
-                ]);
-                
             }
-
-
             /////////////////////////////////////////////////////////
 
             // return Job API Resource JSON Response //////////////
@@ -107,7 +113,7 @@ class CategoryController extends Controller
         //         'messages' => $errors,
         //     ], 422);
         // } else {
-            # put data to DB after Succes Validation
+        # put data to DB after Succes Validation
 
         // }
         //// end of Validator Check ///////////////////////
@@ -225,13 +231,12 @@ class CategoryController extends Controller
         try {
 
             $locale = App::getLocale();
-            
+
             $subcateg_trans = Subcategory::with(['subcategorytrans' => function ($query) use ($locale) {
                 $query->where('locale', $locale);
             }])->get();
 
             return ResourcesSubcategory::collection($subcateg_trans);
-
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([
@@ -240,5 +245,4 @@ class CategoryController extends Controller
             ], 500);
         }
     }
-
 }

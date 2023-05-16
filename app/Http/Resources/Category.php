@@ -12,6 +12,7 @@ class Category extends JsonResource
     {
         return [
             'id' => (string)$this->id,
+            'image' => $this->image,
             'category_translation' => TranslationCategory::collection($this->categorytrans),
         ];
     }
