@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use App\Http\Resources\Translation\Category;
 use App\Http\Resources\Translation\Job as TranslationJob;
 use App\Http\Resources\Translation\Subcategory;
+use App\Http\Resources\ViewJob\JobCategory;
+use App\Http\Resources\ViewJob\JobSubcategory;
 use App\Http\Resources\ViewJob\ReviewCollection;
 use App\Models\Favorite;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -24,8 +26,8 @@ class Job extends JsonResource
             'favorited_by_user' => $user ? $this->favorites->contains('user_id',$user->id) : false,
             'job_translation' => TranslationJob::collection($this->jobtrans),
             'user' => $this->user_id,
-            'category_translation' => Category::collection($this->category->categorytrans),
-            'subcategory_translation' => Subcategory::collection($this->subcategory->subcategorytrans),
+            'category' => new JobCategory($this->category),
+            'subcategory' => new JobSubcategory($this->subcategory),
             'image' => Jobimage::collection($this->jobimages),
             'keyword' => Keyword::collection($this->keywords),
             'addons'=>$this->addons,
