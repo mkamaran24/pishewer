@@ -480,27 +480,52 @@ class JobController extends Controller
 
         try {
 
-            $keyword = $request->query('keyword');
             $categ_id = $request->query('category_id');
-            $sub_categ_id = $request->query('subcategory_id');
-            $min = $request->query('budget_min');
-            $max = $request->query('budget_max');
+            $budget_range = $request->query('budget_range');
             $dd = $request->query('delivery_time');
             $top_rated_seller = $request->query('top_rated_seller');
             $new_sller = $request->query('new_seller');
 
             $jobsQuery = Jobs::query();
 
-            // Keywrod 
-            if ($keyword != 0) {
-                $jobsQuery->whereHas('keywords', function ($query) use ($keyword) {
-                    $query->where('keyname', 'like', "%$keyword%");
+            $min = null;
+            $max = null;
+            if ($budget_range == 1) 
+            {
+                $min = 5000;
+                $max = 100000;
+                $jobsQuery->whereHas('jobtrans', function ($query) use($min,$max){
+                    $query->whereBetween('price', [$min, $max]);
+                });
+            }elseif ($budget_range == 2) {
+                $min = 100000;
+                $max = 400000;
+                $jobsQuery->whereHas('jobtrans', function ($query) use($min,$max){
+                    $query->whereBetween('price', [$min, $max]);
+                });
+            }elseif ($budget_range == 3) {
+                $min = 400000;
+                $max = 800000;
+                $jobsQuery->whereHas('jobtrans', function ($query) use($min,$max){
+                    $query->whereBetween('price', [$min, $max]);
+                });
+            }
+            elseif ($budget_range == 4) {
+                $max = 800000;
+                $jobsQuery->whereHas('jobtrans', function ($query) use($max){
+                    $query->where('price', '>=' , $max);
+                });
+            }
+            else{
+                // All
+                $jobsQuery->whereHas('jobtrans', function ($query){
+                    $query->where('price', '>=' , 0);
                 });
             }
 
             // Top rated Seller
             if ($top_rated_seller != 0) {
-                $jobsQuery->whereHas('reviews', function ($query) use ($keyword) {
+                $jobsQuery->whereHas('reviews', function ($query) {
                     $query->where('total_rev', '>=', 4);
                 });
             }
@@ -509,30 +534,23 @@ class JobController extends Controller
             if ($new_sller != 0) {
                 $jobsQuery->where('sold', 1);
             }
-
-            // min and max price
-            if ($min != 0 && $max != 0) {
-                $jobsQuery->whereBetween('price', [$min, $max]);
-            }
-
+            
             // category
             if ($categ_id != 0) {
                 $jobsQuery->where('categ_id', $categ_id);
             }
 
-            // Subcategory
-            if ($sub_categ_id != 0) {
-                $jobsQuery->where('subcateg_id', $sub_categ_id);
-            }
-
             // Delivery Time
             if ($dd != 0) {
-                $jobsQuery->where('completein', '>=', $dd);
+                $jobsQuery->whereHas('jobtrans',function ($query) use ($dd){
+                    $query->where('completein','>=',$dd);
+                });
             }
 
             $jobs = $jobsQuery->paginate(10);
 
             return JobResource::collection($jobs);
+            
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([
