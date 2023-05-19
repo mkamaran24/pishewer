@@ -21,7 +21,7 @@ class MessageController extends Controller
             'text_mesg' => 'required',
             'sender_id' => 'required',
             'recever_id' => 'required',
-            'job_list_msg_id' => 'required'
+            'ftc_code' => 'required'
         );
         /// end of Validation Rules ////////////////////
 
@@ -42,11 +42,11 @@ class MessageController extends Controller
 
 
                 // Save to DB ///////////////////////////////////////////
-                $jlm = MSG::create([
+                MSG::create([
                     'text_msg' => $request->text_mesg,
                     'sender_id' => $request->sender_id,
                     'recever_id' => $request->recever_id,
-                    'job_list_msg_id' => $request->job_list_msg_id,
+                    'ftm_code' => $request->ftc_code,
                     'msg_time' => Carbon::now()
                 ]);
                 /////////////////////////////////////////////////////////

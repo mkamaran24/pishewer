@@ -19,14 +19,14 @@ class JobListMessage extends JsonResource
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
-    {
-        
+    {        
         return [
             'id'=>(string)$this->id,
-            'seller'=>new Seller($this->seller),
-            'buyer'=>new Buyer($this->buyer),
-            'job'=>new Job($this->job),
-            'count_unread_messages' => ModelsMessage::where('status', '=', false)->where('job_list_msg_id',$this->id)->where('recever_id',$this->user_id)->count(),
+            'ftc_code' => $this->ftc_code,
+            // 'user_id'=>new Seller($this->seller),
+            'friend'=>new Buyer($this->user),
+            // 'count_unread_messages' => "0",
+            'unread_messages' => ModelsMessage::where('status', '=', false)->where('ftm_code',$this->ftc_code)->where('recever_id',$this->user_id)->count(),
             'timestamp'=>$this->created_at
         ];
     }

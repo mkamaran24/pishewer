@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserTranslation::class,'user_id')->where('locale',App::getLocale());
     }
+
+    public function friendlists()
+    {
+        return $this->hasMany(FriendList::class,'friend_id');
+    }
 }

@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\JobListMessage as JLR;
 use App\Models\JobListMessage as JLM;
 use App\Http\Resources\Message as MSR;
+use App\Models\FriendList;
 use App\Models\Message as MSM;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,9 +22,8 @@ class JobListMessageController extends Controller
 
         //Validations Rules //////////////////////////
         $rules = array(
-            'seller_id' => 'required',
-            'buyer_id' => 'required',
-            'job_id' => 'required',
+            'user_id' => 'required',
+            'friend_id' => 'required'
         );
         /// end of Validation Rules ////////////////////
 
@@ -40,14 +41,38 @@ class JobListMessageController extends Controller
             # put data to DB after Succes Validation
             try {
 
+                $is_friend = FriendList::where('user_id',$request->user_id)->where('friend_id',$request->friend_id)->exists();
 
+                
+                
+                if ($is_friend) {
+                    
+                    return response()->json([
+                        "message" => "Objects Already Exist",
+                        "ftc_code" => FriendList::where('user_id',$request->user_id)->where('friend_id',$request->friend_id)->value('ftc_code')
+                    ], 200);
+                }
+
+                // creating ftc_code with seconds ////////////////////////////////////
+                $ftc_code = time(); 
+                //////////////////////////////////////////////////////////////////////
 
                 // Save to DB ///////////////////////////////////////////
-                $jlm = JLM::create([
-                    'seller_id' => $request->seller_id,
-                    'buyer_id' => $request->buyer_id,
-                    'job_id' => $request->job_id
+
+                // User A
+                FriendList::create([
+                    'user_id' => $request->user_id,
+                    'friend_id' => $request->friend_id,
+                    'ftc_code' => $ftc_code
                 ]);
+
+                // User B
+                FriendList::create([
+                    'user_id' => $request->friend_id,
+                    'friend_id' => $request->user_id,
+                    'ftc_code' => $ftc_code
+                ]);
+
                 /////////////////////////////////////////////////////////
 
                 // return Job API Resource JSON Response //////////////
@@ -57,42 +82,64 @@ class JobListMessageController extends Controller
                 ///////////////////////////////////////////////////////
 
             } catch (\Throwable $th) {
-                abort(code: 500, message: 'fail to create');
+                // abort(code: 500, message: 'fail to create');
                 // //throw $th;
-                // return response()->json([
-                //     'status' => false,
-                //     'message' => $th->getMessage(),
-                // ], 500);
+                return response()->json([
+                    'status' => false,
+                    'message' => $th->getMessage(),
+                ], 500);
             }
         }
         //// end of Validator Check ///////////////////////
 
     }
 
-    public function show($id)
-    {
-        try {
+    // public function show($id)
+    // {
+    //     try {
 
-            $job_list_msg_show = JLM::find($id);
-            return new JLR($job_list_msg_show);
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-    }
+    //         $friend_list = FriendList::find($id);
+    //         return $friend_list;
+    //     } catch (\Throwable $th) {
+    //         //throw $th;
+    //     }
+    // }
 
     public function getuserjoblist($userid)
     {
         try {
 
+            // $f = User::query()
+            // ->join('user_translations', 'users.id', '=', 'user_translations.user_id')
+            // ->where('users.id', $userid)
+            // ->with(['friendlists' => function ($query) {
+            //     $query->where('friend_id', '!=', 58);
+            // }, 'friendlists.fromUser'])
+            // ->get();
+
+            // return $f;
+
+            // $all_friend_list = FriendList::query()
+            // ->join('user_translations as ut1', 'friend_lists.user_id', '=', 'ut1.user_id')
+            // ->join('user_translations as ut2', 'friend_lists.friend_id', '=', 'ut2.user_id')
+            // ->select('ut1.username')
+            // ->where('friend_lists.user_id', 58)
+            // ->where('friend_lists.friend_id', '!=', 58)
+            // ->get();
+
+            $all_friend_list = FriendList::select(['id','friend_id','user_id','ftc_code','created_at'])->where('user_id',$userid)->where('friend_id','!=',$userid)->get();
+
+            return JLR::collection($all_friend_list);
+            
             // $getJBL = DB::table('job_list_messages')->select('id')->where('seller_id', $userid)->orWhere('buyer_id',$userid)->get();
 
-            $getJBL = JLM::where('seller_id', $userid)->orWhere('buyer_id', $userid)->get();
+            // $getJBL = JLM::where('seller_id', $userid)->orWhere('buyer_id', $userid)->get();
 
-            foreach ($getJBL as $jbl) {
-                $jbl->user_id = $userid;
-                // Update other columns as needed
-                $jbl->save(); // Save the changes to the database
-            }
+            // foreach ($getJBL as $jbl) {
+            //     $jbl->user_id = $userid;
+            //     // Update other columns as needed
+            //     $jbl->save(); // Save the changes to the database
+            // }
 
             // dd($getJBL[0]->id);
 
@@ -106,7 +153,7 @@ class JobListMessageController extends Controller
 
 
 
-            return JLR::collection($getJBL);
+            // return JLR::collection($getJBL);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([
@@ -116,18 +163,18 @@ class JobListMessageController extends Controller
         }
     }
 
-    public function textmessagesperjoblist($joblistid, $userid)
+    public function textmessagesperjoblist($ftc_code, $userid)
     {
         try {
 
-            $status_msgs = MSM::where('job_list_msg_id', $joblistid)->where('recever_id', $userid)->get();
+            $status_msgs = MSM::where('ftm_code', $ftc_code)->where('recever_id', $userid)->get();
             foreach ($status_msgs as $update_status) {
                 $update_status->status = 1;
                 $update_status->resp_time = Carbon::now();
                 // Update other columns as needed
                 $update_status->save(); // Save the changes to the database
             }
-            $txt_msg = MSM::where('job_list_msg_id', $joblistid)->get();
+            $txt_msg = MSM::where('ftm_code', $ftc_code)->get();
             return MSR::collection($txt_msg);
         } catch (\Throwable $th) {
             //throw $th;

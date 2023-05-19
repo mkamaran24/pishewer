@@ -22,7 +22,7 @@ class Message extends JsonResource
             "sender_id"=>$this->sender_id,
             "recver_id"=>$this->recever_id,
             // "status"=> $state = ($this->status == false) ? 'unread' : 'readed',
-            "job_list_msg_id"=>(string)$this->job_list_msg_id,
+            // "friend_list_msg_id"=>(string)$this->friend_list_id,
             "Created_at"=>$this->created_at,
         ];
     }

@@ -138,11 +138,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // end Private Order Route /////////////////////////////////////
 
     // Private Messages Route //////////////////////////////////////
-    Route::post('joblistmessage', [JobListMessageController::class, "store"]);
+    Route::post('friendlist', [JobListMessageController::class, "store"]);
     Route::post('message', [MessageController::class, "store"]);
     // Route::get('joblistmessage', [JobListMessageController::class, "show"]);
-    Route::get('joblistmessage/getuserjoblist/{userid}', [JobListMessageController::class, "getuserjoblist"]);
-    Route::get('joblistmessage/textmessagesperjoblist/{joblistid}/{userid}', [JobListMessageController::class, "textmessagesperjoblist"]);
+    Route::get('friendlist/getuserfriendlists/{userid}', [JobListMessageController::class, "getuserjoblist"]);
+    Route::get('friendlist/textmessagesperfriendlist/{ftc_code}/{userid}', [JobListMessageController::class, "textmessagesperjoblist"]);
     // end of Private Message Route /////////////////////////////////
 
     // Private Review & ReplyReview Route Logic ///////////////
