@@ -77,7 +77,8 @@ class JobListMessageController extends Controller
 
                 // return Job API Resource JSON Response //////////////
                 return response()->json([
-                    "message" => "Object Created"
+                    "message" => "Object Created",
+                    'ftc_code' => $ftc_code
                 ], 201);
                 ///////////////////////////////////////////////////////
 
