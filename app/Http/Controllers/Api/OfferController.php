@@ -24,10 +24,10 @@ class OfferController extends Controller
         }
     }
 
-    public function getAlljobs()
+    public function getAlljobs($user_id)
     {
         try {
-            return Job::collection(Jobs::all());
+            return Job::collection(Jobs::where('user_id',$user_id)->get());
         } catch (\Throwable $th) {
             //throw $th;
         }

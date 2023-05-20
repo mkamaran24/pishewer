@@ -125,7 +125,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Private Offer Route ///////////////////////////////////////
     Route::get('offers', [OfferController::class, "index"]);
-    Route::get('offers/getexistjobs', [OfferController::class, "getAlljobs"]);
+    Route::get('offers/getexistjobs/{user_id}', [OfferController::class, "getAlljobs"]);
     // Route::post('offers/existjob', [OfferController::class, "storeExistjobs"]);
     Route::post('offers', [OfferController::class, "store"]);
     Route::get('offers/getoffersperuser/{user_id}', [OfferController::class, "OffersperUsers"]);
