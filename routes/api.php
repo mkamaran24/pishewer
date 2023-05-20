@@ -125,16 +125,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Private Offer Route ///////////////////////////////////////
     Route::get('offers', [OfferController::class, "index"]);
+    Route::get('offers/getexistjobs', [OfferController::class, "getAlljobs"]);
+    // Route::post('offers/existjob', [OfferController::class, "storeExistjobs"]);
     Route::post('offers', [OfferController::class, "store"]);
-    Route::get('offers/{offer_id}', [OfferController::class, "show"]);
+    Route::get('offers/getoffersperuser/{user_id}', [OfferController::class, "OffersperUsers"]);
+    // Route::get('offers/{offer_id}', [OfferController::class, "show"]);
     Route::put('offers/{offer_id}', [OfferController::class, "update"]);
     // end of Private Offer Route /////////////////////////////////
 
     // Private Order Route ////////////////////////////////////////
-    Route::get('orders', [OrderController::class, "index"]);
-    Route::post('orders', [OrderController::class, "store"]);
-    Route::get('orders/{id}', [OrderController::class, "show"]);
-    Route::put('orders/{id}', [OrderController::class, "update"]);
+    // Route::get('orders', [OrderController::class, "index"]);
+    // Route::post('orders', [OrderController::class, "store"]);
+    // Route::get('orders/{id}', [OrderController::class, "show"]);
+    // Route::put('orders/{id}', [OrderController::class, "update"]);
     // end Private Order Route /////////////////////////////////////
 
     // Private Messages Route //////////////////////////////////////

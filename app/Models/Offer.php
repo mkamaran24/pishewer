@@ -12,10 +12,10 @@ class Offer extends Model
     protected $fillable = [
         'title',
         'price',
-        'delivery_date',
-        'status',
+        'delivery_period',
         'seller_id',
         'buyer_id',
+        'offer_state',
         'job_id'
     ];
 
@@ -33,9 +33,11 @@ class Offer extends Model
         return $this->belongsTo(Jobs::class,'job_id');
     }
 
-    public function order()
-    {
-        return $this->hasOne(Order::class.'offer_id');
-    }
+    
+
+    // public function order()
+    // {
+    //     return $this->hasOne(Order::class.'offer_id');
+    // }
 
 }
