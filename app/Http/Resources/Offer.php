@@ -17,11 +17,12 @@ class Offer extends JsonResource
      */
     public function toArray($request)
     {
+
         // Create a Carbon instance from the timestamp
         $carbonDate = Carbon::parse($this->created_at);
 
         // Format the date using the format() method
-        $formattedDate = $carbonDate->format('Y-m-d H:i:s');
+        $formattedDate = $carbonDate->format('Y-m-d h:i:s');
 
         $delivary_date = $this->delivery_period; //input1
         $date = $formattedDate; //input2
@@ -37,24 +38,38 @@ class Offer extends JsonResource
         $interval = $future_date->diff($now);
         // $result = $interval->format("%d days, %h hours, %i minutes");
         $result = $interval->format("%d days, %h hours");
-        // $is_zero = substr($result, 0, 1);
+        $is_zero = substr($result, 0, 1);
 
-        // if ($is_zero == 0) {
-        //     $result = $interval->format("%h hours");
-        // }
+        if ($is_zero == 0) {
+            $result = $interval->format("%h hours");
+        }
+
+        // // Assuming $deliveryPeriod holds the delivery period in days
+        // $deliveryPeriod = 1;
+
+        // // Assuming $createdAt holds the creation time of the offer
+        // $createdAt = Carbon::parse('2023-05-23 18:00:00');
+
+        // // Calculate the delivery date by adding the delivery period to the creation time
+        // $deliveryDate = $createdAt->addDays($deliveryPeriod);
+
+        // $dct = Carbon::parse($deliveryDate);
+
+        // // Calculate the remaining time by subtracting the current time from the delivery date
+        // $remainingTime = Carbon::now()->diff($deliveryDate)->format('%d days, %h hours, %i minutes');
 
         return [
             'id' => (string)$this->id,
             'title' => $this->title,
             'price' => $this->price,
-            'rr' => $result,
-            'formattedDate' => $formattedDate,
-            'carbonDate' => $carbonDate,
-            'remain_date' => $remain_date,
-            'interval' => $interval,
-            'now' => $now,
-            'future_date' => $future_date,
-            'created_at' => $formattedDate,
+            // 'deliveryDate' => $dct,
+            // 'formattedDate' => $formattedDate,
+            // 'carbonDate' => $carbonDate,
+            // 'remain_date' => $remain_date,
+            // 'interval' => $interval,
+            // 'now' => $now,
+            // 'future_date' => $future_date,
+            // 'created_at' => $formattedDate,
             'payment_status' => Order::where('offer_id', $this->id)->value('status') ? "Paid" : "Unpaid",
             'delivery_periods' => $this->delivery_period,
             'remainin_time' => $result,
