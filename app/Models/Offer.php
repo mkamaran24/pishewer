@@ -37,6 +37,11 @@ class Offer extends Model
     {
         return $this->hasMany(OfferAddon::class,'offer_id');
     }
+
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class,'offer_id');
+    }
     
 
     // public function order()

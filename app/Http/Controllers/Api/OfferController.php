@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Addon;
 use App\Http\Resources\Offer as ResourceOffer;
 use App\Http\Resources\Offer\Job;
+use App\Models\Attachment;
 use App\Models\Jobs;
 use App\Models\Offer as ModelsOffer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -27,7 +29,7 @@ class OfferController extends Controller
     public function getAlljobs($user_id)
     {
         try {
-            return Job::collection(Jobs::where('user_id',$user_id)->get());
+            return Job::collection(Jobs::where('user_id', $user_id)->get());
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -94,7 +96,7 @@ class OfferController extends Controller
     public function OffersperUsers($user_id)
     {
         try {
-            $all_offers = ModelsOffer::where('seller_id',$user_id)->orWhere('buyer_id',$user_id)->get();
+            $all_offers = ModelsOffer::where('seller_id', $user_id)->orWhere('buyer_id', $user_id)->get();
             return ResourceOffer::collection($all_offers);
         } catch (\Throwable $th) {
             //throw $th;
@@ -183,7 +185,7 @@ class OfferController extends Controller
     }
 
 
-    public function update($id)
+    public function accept($id)
     {
         //
         try {
@@ -212,9 +214,133 @@ class OfferController extends Controller
         }
     }
 
+    public function reject($id)
+    {
+        try {
+            $offer = ModelsOffer::find($id);
+            // $offer->status = 1;
+            $offer->offer_state = "rejected";
+            $offer->save();
+            return response()->json([
+                'status' => true,
+                'messages' => "Offer Rejected Successfully"
+            ], 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
 
     public function destroy($id)
     {
         //
+    }
+
+    public function upload(Request $request, $offer_id)
+    {
+        try {
+
+            //Validations Rules //////////////////////////
+            $rules = array(
+                'zip' => 'required|mimes:zip|max:2048'
+            );
+            /// end of Validation Rules ////////////////////
+
+            // Validator Check //////////////////////////////
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $messages = $validator->messages();
+                $errors = $messages->all(); //convert them into one array
+                return response()->json([
+                    'status' => false,
+                    'reason' => 'Validation Fails',
+                    'messages' => $errors,
+                ], 422);
+            } else {
+                # put data to DB after Succes Validation
+                try {
+
+                    // put zip file to public folder
+
+                    // get zip file from reuest
+                    $zip_file = $request->file('zip');
+
+                    // Generate a new name for the zip file
+                    $newZipName = time() . '_' . $zip_file->getClientOriginalName();
+
+                    // Store the zip file in the public disk
+                    Storage::disk('public')->put($newZipName, file_get_contents($zip_file));
+
+
+                    //////////////////////////////////////
+
+                    // save $req to DB //////////////////////////////
+                    Attachment::create([
+                        'zipfile' => $newZipName,
+                        'offer_id' => $offer_id
+                    ]);
+                    /////////////////////////////////////////////////
+
+                    // return Job API Resource JSON Response //////////////
+                    return response()->json([
+                        'status' => true,
+                        'messages' => "Object Created"
+                    ], 201);
+                    ///////////////////////////////////////////////////////
+
+
+                } catch (\Throwable $th) {
+                    // abort(code: 500, message: 'fail to create');
+                    //throw $th;
+                    return response()->json([
+                        'status' => false,
+                        'message' => $th->getMessage(),
+                    ], 500);
+                }
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function download($attach_id)
+    {
+        try {
+
+            $attachment = Attachment::find($attach_id);
+
+            if ($attachment && $attachment->zipfile) {
+                $zipfile = $attachment->zipfile;
+                $zip_path = 'storage/' . $zipfile;
+
+
+                if (Storage::exists('public/',$zipfile)) {
+                    // ZIP file exists
+
+                    // Retrieve the zip file from the storage disk
+                    $fileContent = Storage::disk('public')->get($zip_path);
+
+                    // Return the zip file as a download response
+                    return response($fileContent, 200, [
+                        'Content-Type' => 'application/zip',
+                        'Content-Disposition' => 'attachment; filename="' . $zipfile . '"',
+                    ]);
+                } else {
+                    // ZIP file does not exist
+                    return response()->json([
+                        'status' => false,
+                        'messages' => 'ZIP file does not exist',
+                    ], 404);
+                }
+            } else {
+                // Attachment not found or ZIP file column is empty
+                return response()->json([
+                    'status' => false,
+                    'messages' => 'Attachment not found or ZIP file column is empty',
+                ], 404);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 }
