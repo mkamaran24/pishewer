@@ -17,8 +17,14 @@ class Offer extends JsonResource
      */
     public function toArray($request)
     {
+        // Create a Carbon instance from the timestamp
+        $carbonDate = Carbon::parse($this->created_at);
+
+        // Format the date using the format() method
+        $formattedDate = $carbonDate->format('Y-m-d H:i:s');
+
         $delivary_date = $this->delivery_period; //input1
-        $date = $this->created_at; //input2
+        $date = $formattedDate; //input2
 
         $remaining_t = $delivary_date * 24 * 60 * 60;
         $date_S = strtotime($date);
@@ -33,24 +39,20 @@ class Offer extends JsonResource
         $result = $interval->format("%d days, %h hours");
         $is_zero = substr($result, 0, 1);
 
-        if ($is_zero == 0) {$result = $interval->format("%h hours");}
-
-        // Create a Carbon instance from the timestamp
-$carbonDate = Carbon::parse($this->created_at);
-
-// Format the date using the format() method
-$formattedDate = $carbonDate->format('Y-m-d H:i:s');
+        if ($is_zero == 0) {
+            $result = $interval->format("%h hours");
+        }
 
         return [
             'id' => (string)$this->id,
             'title' => $this->title,
             'price' => $this->price,
-            'formattedDate' => $formattedDate,
-            'carbonDate' => $carbonDate,
-            'remain_date' => $remain_date,
-            'interval' => $interval,
-            'now' => $now,
-            'future_date' => $future_date,
+            // 'formattedDate' => $formattedDate,
+            // 'carbonDate' => $carbonDate,
+            // 'remain_date' => $remain_date,
+            // 'interval' => $interval,
+            // 'now' => $now,
+            // 'future_date' => $future_date,
             'created_at' => $this->created_at,
             'payment_status' => Order::where('offer_id', $this->id)->value('status') ? "Paid" : "Unpaid",
             'delivery_periods' => $this->delivery_period,
