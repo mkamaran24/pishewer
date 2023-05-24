@@ -17,7 +17,7 @@ class Offer extends JsonResource
      */
     public function toArray($request)
     {
-        $delivary_date = 1; //input1
+        $delivary_date = $this->delivery_period; //input1
         $date = $this->created_at; //input2
 
         $remaining_t = $delivary_date * 24 * 60 * 60;
