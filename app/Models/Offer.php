@@ -33,6 +33,10 @@ class Offer extends Model
         return $this->belongsTo(Jobs::class,'job_id');
     }
 
+    public function offeraddons()
+    {
+        return $this->hasMany(OfferAddon::class,'offer_id');
+    }
     
 
     // public function order()

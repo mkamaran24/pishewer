@@ -123,7 +123,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('blogs/comment', [BlogCommentController::class, "store"]);
     //////////////////////////////////////////////////////
 
-    // Private Offer Route ///////////////////////////////////////
+    // Private Offer & Order Route ///////////////////////////////////////
     Route::get('offers', [OfferController::class, "index"]);
     Route::get('offers/getexistjobs/{user_id}', [OfferController::class, "getAlljobs"]);
     // Route::post('offers/existjob', [OfferController::class, "storeExistjobs"]);
@@ -131,6 +131,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('offers/getoffersperuser/{user_id}', [OfferController::class, "OffersperUsers"]);
     // Route::get('offers/{offer_id}', [OfferController::class, "show"]);
     Route::put('offers/{offer_id}', [OfferController::class, "update"]);
+    Route::post('offers/payment', [OrderController::class, "store"]);
+    Route::put('offers/payment/accept/{order_id}', [OrderController::class, "update"]);
     // end of Private Offer Route /////////////////////////////////
 
     // Private Order Route ////////////////////////////////////////

@@ -9,7 +9,7 @@ class OfferAddon extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title','price','order_id'];
+    protected $fillable = ['title','price','offer_id'];
 
     public function order(){
         return $this->belongsTo(Order::class,'order_id');

@@ -69,7 +69,7 @@ class OrderController extends Controller
                         AddonModel::create([
                             "title" => $addon['title'],
                             "price" => $addon['price'],
-                            "order_id" => $order->id
+                            "offer_id" => $order->offer_id
                         ]);
                     }
                 } else {
@@ -120,10 +120,10 @@ class OrderController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update($order_id)
     {
         try {
-            $order = ModelsOrder::find($id);
+            $order = ModelsOrder::find($order_id);
             $offer = Offer::find($order->offer_id);
             $order->status = 1;
             $offer->offer_state = "inProgress";
