@@ -37,23 +37,24 @@ class Offer extends JsonResource
         $interval = $future_date->diff($now);
         // $result = $interval->format("%d days, %h hours, %i minutes");
         $result = $interval->format("%d days, %h hours");
-        $is_zero = substr($result, 0, 1);
+        // $is_zero = substr($result, 0, 1);
 
-        if ($is_zero == 0) {
-            $result = $interval->format("%h hours");
-        }
+        // if ($is_zero == 0) {
+        //     $result = $interval->format("%h hours");
+        // }
 
         return [
             'id' => (string)$this->id,
             'title' => $this->title,
             'price' => $this->price,
-            // 'formattedDate' => $formattedDate,
-            // 'carbonDate' => $carbonDate,
-            // 'remain_date' => $remain_date,
-            // 'interval' => $interval,
-            // 'now' => $now,
-            // 'future_date' => $future_date,
-            'created_at' => $this->created_at,
+            'rr' => $result,
+            'formattedDate' => $formattedDate,
+            'carbonDate' => $carbonDate,
+            'remain_date' => $remain_date,
+            'interval' => $interval,
+            'now' => $now,
+            'future_date' => $future_date,
+            'created_at' => $formattedDate,
             'payment_status' => Order::where('offer_id', $this->id)->value('status') ? "Paid" : "Unpaid",
             'delivery_periods' => $this->delivery_period,
             'remainin_time' => $result,
