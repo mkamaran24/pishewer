@@ -39,6 +39,7 @@ class Offer extends JsonResource
             'id' => (string)$this->id,
             'title' => $this->title,
             'price' => $this->price,
+            'future_date' => $future_date,
             'created_at' => $this->created_at,
             'payment_status' => Order::where('offer_id', $this->id)->value('status') ? "Paid" : "Unpaid",
             'delivery_periods' => $this->delivery_period,
