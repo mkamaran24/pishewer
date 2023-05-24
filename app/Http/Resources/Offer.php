@@ -36,7 +36,7 @@ class Offer extends JsonResource
         if ($is_zero == 0) {$result = $interval->format("%h hours");}
 
         // Create a Carbon instance from the timestamp
-$carbonDate = Carbon::createFromTimestamp($this->created_at);
+$carbonDate = Carbon::parse($this->created_at);
 
 // Format the date using the format() method
 $formattedDate = $carbonDate->format('Y-m-d H:i:s');
@@ -45,6 +45,7 @@ $formattedDate = $carbonDate->format('Y-m-d H:i:s');
             'id' => (string)$this->id,
             'title' => $this->title,
             'price' => $this->price,
+            'formattedDate' => $formattedDate,
             'carbonDate' => $carbonDate,
             'remain_date' => $remain_date,
             'interval' => $interval,
