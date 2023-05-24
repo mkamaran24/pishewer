@@ -24,7 +24,7 @@ class Offer extends JsonResource
         // Format the date using the format() method
         $formattedDate = $carbonDate->format('Y-m-d h:i:s');
 
-        $delivary_date = $this->delivery_period; //input1
+        $delivary_date = $this->delivery_period + 2; //input1
         $date = $formattedDate; //input2
 
         $remaining_t = $delivary_date * 24 * 60 * 60;
