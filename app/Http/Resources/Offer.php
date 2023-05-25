@@ -70,6 +70,7 @@ class Offer extends JsonResource
             'delivery_periods' => $this->delivery_period,
             'now' => Carbon::now(),
             'offer_expiry' => $this->offer_expiry,
+            'created_at' => $this->created_at,
             // 'remainin_time' => $remainingDays . ' Days - ' . $remainingHours . ' Hours',
             'offer_state' => $this->offer_state,
             'seller' => new User($this->seller),

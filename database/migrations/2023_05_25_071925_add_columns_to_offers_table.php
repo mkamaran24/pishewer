@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::table('offers', function (Blueprint $table) {
             //
             $table->string('offer_code')->after('price');
-            $table->dateTimeTz('offer_expiry')->nullable();
+            $table->dateTime('offer_expiry')->nullable();
         });
     }
 
