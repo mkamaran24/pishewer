@@ -135,7 +135,14 @@ class OrderController extends Controller
             // Add days to the expiry date
             $numberOfDays = $offer->delivery_period; // Example: adding 7 days
             $expiryDate->addDays($numberOfDays);
+
             // Update the offer_expiry value in the database
+            return response()->json([
+                'now' => $now,
+                'custom_now' => $custom_now,
+                'number of days' => $numberOfDays,
+                'expiry_date' => $expiryDate
+            ],200);
             $offer->offer_expiry = $expiryDate;
             $order->status = 1;
             $offer->offer_state = "inProgress";
