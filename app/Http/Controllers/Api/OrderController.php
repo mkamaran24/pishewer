@@ -128,9 +128,9 @@ class OrderController extends Controller
             $order = ModelsOrder::find($order_id);
             $offer = Offer::find($order->offer_id);
 
-            $timezone = CarbonTimeZone::create(+3);  // Create a UTC+3 timezone
+            // $timezone = CarbonTimeZone::create(+3);  // Create a UTC+3 timezone
             
-            $now = Carbon::now($timezone);
+            $now = Carbon::now();
 
             // $carbonTime = Carbon::parse($now)->setTimezone('Asia/Baghdad');
             
