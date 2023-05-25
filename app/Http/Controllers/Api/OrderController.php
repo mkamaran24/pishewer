@@ -137,12 +137,14 @@ class OrderController extends Controller
             $expiryDate->addDays($numberOfDays);
 
             // Update the offer_expiry value in the database
-            return response()->json([
-                'now' => $now,
-                'custom_now' => $custom_now,
-                'number of days' => $numberOfDays,
-                'expiry_date' => $expiryDate
-            ],200);
+            
+            // return response()->json([
+            //     'now' => $now,
+            //     'custom_now' => $custom_now,
+            //     'number of days' => $numberOfDays,
+            //     'expiry_date' => $expiryDate
+            // ],200);
+
             $offer->offer_expiry = $expiryDate;
             $order->status = 1;
             $offer->offer_state = "inProgress";

@@ -58,9 +58,9 @@ class Offer extends JsonResource
         // // Calculate the remaining time by subtracting the current time from the delivery date
         // $remainingTime = Carbon::now()->diff($deliveryDate)->format('%d days, %h hours, %i minutes');
 
-        $expiryDate = Carbon::parse($this->offer_expiry);
-        $remainingDays = $expiryDate->diffInDays(Carbon::now());
-        $remainingHours = $expiryDate->diffInHours(Carbon::now()) % 24;
+        // $expiryDate = Carbon::parse($this->offer_expiry);
+        // $remainingDays = $expiryDate->diffInDays(Carbon::now());
+        // $remainingHours = $expiryDate->diffInHours(Carbon::now()) % 24;
 
         return [
             'id' => (string)$this->id,
@@ -70,7 +70,7 @@ class Offer extends JsonResource
             'delivery_periods' => $this->delivery_period,
             'now' => Carbon::now(),
             'offer_expiry' => $this->offer_expiry,
-            'remainin_time' => $remainingDays . ' Days - ' . $remainingHours . ' Hours',
+            // 'remainin_time' => $remainingDays . ' Days - ' . $remainingHours . ' Hours',
             'offer_state' => $this->offer_state,
             'seller' => new User($this->seller),
             'buyer' => new User($this->buyer),
