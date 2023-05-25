@@ -17,47 +17,6 @@ class Offer extends JsonResource
      */
     public function toArray($request)
     {
-
-        // // Create a Carbon instance from the timestamp
-        // $carbonDate = Carbon::parse($this->created_at);
-
-        // // Format the date using the format() method
-        // $formattedDate = $carbonDate->format('Y-m-d h:i:s');
-
-        // $delivary_date = $this->delivery_period + 2; //input1
-        // $date = $formattedDate; //input2
-
-        // $remaining_t = $delivary_date * 24 * 60 * 60;
-        // $date_S = strtotime($date);
-        // $remain = $date_S + $remaining_t;
-        // $remain_date = date('Y-m-d h:i:s', $remain);
-
-        // $now = new DateTime();
-        // $future_date = new DateTime($remain_date);
-
-        // $interval = $future_date->diff($now);
-        // // $result = $interval->format("%d days, %h hours, %i minutes");
-        // $result = $interval->format("%d days, %h hours");
-        // $is_zero = substr($result, 0, 1);
-
-        // if ($is_zero == 0) {
-        //     $result = $interval->format("%h hours");
-        // }
-
-        // // Assuming $deliveryPeriod holds the delivery period in days
-        // $deliveryPeriod = 1;
-
-        // // Assuming $createdAt holds the creation time of the offer
-        // $createdAt = Carbon::parse('2023-05-23 18:00:00');
-
-        // // Calculate the delivery date by adding the delivery period to the creation time
-        // $deliveryDate = $createdAt->addDays($deliveryPeriod);
-
-        // $dct = Carbon::parse($deliveryDate);
-
-        // // Calculate the remaining time by subtracting the current time from the delivery date
-        // $remainingTime = Carbon::now()->diff($deliveryDate)->format('%d days, %h hours, %i minutes');
-
         $expiryDate = Carbon::parse($this->offer_expiry)->subHours(2);
         // $remainingDays = $expiryDate->diffForHumans(Carbon::now());
         $remainingDays = $expiryDate->diffInDays(Carbon::now());
