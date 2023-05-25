@@ -132,10 +132,10 @@ class OrderController extends Controller
             $offer = Offer::find($order->offer_id);
         
             $expiryDate = Carbon::parse($custom_now);
-            return $expiryDate;
             // Add days to the expiry date
             $numberOfDays = $offer->delivery_period; // Example: adding 7 days
             $expiryDate->addDays($numberOfDays);
+            return $expiryDate;
             // Update the offer_expiry value in the database
             $offer->offer_expiry = $expiryDate;
             $order->status = 1;
