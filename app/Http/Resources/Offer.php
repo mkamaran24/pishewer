@@ -61,7 +61,7 @@ class Offer extends JsonResource
         $expiryDate = Carbon::parse($this->offer_expiry);
         // $remainingDays = $expiryDate->diffForHumans(Carbon::now());
         $remainingDays = $expiryDate->diffInDays(Carbon::now());
-        $remainingHours = $expiryDate->diffInHours(Carbon::now());
+        $remainingHours = $expiryDate->diffInHours(Carbon::now()) % 24;
 
         return [
             'id' => (string)$this->id,
