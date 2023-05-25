@@ -26,6 +26,7 @@ class Offer extends JsonResource
             'id' => (string)$this->id,
             'title' => $this->title,
             'price' => $this->price,
+            'offer_code' => $this->offer_code,
             'payment_status' => Order::where('offer_id', $this->id)->value('status') ? "Paid" : "Unpaid",
             'delivery_periods' => $this->delivery_period,
             'now' => Carbon::now()->addHours(3),
