@@ -68,7 +68,7 @@ class Offer extends JsonResource
             'price' => $this->price,
             'payment_status' => Order::where('offer_id', $this->id)->value('status') ? "Paid" : "Unpaid",
             'delivery_periods' => $this->delivery_period,
-            'now' => Carbon::now(),
+            'now' => Carbon::now()->addHours(3),
             'offer_expiry' => $this->offer_expiry,
             'created_at' => $this->created_at,
             // 'remainin_time' => $remainingDays . ' Days - ' . $remainingHours . ' Hours',
