@@ -158,7 +158,8 @@ class OfferController extends Controller
                 // return Job API Resource JSON Response //////////////
                 return response()->json([
                     'status' => true,
-                    'messages' => "Object Created"
+                    'messages' => "Object Created",
+                    'offer_code' => $offer->offer_code
                 ], 201);
                 ///////////////////////////////////////////////////////
 
