@@ -9,6 +9,7 @@ use App\Http\Resources\Offer\Job;
 use App\Models\Attachment;
 use App\Models\Jobs;
 use App\Models\Offer as ModelsOffer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -176,7 +177,7 @@ class OfferController extends Controller
     }
 
 
-    public function show($user_id,$offer_code)
+    public function show($user_id, $offer_code)
     {
         try {
             // Validation of $id should goes here
@@ -184,8 +185,8 @@ class OfferController extends Controller
 
             /////////////////////////////////////
 
-            $offer = ModelsOffer::where('offer_code',$offer_code)->where('seller_id',$user_id)->orWhere('buyer_id',$user_id)->get();
-            
+            $offer = ModelsOffer::where('offer_code', $offer_code)->where('seller_id', $user_id)->orWhere('buyer_id', $user_id)->get();
+
             if ($offer) {
                 return ResourceOffer::collection($offer);
             } else {
@@ -206,7 +207,12 @@ class OfferController extends Controller
         try {
 
             $offer = ModelsOffer::find($id);
-            // $offer->status = 1;
+            $expiryDate = Carbon::parse($offer->offer_expiry);
+            // Add days to the expiry date
+            $numberOfDays = $offer->delivery_period; // Example: adding 7 days
+            $expiryDate->addDays($numberOfDays);
+            // Update the offer_expiry value in the database
+            $offer->offer_expiry = $expiryDate;
             $offer->offer_state = "payment";
             $offer->save();
             $commission_fee = $offer->price * 0.05;
