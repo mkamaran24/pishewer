@@ -7,6 +7,7 @@ use App\Http\Resources\Order as ResourceOrder;
 use App\Models\Offer;
 use App\Models\Order as ModelsOrder;
 use App\Models\OfferAddon as AddonModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -125,6 +126,18 @@ class OrderController extends Controller
         try {
             $order = ModelsOrder::find($order_id);
             $offer = Offer::find($order->offer_id);
+
+            $now = Carbon::now();
+            
+
+            return $now;
+
+            $expiryDate = Carbon::parse($offer->offer_expiry);
+            // Add days to the expiry date
+            $numberOfDays = $offer->delivery_period; // Example: adding 7 days
+            $expiryDate->addDays($numberOfDays);
+            // Update the offer_expiry value in the database
+            $offer->offer_expiry = $expiryDate;
             $order->status = 1;
             $offer->offer_state = "inProgress";
             $order->save();

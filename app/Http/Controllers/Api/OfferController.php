@@ -207,12 +207,6 @@ class OfferController extends Controller
         try {
 
             $offer = ModelsOffer::find($id);
-            $expiryDate = Carbon::parse($offer->offer_expiry);
-            // Add days to the expiry date
-            $numberOfDays = $offer->delivery_period; // Example: adding 7 days
-            $expiryDate->addDays($numberOfDays);
-            // Update the offer_expiry value in the database
-            $offer->offer_expiry = $expiryDate;
             $offer->offer_state = "payment";
             $offer->save();
             $commission_fee = $offer->price * 0.05;
