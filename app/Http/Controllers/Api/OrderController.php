@@ -125,21 +125,14 @@ class OrderController extends Controller
     public function update($order_id)
     {
         try {
-            $order = ModelsOrder::find($order_id);
-            $offer = Offer::find($order->offer_id);
-
-            // $timezone = CarbonTimeZone::create(+3);  // Create a UTC+3 timezone
-            
             $now = Carbon::now();
-
             $custom_now = $now->addHours(3);
 
-            // $carbonTime = Carbon::parse($now)->setTimezone('Asia/Baghdad');
-            
-
-            return $now;
-
-            $expiryDate = Carbon::parse($offer->offer_expiry);
+            $order = ModelsOrder::find($order_id);
+            $offer = Offer::find($order->offer_id);
+        
+            $expiryDate = Carbon::parse($custom_now);
+            return $expiryDate;
             // Add days to the expiry date
             $numberOfDays = $offer->delivery_period; // Example: adding 7 days
             $expiryDate->addDays($numberOfDays);
