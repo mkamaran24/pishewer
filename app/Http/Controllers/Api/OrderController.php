@@ -128,9 +128,11 @@ class OrderController extends Controller
             $offer = Offer::find($order->offer_id);
 
             $now = Carbon::now();
+
+            $carbonTime = Carbon::parse($now)->setTimezone('Asia/Baghdad');
             
 
-            return $now;
+            return $carbonTime;
 
             $expiryDate = Carbon::parse($offer->offer_expiry);
             // Add days to the expiry date
