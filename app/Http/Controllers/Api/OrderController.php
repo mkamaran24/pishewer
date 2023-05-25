@@ -8,6 +8,7 @@ use App\Models\Offer;
 use App\Models\Order as ModelsOrder;
 use App\Models\OfferAddon as AddonModel;
 use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -127,12 +128,14 @@ class OrderController extends Controller
             $order = ModelsOrder::find($order_id);
             $offer = Offer::find($order->offer_id);
 
-            $now = Carbon::now();
+            $timezone = CarbonTimeZone::create(+3);  // Create a UTC+3 timezone
+            
+            $now = Carbon::now($timezone);
 
-            $carbonTime = Carbon::parse($now)->setTimezone('Asia/Baghdad');
+            // $carbonTime = Carbon::parse($now)->setTimezone('Asia/Baghdad');
             
 
-            return $carbonTime;
+            return $now;
 
             $expiryDate = Carbon::parse($offer->offer_expiry);
             // Add days to the expiry date
