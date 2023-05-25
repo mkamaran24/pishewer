@@ -12,6 +12,7 @@ class Offer extends Model
     protected $fillable = [
         'title',
         'price',
+        'offer_code',
         'delivery_period',
         'seller_id',
         'buyer_id',

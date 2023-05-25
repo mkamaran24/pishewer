@@ -129,12 +129,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::post('offers/existjob', [OfferController::class, "storeExistjobs"]);
     Route::post('offers', [OfferController::class, "store"]);
     Route::get('offers/getoffersperuser/{user_id}', [OfferController::class, "OffersperUsers"]);
-    // Route::get('offers/{offer_id}', [OfferController::class, "show"]);
+    Route::get('offers/detail/{user_id}/{offer_code}', [OfferController::class, "show"]);
     Route::put('offers/accept/{offer_id}', [OfferController::class, "accept"]);
     Route::put('offers/reject/{offer_id}', [OfferController::class, "reject"]);
     Route::post('offers/upload/{offer_id}', [OfferController::class, "upload"]);
     Route::get('offers/download/{offer_id}', [OfferController::class, "download"]);
     //
+    Route::get('offers/payment/getall', [OrderController::class, "index"]);
     Route::post('offers/payment', [OrderController::class, "store"]);
     Route::put('offers/payment/accept/{order_id}', [OrderController::class, "update"]);
 

@@ -10,6 +10,7 @@ use App\Models\Attachment;
 use App\Models\Jobs;
 use App\Models\Offer as ModelsOffer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -131,10 +132,22 @@ class OfferController extends Controller
             # put data to DB after Succes Validation
             try {
 
+                // generate the offer code
+                $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                $code = substr(str_shuffle($characters), 0, 8);
+                $isUnique = DB::table('offers')->where('offer_code', $code)->doesntExist();
+
+                // checking if its Unique or not
+                while (!$isUnique) {
+                    $code = substr(str_shuffle($characters), 0, 8);
+                    $isUnique = DB::table('offers')->where('offer_code', $code)->doesntExist();
+                }
+
                 // save $req to DB //////////////////////////////
                 $offer = new ModelsOffer();
                 $offer->title = $request->title;
                 $offer->price = $request->price;
+                $offer->offer_code = $code;
                 $offer->delivery_period = $request->delivery_period;
                 $offer->seller_id = $request->seller_id;
                 $offer->buyer_id = $request->buyer_id;
@@ -162,7 +175,7 @@ class OfferController extends Controller
     }
 
 
-    public function show($id)
+    public function show($user_id,$offer_code)
     {
         try {
             // Validation of $id should goes here
@@ -170,9 +183,10 @@ class OfferController extends Controller
 
             /////////////////////////////////////
 
-            $offer = ModelsOffer::find($id);
+            $offer = ModelsOffer::where('offer_code',$offer_code)->where('seller_id',$user_id)->orWhere('buyer_id',$user_id)->get();
+            
             if ($offer) {
-                return new ResourceOffer($offer);
+                return ResourceOffer::collection($offer);
             } else {
                 return response()->json([
                     'status' => false,
@@ -189,6 +203,7 @@ class OfferController extends Controller
     {
         //
         try {
+
             $offer = ModelsOffer::find($id);
             // $offer->status = 1;
             $offer->offer_state = "payment";
@@ -314,7 +329,7 @@ class OfferController extends Controller
                 $zip_path = 'storage/' . $zipfile;
 
 
-                if (Storage::exists('public/',$zipfile)) {
+                if (Storage::exists('public/', $zipfile)) {
                     // ZIP file exists
 
                     // Retrieve the zip file from the storage disk
