@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Order as ResourceOrder;
+use App\Models\Invoice;
 use App\Models\Offer;
 use App\Models\Order as ModelsOrder;
 use App\Models\OfferAddon as AddonModel;
@@ -107,9 +108,9 @@ class OrderController extends Controller
 
             /////////////////////////////////////
 
-            $order = ModelsOrder::find($id);
+            $order = ModelsOrder::where('buyer_id',$id)->get();
             if ($order) {
-                return new ResourceOrder($order);
+                return  ResourceOrder::collection($order);
             } else {
                 return response()->json([
                     'status' => false,
@@ -135,20 +136,20 @@ class OrderController extends Controller
             $numberOfDays = $offer->delivery_period; // Example: adding 7 days
             $custom_now->addDays($numberOfDays);
 
-            // Update the offer_expiry value in the database
-
-            // return response()->json([
-            //     'now' => $now,
-            //     'custom_now' => $custom_now,
-            //     'number of days' => $numberOfDays,
-            //     'expiry_date' => $expiryDate
-            // ],200);
-
             $offer->offer_expiry = $custom_now;
             $order->status = 1;
             $offer->offer_state = "inProgress";
             $order->save();
             $offer->save();
+            //
+
+            Invoice::create([
+                'offer_id' => $order->offer_id,
+                'seller_id' => $offer->seller_id,
+                'offer_amount' => $order->total_price,
+                'status' => 'Pending'
+            ]);
+
             return new ResourceOrder($order);
         } catch (\Throwable $th) {
             //throw $th;

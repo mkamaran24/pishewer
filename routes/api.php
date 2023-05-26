@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\BlogCommentController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CodeCheckController;
 use App\Http\Controllers\Api\ForgetPasswordController;
+use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\isMailVerifiedController;
 use App\Http\Controllers\Api\JobListMessageController;
 use App\Http\Controllers\Api\MessageController;
@@ -144,9 +145,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('offers/download/{offer_id}', [OfferController::class, "download"]);
     //
     Route::get('offers/payment/getall', [OrderController::class, "index"]);
+    Route::get('offers/payment/{buyer_id}', [OrderController::class, "show"]);
     Route::post('offers/payment', [OrderController::class, "store"]);
     Route::put('offers/payment/accept/{order_id}', [OrderController::class, "update"]);
 
+    //
+    Route::get('invoice', [InvoiceController::class, "index"]);
+    Route::get('invoice/{seller_id}', [InvoiceController::class, "getInvoices"]);
+    Route::put('invoice/{invoice_id}',[InvoiceController::class, "update"]);
     // end of Private Offer Route /////////////////////////////////
 
     // Private Order Route ////////////////////////////////////////
