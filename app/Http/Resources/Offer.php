@@ -17,7 +17,7 @@ class Offer extends JsonResource
      */
     public function toArray($request)
     {
-        $expiryDate = Carbon::parse($this->offer_expiry)->subHours(2);
+        $expiryDate = Carbon::parse($this->offer_expiry);
         // $remainingDays = $expiryDate->diffForHumans(Carbon::now());
         $remainingDays = $expiryDate->diffInDays(Carbon::now());
         $remainingHours = $expiryDate->diffInHours(Carbon::now()) % 24;
@@ -29,7 +29,7 @@ class Offer extends JsonResource
             'offer_code' => $this->offer_code,
             'payment_status' => Order::where('offer_id', $this->id)->value('status') ? "Paid" : "Unpaid",
             'delivery_periods' => $this->delivery_period,
-            'now' => Carbon::now()->addHours(3),
+            'now' => Carbon::now(),
             'offer_expiry' => Carbon::parse($this->offer_expiry),
             'created_at' => $this->created_at,
             'remainin_time' => $remainingDays . ' Days - ' . $remainingHours . ' Hours',

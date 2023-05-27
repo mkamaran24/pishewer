@@ -127,16 +127,16 @@ class OrderController extends Controller
     {
         try {
             $now = Carbon::now();
-            $custom_now = $now->addHours(3);
+            // $custom_now = $now->addHours(3);
 
             $order = ModelsOrder::find($order_id);
             $offer = Offer::find($order->offer_id);
         
             // Add days to the expiry date
             $numberOfDays = $offer->delivery_period; // Example: adding 7 days
-            $custom_now->addDays($numberOfDays);
+            
 
-            $offer->offer_expiry = $custom_now;
+            $offer->offer_expiry = $now->addDays($numberOfDays);
             $order->status = 1;
             $offer->offer_state = "inProgress";
             $order->save();
