@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Resources\Job;
 use App\Models\Jobs;
+use App\Models\Offer;
 
 // test MK Laptop
 
@@ -210,7 +211,16 @@ Route::get('profiles/{user_id}', [Profile::class, "show"]);
 // end of Profile Route ///////////////////////////
 
 
+// test api ///
 
+Route::put('test/offers/close/{offer_id}',function ($id){
+    Offer::where('id',$id)->update(['offer_state'=>'Closed']);
+    return response()->json([
+        'message' => 'Offer Updated Successfully'
+    ],200);
+});
+
+///        ///
 
 
 
