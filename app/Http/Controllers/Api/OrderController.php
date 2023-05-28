@@ -51,6 +51,8 @@ class OrderController extends Controller
             # put data to DB after Succes Validation
             try {
 
+                // dd($request->offer_id);
+
                 // save $req to DB //////////////////////////////
                 $order = new ModelsOrder();
                 $order->fastpay_number = $request->fastpay_number;
@@ -80,7 +82,7 @@ class OrderController extends Controller
                 }
 
                 // update offer state from payment to Pendingpayment ////////////////////////////////////
-                Offer::where('offer_id',$request->offer_id)->update(['offer_state'=>'Pendingpayment']);
+                Offer::where('id',$request->offer_id)->update(['offer_state'=>'Pendingpayment']);
                 /////////////////////////////////////////////////////////////////////////////////////////
 
 
