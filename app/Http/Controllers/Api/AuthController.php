@@ -52,6 +52,11 @@ class AuthController extends Controller
                 $isEmail_Exist = UserModel::where('email', $request->email)->exists();
 
                 if ($isEmail_Exist) {
+                    return response()->json([
+                        'messages' => "Email Already Exist"
+                    ], 409);
+                } else {
+
                     $hashed_pass = array("password" => Hash::make($request->password));
 
                     $user = UserModel::create(array_merge($request->except(['password', 'username', 'fullname']), $hashed_pass));
@@ -87,12 +92,6 @@ class AuthController extends Controller
                         'token' => $user->createToken("API TOKEN")->plainTextToken
                     ], 201);
                     ///////////////////////////////////////////////////////
-                } else {
-                   
-                    return response()->json([
-                        'messages' => "Email Already Exist"
-                    ], 409);
-                    
                 }
             } catch (\Throwable $th) {
                 //throw $th;
