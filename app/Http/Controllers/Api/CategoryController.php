@@ -78,13 +78,20 @@ class CategoryController extends Controller
                 }
 
             }
+            else
+            {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'categ_trans is not array'
+                ],500);
+            }
             /////////////////////////////////////////////////////////
 
             // return Job API Resource JSON Response //////////////
             return response()->json([
                 'status' => true,
                 'message' => 'Object Created'
-            ]);
+            ],201);
             ///////////////////////////////////////////////////////
 
         } catch (\Throwable $th) {

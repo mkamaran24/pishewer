@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\City as ResourcesCity;
 use App\Models\City as ModelsCity;
+use App\Models\CityTranslation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -34,49 +35,45 @@ class City extends Controller
      */
     public function store(Request $request)
     {
-        //
-        //Validations Rules //////////////////////////
-        $rules = array(
-            'cityname' => 'required',
-        );
-        /// end of Validation Rules ////////////////////
+        # put data to DB after Succes Validation
+        try {
 
-        // Validator Check //////////////////////////////
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            $messages = $validator->messages();
-            $errors = $messages->all(); //convert them into one array
-            return response()->json([
-                'status' => false,
-                'reason' => 'Validation Fails',
-                'messages' => $errors,
-            ], 422);
-        } else {
-            # put data to DB after Succes Validation
-            try {
-             
-                // save $req to DB //////////////////////////////
-                $city = new ModelsCity();
-                $city->cityname = $request->cityname;
-                $city->save();
-                /////////////////////////////////////////////////
+            // save $req to DB //////////////////////////////
+            $city = new ModelsCity();
+            $city->save();
+            /////////////////////////////////////////////////
 
-                // return Job API Resource JSON Response //////////////
+            if (is_array($request->city_trans)) {
+                foreach ($request->city_trans as $key => $ct) {
+                    
+                    CityTranslation::create([
+                        'cityname' => $ct['name'],
+                        'locale' => $ct['locale'],
+                        'city_id' => $city->id
+                    ]);
+                }
+            } else {
                 return response()->json([
                     'status' => true,
-                    'messages' => "Object Created"
-                ], 201);
-                ///////////////////////////////////////////////////////
-
-
-            } catch (\Throwable $th) {
-                // abort(code: 500, message: 'fail to create');
-                //throw $th;
-                return response()->json([
-                    'status' => false,
-                    'message' => $th->getMessage(),
+                    'message' => 'city_trans is not array'
                 ], 500);
             }
+
+            // return Job API Resource JSON Response //////////////
+            return response()->json([
+                'status' => true,
+                'messages' => "Object Created"
+            ], 201);
+            ///////////////////////////////////////////////////////
+
+
+        } catch (\Throwable $th) {
+            // abort(code: 500, message: 'fail to create');
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
         }
     }
 

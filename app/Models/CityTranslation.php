@@ -9,5 +9,5 @@ class CityTranslation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['cityname','city_id'];
+    protected $fillable = ['cityname','city_id','locale'];
 }

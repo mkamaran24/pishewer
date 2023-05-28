@@ -107,6 +107,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('profiles', [Profile::class, "store"]);
     Route::delete('profiles', [Profile::class, "destroy"]);
     Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
+    // Route::put('profiles/translate/{profile_id}',[Profile::class, "translate"]);
     // end of Private Profile Route ///////////////////////////
 
     // Private City Route /////////////////////////////////////
@@ -142,6 +143,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('offers/detail/{user_id}/{offer_code}', [OfferController::class, "show"]);
     Route::put('offers/accept/{offer_id}', [OfferController::class, "accept"]);
     Route::put('offers/reject/{offer_id}', [OfferController::class, "reject"]);
+    Route::put('offers/cancel/{offer_id}', [OfferController::class, "cancel"]);
     Route::post('offers/upload/{offer_id}', [OfferController::class, "upload"]);
     Route::get('offers/download/{offer_id}', [OfferController::class, "download"]);
     //

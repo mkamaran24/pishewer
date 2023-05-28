@@ -11,6 +11,7 @@ use App\Models\City;
 use App\Models\Jobs;
 use App\Models\Message;
 use App\Models\Profile as ModelsProfile;
+use App\Models\ProfileTranslation;
 use App\Models\Review;
 use App\Models\User;
 use Carbon\Carbon;
@@ -52,7 +53,8 @@ class Profile extends Controller
             'city_id' => 'required',
             'age' => 'required',
             'gender' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'locale' => 'required'
         );
         /// end of Validation Rules ////////////////////
 
@@ -69,19 +71,6 @@ class Profile extends Controller
         } else {
             # put data to DB after Succes Validation
             try {
-
-                $one_natid = $request->nationalid;
-                $image_profile = $request->imageprofile;
-                $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
-                $new_image_profile = 'IMG_Profile' . random_int(100000, 999999) . '.' . $image_profile->getClientOriginalExtension();
-                // set NatID into Global String VAR ///////////////////////////////////////////////////////////
-                // $Global_Natid = $new_one_natid . ',';
-                ////////////////////////////////////////////////////////////////////////////
-                // save image in laravel Private Storage ///////////////////////////////////
-                Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
-
-                Storage::disk('public')->put($new_image_profile, file_get_contents($image_profile));
-                /////////////////////////////////////////////////////////////////////////////
 
                 // start of NationalID logics ////////////////////////////////////////////////////////////////
                 // if ($request->hasFile('nationalid')) {
@@ -115,29 +104,82 @@ class Profile extends Controller
                 // end of NationalID Logics /////////////////////////////////////////////////////////////////////////////////
 
                 // save $req to DB //////////////////////////////
-                $profile = ModelsProfile::create([
-                    'title' => $request->title,
-                    'description' => $request->description,
-                    'skills' => implode(',', $request->skills),
-                    'langs' => implode(',', $request->langs),
-                    'certification' => $request->certification,
-                    'nationalid' => $new_one_natid,
-                    "imageprofile" => $new_image_profile,
-                    'city_id' => $request->city_id,
-                    'age' => $request->age,
-                    'gender' => $request->gender,
-                    'user_id' => $request->user_id
-                ]);
-                /////////////////////////////////////////////////
-
-                // return Job API Resource JSON Response //////////////
-                return response()->json([
-                    'status' => true,
-                    'messages' => "Object Created"
-                ], 201);
-                ///////////////////////////////////////////////////////
 
 
+                $isUser_Exist = ModelsProfile::where('user_id', $request->user_id)->exists();
+
+
+
+                if ($isUser_Exist) {
+                    $profile_id = ModelsProfile::where('user_id', $request->user_id)->value('id');
+                    $isTrans_Exist = ProfileTranslation::where('profile_id', $profile_id)->where('locale', $request->locale)->exists();
+                    if ($isTrans_Exist) {
+                        return response()->json([
+                            'status' => false,
+                            'messages' => "The requested record already exists in the database."
+                        ], 409);
+                    } else {
+                        ProfileTranslation::create([
+                            'title' => $request->title,
+                            'description' => $request->description,
+                            'skills' => implode(',', $request->skills),
+                            'langs' => implode(',', $request->langs),
+                            'certification' => $request->certification,
+                            'age' => $request->age,
+                            'gender' => $request->gender,
+                            'locale' => $request->locale,
+                            'profile_id' => $profile_id
+                        ]);
+
+                        // return Job API Resource JSON Response //////////////
+                        return response()->json([
+                            'status' => true,
+                            'messages' => "Object Translated Successfully"
+                        ], 201);
+                        ///////////////////////////////////////////////////////
+                    }
+                } else {
+                    $one_natid = $request->nationalid;
+                    $image_profile = $request->imageprofile;
+                    $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
+                    $new_image_profile = 'IMG_Profile' . random_int(100000, 999999) . '.' . $image_profile->getClientOriginalExtension();
+                    // set NatID into Global String VAR ///////////////////////////////////////////////////////////
+                    // $Global_Natid = $new_one_natid . ',';
+                    ////////////////////////////////////////////////////////////////////////////
+                    // save image in laravel Private Storage ///////////////////////////////////
+                    Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
+    
+                    Storage::disk('public')->put($new_image_profile, file_get_contents($image_profile));
+                    /////////////////////////////////////////////////////////////////////////////
+                    $profile = ModelsProfile::create([
+                        'nationalid' => $new_one_natid,
+                        "imageprofile" => $new_image_profile,
+                        'city_id' => $request->city_id,
+                        'user_id' => $request->user_id
+                    ]);
+
+                    ProfileTranslation::create([
+                        'title' => $request->title,
+                        'description' => $request->description,
+                        'skills' => implode(',', $request->skills),
+                        'langs' => implode(',', $request->langs),
+                        'certification' => $request->certification,
+                        'age' => $request->age,
+                        'gender' => $request->gender,
+                        'locale' => $request->locale,
+                        'profile_id' => $profile->id
+                    ]);
+
+
+                    /////////////////////////////////////////////////
+
+                    // return Job API Resource JSON Response //////////////
+                    return response()->json([
+                        'status' => true,
+                        'messages' => "Object Created"
+                    ], 201);
+                    ///////////////////////////////////////////////////////
+                }
             } catch (\Throwable $th) {
                 // abort(code: 500, message: 'fail to create');
                 //throw $th;
@@ -159,12 +201,13 @@ class Profile extends Controller
     {
         //
         try {
-            //code...
-            $profile = ModelsProfile::where('user_id',$id)->get();
-            // return isset($profile[0]->profiletranslation[0]->title);
-            if ($profile) {
-                $city_name = City::where('id',$profile[0]->city_id)->get();
-                $user = User::where('id',$id)->get();
+
+            $isProfile_exist = ModelsProfile::where('user_id', $id)->exists();
+
+            if ($isProfile_exist) {
+                $profile = ModelsProfile::where('user_id', $id)->get();
+                $city_name = City::where('id', $profile[0]->city_id)->get();
+                $user = User::where('id', $id)->get();
                 $jobs = Jobs::where('user_id', $id)->get();
                 $messages = DB::select('select msg_time,resp_time from messages where recever_id = ? AND status = ?', [$id, 1]);
 
@@ -214,17 +257,17 @@ class Profile extends Controller
 
 
                 $new_date = Carbon::createFromFormat('Y-m-d H:i:s', $user[0]->created_at)->format('d-m-Y');
-                
 
-                $delimiters = ['-', ',', '٬','،']; // Array of delimiters
+
+                $delimiters = ['-', ',', '٬', '،']; // Array of delimiters
                 $escapedDelimiters = array_map('preg_quote', $delimiters);
                 $pattern = implode('|', $escapedDelimiters);
-                
+
                 return response()->json([
                     "locale" => App::getLocale(),
                     "image_profile" => $profile[0]->imageprofile,
                     "username" => isset($user[0]->usertranslations[0]->username) ? $user[0]->usertranslations[0]->username : null,
-                    "title" => (isset($profile[0]->profiletranslation[0]->title)) ? $profile[0]->profiletranslation[0]->title : null ,
+                    "title" => (isset($profile[0]->profiletranslation[0]->title)) ? $profile[0]->profiletranslation[0]->title : null,
                     "location" => isset($city_name[0]->citytranslations[0]->cityname) ? $city_name[0]->citytranslations[0]->cityname : null,
                     "member_since" => $new_date,
                     "avg_response_time" => $avg_resp_time,

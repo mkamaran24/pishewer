@@ -25,7 +25,7 @@ class Job extends JsonResource
             'favs_count' => $this->favorites_count,
             'favorited_by_user' => $user ? $this->favorites->contains('user_id',$user->id) : false,
             'job_translation' => TranslationJob::collection($this->jobtrans),
-            'user' => $this->user_id,
+            'user' => new User($this->user),
             'category' => new JobCategory($this->category),
             'subcategory' => new JobSubcategory($this->subcategory),
             'image' => Jobimage::collection($this->jobimages),

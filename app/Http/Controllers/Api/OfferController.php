@@ -97,9 +97,16 @@ class OfferController extends Controller
 
     public function OffersperUsers($user_id)
     {
-        try {
+        try 
+        {
             $all_offers = ModelsOffer::where('seller_id', $user_id)->orWhere('buyer_id', $user_id)->get();
-            return ResourceOffer::collection($all_offers);
+
+            $specific_property_count = $all_offers->countBy('offer_state');
+
+            return response()->json([
+                'count_states' => $specific_property_count,
+                'offers_detail' => ResourceOffer::collection($all_offers)
+            ],200);
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -229,7 +236,7 @@ class OfferController extends Controller
             //throw $th;
         }
     }
-
+    
     public function reject($id)
     {
         try {
@@ -240,6 +247,22 @@ class OfferController extends Controller
             return response()->json([
                 'status' => true,
                 'messages' => "Offer Rejected Successfully"
+            ], 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function cancel($id)
+    {
+        try {
+            $offer = ModelsOffer::find($id);
+            // $offer->status = 1;
+            $offer->offer_state = "canceled";
+            $offer->save();
+            return response()->json([
+                'status' => true,
+                'messages' => "Offer Canceled Successfully"
             ], 200);
         } catch (\Throwable $th) {
             //throw $th;

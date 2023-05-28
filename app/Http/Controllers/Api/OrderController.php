@@ -79,7 +79,10 @@ class OrderController extends Controller
                     return "Addon is not Array";
                 }
 
-                //////////////////////////////////////
+                // update offer state from payment to Pendingpayment ////////////////////////////////////
+                Offer::where('offer_id',$request->offer_id)->update(['offer_state'=>'Pendingpayment']);
+                /////////////////////////////////////////////////////////////////////////////////////////
+
 
                 // return Job API Resource JSON Response //////////////
                 return response()->json([

@@ -17,6 +17,11 @@ class Jobs extends Model
     // ];
 
 
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
     public function addons()
     {
         return $this->hasMany(Addons::class, 'job_id');

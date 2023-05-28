@@ -17,6 +17,7 @@ class ProfileTranslation extends Model
         'certification',
         'age',
         'gender',
+        'locale',
         'profile_id'
     ];
 }
