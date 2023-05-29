@@ -25,7 +25,7 @@ class Offer extends JsonResource
         return [
             'id' => (string)$this->id,
             'title' => $this->title,
-            'price' => Order::where('offer_id',$this->id)->value('total_price'),
+            'price' => (Order::where('offer_id',$this->id)->value('total_price') == null) ? $this->price : Order::where('offer_id',$this->id)->value('total_price'),
             'offer_code' => $this->offer_code,
             'payment_status' => Order::where('offer_id', $this->id)->value('status') ? "Paid" : "Unpaid",
             'delivery_periods' => $this->delivery_period,
