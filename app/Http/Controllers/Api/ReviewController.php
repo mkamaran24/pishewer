@@ -20,7 +20,7 @@ class ReviewController extends Controller
             'commun_followup' => 'required',
             'panctual_delevery' => 'required',
             'description' => 'required',
-            'user_id' => 'required',
+            'buyer_id' => 'required',
             'job_id' => 'required'
 
         );
@@ -41,7 +41,14 @@ class ReviewController extends Controller
             try {
 
                 // save $req to DB //////////////////////////////
-                ModelReview::create($request->all());
+                ModelReview::create([
+                    'service_quality' => $request->service_quality,
+                    'commun_followup' => $request->commun_followup,
+                    'panctual_delevery' => $request->panctual_delevery,
+                    'description' => $request->description,
+                    'user_id' => $request->buyer_id,
+                    'job_id' => $request->job_id
+                ]);
                 /////////////////////////////////////////////////
 
                 // return Job API Resource JSON Response //////////////
