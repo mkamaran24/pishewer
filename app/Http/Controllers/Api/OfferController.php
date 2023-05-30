@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class OfferController extends Controller
 {
@@ -357,13 +357,22 @@ class OfferController extends Controller
                     // ZIP file exists
 
                     // Retrieve the zip file from the storage disk
-                    $fileContent = Storage::disk('public')->get($zip_path);
+                    // $fileContent = Storage::disk('public')->get($zip_path);
 
-                    // Return the zip file as a download response
-                    return response($fileContent, 200, [
+                    $headers = [
                         'Content-Type' => 'application/zip',
-                        'Content-Disposition' => 'attachment; filename="' . $zipfile . '"',
-                    ]);
+                        'Content-Disposition' => 'attachment; filename="' . $zip_path . '"',
+                    ];
+
+                    return new StreamedResponse(function () use ($zip_path) {
+                        readfile($zip_path);
+                    }, 200, $headers);
+
+                    // // Return the zip file as a download response
+                    // return response($fileContent, 200, [
+                    //     'Content-Type' => 'application/zip',
+                    //     'Content-Disposition' => 'attachment; filename="' . $zip_path . '"',
+                    // ]);
                 } else {
                     // ZIP file does not exist
                     return response()->json([

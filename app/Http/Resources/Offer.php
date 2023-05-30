@@ -37,9 +37,9 @@ class Offer extends JsonResource
             'seller' => new User($this->seller),
             'buyer' => new User($this->buyer),
             'offer_addons' => $this->offeraddons,
-            'Attachments' => $this->attachments
+            'Attachments' => $this->attachments,
             // 'order' => new Order($this->order),
-            // 'job_id'=>$this->job_id
+            'job_id'=>$this->job_id
         ];
     }
 }
