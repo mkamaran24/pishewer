@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Order;
+use App\Models\Review;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -24,6 +25,7 @@ class Offer extends JsonResource
 
         return [
             'id' => (string)$this->id,
+            'review_status' => Review::where('offer_id',$this->id)->exists(),
             'title' => $this->title,
             'price' => (Order::where('offer_id',$this->id)->value('total_price') == null) ? $this->price : Order::where('offer_id',$this->id)->value('total_price'),
             'offer_code' => $this->offer_code,

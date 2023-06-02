@@ -21,7 +21,8 @@ class ReviewController extends Controller
             'panctual_delevery' => 'required',
             'description' => 'required',
             'buyer_id' => 'required',
-            'job_id' => 'required'
+            'job_id' => 'required',
+            'offer_id' => 'required'
 
         );
         /// end of Validation Rules ////////////////////
@@ -47,7 +48,8 @@ class ReviewController extends Controller
                     'panctual_delevery' => $request->panctual_delevery,
                     'description' => $request->description,
                     'user_id' => $request->buyer_id,
-                    'job_id' => $request->job_id
+                    'job_id' => $request->job_id,
+                    'offer_id' => $request->offer_id
                 ]);
                 /////////////////////////////////////////////////
 

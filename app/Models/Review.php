@@ -9,7 +9,7 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['service_quality','commun_followup','panctual_delevery','description','user_id','job_id'];
+    protected $fillable = ['service_quality','commun_followup','panctual_delevery','description','user_id','job_id','offer_id'];
 
     // public $timestamps = false;
 
