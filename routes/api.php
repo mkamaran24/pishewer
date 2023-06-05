@@ -93,7 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Private Category Route ////////////////////
     Route::post('categories', [CategoryController::class, "store"]);
     Route::get('categories/{categ_id}', [CategoryController::class, "show"]);
-    Route::put('categories/{categ_id}', [CategoryController::class, "update"]);
+    Route::post('categories/{categ_id}', [CategoryController::class, "update"]);
     Route::delete('categories/{categ_id}', [CategoryController::class, "destroy"]);
     // end of Private Category Route ////////////
 

@@ -150,6 +150,8 @@ class CategoryController extends Controller
         try {
             // Validation of $id should goes here
 
+        
+           // dd($request->all());
 
             /////////////////////////////////////
 
@@ -171,23 +173,48 @@ class CategoryController extends Controller
             $categ->image = $new_categ_image;
             $categ->save();
 
+           
+            ///
+            // $categ_translation = null;
             if (is_array($request->categ_trans)) {
                 foreach ($request->categ_trans as $key => $ct) {
                     $decoded_ct = json_decode($ct);
-                    CategoryTrans::create([
-                        'name' => $decoded_ct->name,
-                        'locale' => $decoded_ct->locale,
-                        'categ_id' => $categ->id
-                    ]);
+         
+                $categ_translation = CategoryTrans::where('locale',$decoded_ct->locale)->where('categ_id',$id)->update(['name'=>$decoded_ct->name]);
                 }
+                
+
+                return response()->json([
+                    'message' => "Done"],200);
+
             } else {
                 return response()->json([
                     'status' => true,
                     'message' => 'categ_trans is not array'
                 ], 500);
             }
+        
+
+         
+
+
+            // if (is_array($locals)) {
+            //     foreach ($locals as $key => $ct) {
+            //         dd($ct);
+
+            //     //  $locals[$key]=$decoded_ct->locale;
+            //     //     // CategoryTrans::create([
+            //     //     //     'name' => $decoded_ct->name,
+            //     //     //     'locale' => $decoded_ct->locale,
+            //     //     //     'categ_id' => $categ->id
+            //     //     // ]);
+            //      } 
+
+            //     }
+
+            
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
             // abort(code: 500, message: 'fail to update');
             //Logs implementation goes down herer
 
