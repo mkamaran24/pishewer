@@ -76,14 +76,11 @@ class CategoryController extends Controller
                         'categ_id' => $categ->id
                     ]);
                 }
-
-            }
-            else
-            {
+            } else {
                 return response()->json([
                     'status' => true,
                     'message' => 'categ_trans is not array'
-                ],500);
+                ], 500);
             }
             /////////////////////////////////////////////////////////
 
@@ -91,7 +88,7 @@ class CategoryController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Object Created'
-            ],201);
+            ], 201);
             ///////////////////////////////////////////////////////
 
         } catch (\Throwable $th) {
@@ -157,42 +154,37 @@ class CategoryController extends Controller
             /////////////////////////////////////
 
             // Validation of $request should goes here
+            ////
 
-            //Validations Rules //////////////////////////
-            $rules = array(
-                'name' => 'required',
-            );
-            /// end of Validation Rules ////////////////////
+            // add image to storage ////////////////////////////////
+            $catge_image = $request->image;
+            $new_categ_image = random_int(100000, 999999) . '.' . $catge_image->getClientOriginalExtension();
+            Storage::disk('public')->put($new_categ_image, file_get_contents($catge_image));
 
-            //Validation Custom Messages
-            // $messages = array('title'=>'All data required');
-
-
-            // Validator Check //////////////////////////////
-            $validator = Validator::make($request->all(), $rules);
-            if ($validator->fails()) {
-                $messages = $validator->messages();
-                $errors = $messages->all(); //convert them into one array
-                return response()->json([
-                    'status' => false,
-                    'reason' => 'Validation Fails',
-                    'messages' => $errors,
-                ], 422);
-            }
-
-            /////////////////////////////////////
-
+            // Save to DB ///////////////////////////////////////////
             $categ = CategoryModel::find($id);
-            if ($categ) {
-                $categ->update([
-                    'name' => $request->name,
-                ]);
-                return new CategoryResource($categ);
+
+            $img_path = 'public/' . $categ->image;
+
+            Storage::delete($img_path);
+
+            $categ->image = $new_categ_image;
+            $categ->save();
+
+            if (is_array($request->categ_trans)) {
+                foreach ($request->categ_trans as $key => $ct) {
+                    $decoded_ct = json_decode($ct);
+                    CategoryTrans::create([
+                        'name' => $decoded_ct->name,
+                        'locale' => $decoded_ct->locale,
+                        'categ_id' => $categ->id
+                    ]);
+                }
             } else {
                 return response()->json([
-                    'status' => false,
-                    'messages' => "Object Not Found"
-                ], 404);
+                    'status' => true,
+                    'message' => 'categ_trans is not array'
+                ], 500);
             }
         } catch (\Throwable $th) {
             //throw $th;
