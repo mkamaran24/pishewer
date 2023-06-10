@@ -92,9 +92,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Private Category Route ////////////////////
     Route::post('categories', [CategoryController::class, "store"]);
-    Route::get('categories/{categ_id}', [CategoryController::class, "show"]);
+    // Route::get('categories/{categ_id}', [CategoryController::class, "show"]);
     Route::post('categories/{categ_id}', [CategoryController::class, "update"]);
     Route::delete('categories/{categ_id}', [CategoryController::class, "destroy"]);
+    Route::put('categories/popular',[CategoryController::class, "popular"]);
+    Route::put('categories/unpopular',[CategoryController::class, "unpopular"]);
+    Route::get('categories/popular',[CategoryController::class, "getpopular"]);
     // end of Private Category Route ////////////
 
     // Private Subcategory Route //////////////////////////////////////////////////////////////

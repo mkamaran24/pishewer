@@ -9,6 +9,6 @@ class CategoryTrans extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','locale','categ_id'];
+    protected $fillable = ['name','description','popular','locale','categ_id'];
 
 }
