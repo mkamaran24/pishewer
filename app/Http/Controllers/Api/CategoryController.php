@@ -181,9 +181,7 @@ class CategoryController extends Controller
                         CategoryTrans::where('locale', $decoded_ct->locale)->where('categ_id', $id)->update(['name' => $decoded_ct->name, 'description' => $decoded_ct->description]);
                     }
 
-                    return response()->json([
-                        'message' => "Object Updated"
-                    ], 200);
+                    return new CategoryResource($categ);
 
                 } else {
                     return response()->json([
