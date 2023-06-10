@@ -97,7 +97,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('categories/{categ_id}', [CategoryController::class, "destroy"]);
     Route::put('categories/popular',[CategoryController::class, "popular"]);
     Route::put('categories/unpopular',[CategoryController::class, "unpopular"]);
-    Route::get('categories/popular',[CategoryController::class, "getpopular"]);
     // end of Private Category Route ////////////
 
     // Private Subcategory Route //////////////////////////////////////////////////////////////
@@ -207,6 +206,7 @@ Route::get('addons', [AddonController::class, "index"]);
 // Public Category Route /////////////////////////////
 Route::get('categories', [CategoryController::class, "index"]);
 Route::get('categories/{categid}/subcategories', [CategoryController::class, "getSubcategory"]);
+Route::get('categories/popular',[CategoryController::class, "getpopular"]);
 // end Public of Category Route /////////////////////////
 
 // Public Subcategory Route /////////////////////////////
