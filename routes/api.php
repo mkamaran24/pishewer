@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\BlogCommentController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CodeCheckController;
 use App\Http\Controllers\Api\ForgetPasswordController;
+use App\Http\Controllers\Api\HeroController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\isMailVerifiedController;
 use App\Http\Controllers\Api\JobListMessageController;
@@ -68,6 +69,12 @@ Route::post('auth/password/reset/{otpcode}', [ResetPasswordController::class, '_
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Middleware Filter for Private Access //////////////////////////////////////////////////////////////////////////////////////
 Route::middleware('auth:sanctum')->group(function () {
+
+    // private home page / hero section /////////////////////////////////////////////////////
+    Route::get('hero',[HeroController::class,"index"]);
+    Route::post('hero',[HeroController::class,"store"]);
+    Route::post('hero/{id}',[HeroController::class,"updateimage"]);
+    // end of private home page / hero section //////////////////////////////////////////////
 
     // Private Jobs /////////////////////////////////////////////////////////////////////////
     Route::get('jobs', [JobController::class, "index"]);
@@ -227,20 +234,4 @@ Route::put('test/offers/close/{offer_id}',function ($id){
     ],200);
 });
 
-///        ///
-
-
-
-// Route::apiResources([
-//     'users' => UserController::class,
-//     'jobs' => JobController::class,
-//     'addons' => AddonController::class,
-//     'categories' => CategoryController::class,
-//     'subcategories' => SubcategoryController::class,
-//     'profiles' => Profile::class,
-//     'city' => City::class,
-//     'blogcategory' => BlogCategory::class,
-//     'blogs' => BlogController::class,
-//     'offers' => OfferController::class,
-//     'orders' => OrderController::class
-// ]);
+/// end test api ///
