@@ -74,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('hero',[HeroController::class,"index"]);
     Route::post('hero',[HeroController::class,"store"]);
     Route::post('hero/{id}',[HeroController::class,"updateimage"]);
+    Route::delete('hero/{id}',[HeroController::class,"destroy"]);
     // end of private home page / hero section //////////////////////////////////////////////
 
     // Private Jobs /////////////////////////////////////////////////////////////////////////
