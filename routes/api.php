@@ -235,4 +235,27 @@ Route::put('test/offers/close/{offer_id}',function ($id){
     ],200);
 });
 
+
+Route::get('font', function () {
+
+    
+    $response = Http::get('https://api.pishewer.com/storage/fonts/Peshang_Des_1_bold_.ttf');
+
+    if ($response->successful()) {
+        $data = $response->body();
+        return $data;
+    } else {
+        $statusCode = $response->status();
+        $errorMessage = $response->body();
+
+        return $statusCode . " " . $errorMessage;
+    }
+
+
+});
+
 /// end test api ///
+
+
+// 
+
