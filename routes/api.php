@@ -235,10 +235,14 @@ Route::put('test/offers/close/{offer_id}',function ($id){
     ],200);
 });
 
+/// end test api ///
 
-Route::get('font', function () {
 
-    
+// Assest API ///////////
+
+// ttf ////////
+Route::get('fonts/peshang/Peshang_Des_1_bold_.ttf', function () {
+
     $response = Http::get('https://api.pishewer.com/storage/fonts/Peshang_Des_1_bold_.ttf');
 
     if ($response->successful()) {
@@ -250,12 +254,40 @@ Route::get('font', function () {
 
         return $statusCode . " " . $errorMessage;
     }
-
-
 });
 
-/// end test api ///
+// wof //////////
+Route::get('fonts/peshang/Peshang_Des_1_bold_.woff', function () {
+
+    $response = Http::get('https://api.pishewer.com/storage/fonts/Peshang_Des_1_bold_.woff');
+
+    if ($response->successful()) {
+        $data = $response->body();
+        return $data;
+    } else {
+        $statusCode = $response->status();
+        $errorMessage = $response->body();
+
+        return $statusCode . " " . $errorMessage;
+    }
+});
+
+// eot
+Route::get('fonts/peshang/Peshang_Des_1_bold_.eot', function () {
+
+    $response = Http::get('https://api.pishewer.com/storage/fonts/Peshang_Des_1_bold_.eot');
+
+    if ($response->successful()) {
+        $data = $response->body();
+        return $data;
+    } else {
+        $statusCode = $response->status();
+        $errorMessage = $response->body();
+
+        return $statusCode . " " . $errorMessage;
+    }
+});
 
 
-// 
+// end of Assest API //////
 
