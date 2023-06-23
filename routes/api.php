@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Resources\Job;
 use App\Models\Jobs;
 use App\Models\Offer;
+use Illuminate\Support\Facades\Http;
 
 // test MK Laptop
 
@@ -205,6 +206,8 @@ Route::get('jobs', [JobController::class, "index"]);
 Route::get('jobs/{job_id}', [JobController::class, "show"]);
 Route::get('jobs/getjobsbycategory/{categid}', [JobController::class, "getjobsbycateg"]);
 Route::get('jobs/search/query', [JobController::class, "searchjobs"]);
+Route::get('jobs/search/hero', [JobController::class, "search_hero"]);
+Route::get('jobs/featured/query',[JobController::class,"featured"]);
 // end of Public Jobs Route /////////////////////////
 
 // Addon Route ///////////////////////////////

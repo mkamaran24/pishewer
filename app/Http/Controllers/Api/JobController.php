@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Hero\JobTrans as HeroJobTrans;
 use App\Http\Resources\Job as JobResource;
 use App\Models\Addons as AddonModel;
 use App\Models\Favorite;
@@ -490,36 +491,33 @@ class JobController extends Controller
 
             $min = null;
             $max = null;
-            if ($budget_range == 1) 
-            {
+            if ($budget_range == 1) {
                 $min = 5000;
                 $max = 100000;
-                $jobsQuery->whereHas('jobtrans', function ($query) use($min,$max){
+                $jobsQuery->whereHas('jobtrans', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
-            }elseif ($budget_range == 2) {
+            } elseif ($budget_range == 2) {
                 $min = 100000;
                 $max = 400000;
-                $jobsQuery->whereHas('jobtrans', function ($query) use($min,$max){
+                $jobsQuery->whereHas('jobtrans', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
-            }elseif ($budget_range == 3) {
+            } elseif ($budget_range == 3) {
                 $min = 400000;
                 $max = 800000;
-                $jobsQuery->whereHas('jobtrans', function ($query) use($min,$max){
+                $jobsQuery->whereHas('jobtrans', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
-            }
-            elseif ($budget_range == 4) {
+            } elseif ($budget_range == 4) {
                 $max = 800000;
-                $jobsQuery->whereHas('jobtrans', function ($query) use($max){
-                    $query->where('price', '>=' , $max);
+                $jobsQuery->whereHas('jobtrans', function ($query) use ($max) {
+                    $query->where('price', '>=', $max);
                 });
-            }
-            else{
+            } else {
                 // All
-                $jobsQuery->whereHas('jobtrans', function ($query){
-                    $query->where('price', '>=' , 0);
+                $jobsQuery->whereHas('jobtrans', function ($query) {
+                    $query->where('price', '>=', 0);
                 });
             }
 
@@ -534,7 +532,7 @@ class JobController extends Controller
             if ($new_sller != 0) {
                 $jobsQuery->where('sold', 1);
             }
-            
+
             // category
             if ($categ_id != 0) {
                 $jobsQuery->where('categ_id', $categ_id);
@@ -542,21 +540,43 @@ class JobController extends Controller
 
             // Delivery Time
             if ($dd != 0) {
-                $jobsQuery->whereHas('jobtrans',function ($query) use ($dd){
-                    $query->where('completein','>=',$dd);
+                $jobsQuery->whereHas('jobtrans', function ($query) use ($dd) {
+                    $query->where('completein', '>=', $dd);
                 });
             }
 
             $jobs = $jobsQuery->paginate(10);
 
             return JobResource::collection($jobs);
-            
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage(),
             ], 500);
+        }
+    }
+
+    public function search_hero(Request $request)
+    {
+        try {
+            $keyword = $request->query('keyword'); // The search keyword entered by the user
+
+            // $jobs = Jobs::whereHas('jobtrans', function ($query) use ($keyword){
+            //     $query->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($keyword) . '%']);
+            // })->get();
+
+            // return $jobs;
+
+            $jobs_id = JobTrans::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($keyword) . '%'])->pluck('job_id');
+
+            $jobs = Jobs::find($jobs_id);
+
+            return JobResource::collection($jobs);
+
+            // return HeroJobTrans::collection($jobs);
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 
@@ -649,6 +669,21 @@ class JobController extends Controller
 
         } catch (\Throwable $th) {
             //throw $th;
+        }
+    }
+
+    public function featured()
+    {
+        try {
+
+            $jobs = Jobs::inRandomOrder()->take(8)->get();
+
+            // $jobs = Jobs::inRandomOrder()->groupBy('categ_id')->limit(8)->get();
+
+            return JobResource::collection($jobs);
+
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 }

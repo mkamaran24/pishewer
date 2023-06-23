@@ -21,4 +21,9 @@ class JobTrans extends Model
         'locale'
     ];
 
+    public function job()
+    {
+        return $this->belongsTo(Jobs::class,'job_id');
+    }
+
 }
