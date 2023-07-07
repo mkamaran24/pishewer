@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use App\Mail\VerificationEmail;
 use App\Models\UserTranslation;
 use Illuminate\Support\Facades\App;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -170,4 +171,43 @@ class AuthController extends Controller
             return redirect('https://pishewer.com/verifiedMesage.html');
         }
     }
+
+    public function redirect()
+    {
+        return Socialite::driver('google')->stateless()->redirect();
+    }
+
+    public function callback(Request $request)
+    {
+        try {
+            $google_user = Socialite::driver('google')->stateless()->user();
+
+            $user = UserModel::where('google_id', $google_user->getId())->first();
+
+            if ($user == null) {
+                $new_user = UserModel::create([
+                    'name' => $google_user->getName(),
+                    'email' => $google_user->getEmail(),
+                    'google_id' => $google_user->getId()
+                ]);
+
+                $token = $new_user->createToken('auth-token')->plainTextToken;
+
+                return response()->json([
+                    "message" => "Google Authentication Done",
+                    "token" => $token
+                ], 200);
+            }
+
+            $token = $user->createToken('auth-token')->plainTextToken;
+
+            return response()->json([
+                "message" => "Google Authentication Done",
+                "token" => $token
+            ], 200);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
 }

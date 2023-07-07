@@ -54,6 +54,8 @@ use Illuminate\Support\Facades\Http;
 // Auth Routes ///////////////////////////
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
+Route::get('auth/google/redirect',[AuthController::class,'redirect']);
+Route::get('auth/google/call-back',[AuthController::class,'callback']);
 //////////////////////////////////////////
 
 // Email Verfied Middleware //////////////
