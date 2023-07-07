@@ -186,9 +186,18 @@ class AuthController extends Controller
 
             if ($user == null) {
                 $new_user = UserModel::create([
-                    'name' => $google_user->getName(),
+                    // 'username' => $google_user->getName(),
                     'email' => $google_user->getEmail(),
-                    'google_id' => $google_user->getId()
+                    'google_id' => $google_user->getId(),
+                    'is_email_verfied' => true,
+                    'email_verified_at' => now()
+                ]);
+
+                $new_user_trans = UserTranslation::create([
+                    'fullname' => $google_user->getName(),
+                    'username' => $google_user->getName(),
+                    'locale' => "en",
+                    'user_id' => $new_user->id,
                 ]);
 
                 $token = $new_user->createToken('auth-token')->plainTextToken;
