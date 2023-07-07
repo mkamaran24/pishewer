@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'fastpay_acc_num',
         'phone_number',
+        'google_id'
     ];
 
     /**
