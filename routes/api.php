@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\BlogCommentController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CodeCheckController;
 use App\Http\Controllers\Api\ForgetPasswordController;
+use App\Http\Controllers\Api\FreelanceCommunityController;
 use App\Http\Controllers\Api\HeroController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\isMailVerifiedController;
@@ -54,8 +55,8 @@ use Illuminate\Support\Facades\Http;
 // Auth Routes ///////////////////////////
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
-Route::get('auth/google/redirect',[AuthController::class,'redirect']);
-Route::get('auth/google/call-back',[AuthController::class,'callback']);
+Route::get('auth/google/redirect', [AuthController::class, 'redirect']);
+Route::get('auth/google/call-back', [AuthController::class, 'callback']);
 //////////////////////////////////////////
 
 // Email Verfied Middleware //////////////
@@ -74,10 +75,10 @@ Route::post('auth/password/reset/{otpcode}', [ResetPasswordController::class, '_
 Route::middleware('auth:sanctum')->group(function () {
 
     // private home page / hero section /////////////////////////////////////////////////////
-    Route::get('hero',[HeroController::class,"index"]);
-    Route::post('hero',[HeroController::class,"store"]);
-    Route::post('hero/{id}',[HeroController::class,"updateimage"]);
-    Route::delete('hero/{id}',[HeroController::class,"destroy"]);
+    Route::get('hero', [HeroController::class, "index"]);
+    Route::post('hero', [HeroController::class, "store"]);
+    Route::post('hero/{id}', [HeroController::class, "updateimage"]);
+    Route::delete('hero/{id}', [HeroController::class, "destroy"]);
     // end of private home page / hero section //////////////////////////////////////////////
 
     // Private Jobs /////////////////////////////////////////////////////////////////////////
@@ -106,8 +107,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::get('categories/{categ_id}', [CategoryController::class, "show"]);
     Route::post('categories/{categ_id}', [CategoryController::class, "update"]);
     Route::delete('categories/{categ_id}', [CategoryController::class, "destroy"]);
-    Route::put('categories/popular',[CategoryController::class, "popular"]);
-    Route::put('categories/unpopular',[CategoryController::class, "unpopular"]);
+    Route::put('categories/popular', [CategoryController::class, "popular"]);
+    Route::put('categories/unpopular', [CategoryController::class, "unpopular"]);
     // end of Private Category Route ////////////
 
     // Private Subcategory Route //////////////////////////////////////////////////////////////
@@ -170,7 +171,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //
     Route::get('invoice', [InvoiceController::class, "index"]);
     Route::get('invoice/{seller_id}', [InvoiceController::class, "getInvoices"]);
-    Route::put('invoice/{invoice_id}',[InvoiceController::class, "update"]);
+    Route::put('invoice/{invoice_id}', [InvoiceController::class, "update"]);
     // end of Private Offer Route /////////////////////////////////
 
     // Private Order Route ////////////////////////////////////////
@@ -209,7 +210,7 @@ Route::get('jobs/{job_id}', [JobController::class, "show"]);
 Route::get('jobs/getjobsbycategory/{categid}', [JobController::class, "getjobsbycateg"]);
 Route::get('jobs/search/query', [JobController::class, "searchjobs"]);
 Route::get('jobs/search/hero', [JobController::class, "search_hero"]);
-Route::get('jobs/featured/query',[JobController::class,"featured"]);
+Route::get('jobs/featured/query', [JobController::class, "featured"]);
 // end of Public Jobs Route /////////////////////////
 
 // Addon Route ///////////////////////////////
@@ -219,7 +220,7 @@ Route::get('addons', [AddonController::class, "index"]);
 // Public Category Route /////////////////////////////
 Route::get('categories', [CategoryController::class, "index"]);
 Route::get('categories/{categid}/subcategories', [CategoryController::class, "getSubcategory"]);
-Route::get('categories/popular',[CategoryController::class, "getpopular"]);
+Route::get('categories/popular', [CategoryController::class, "getpopular"]);
 // end Public of Category Route /////////////////////////
 
 // Public Subcategory Route /////////////////////////////
@@ -230,14 +231,21 @@ Route::get('subcategories', [SubcategoryController::class, "index"]);
 Route::get('profiles/{user_id}', [Profile::class, "show"]);
 // end of Profile Route ///////////////////////////
 
+// Freelance Community Route ///////////////////////
+Route::get('freelance-community', [FreelanceCommunityController::class, 'index']);
+Route::post('freelance-community', [FreelanceCommunityController::class, 'store']);
+Route::put('freelance-community/{id}', [FreelanceCommunityController::class, 'update']);
+Route::delete('freelance-community/{id}', [FreelanceCommunityController::class, 'destroy']);
+// end of Freelance Community Route ////////////////
+
 
 // test api ///
 
-Route::put('test/offers/close/{offer_id}',function ($id){
-    Offer::where('id',$id)->update(['offer_state'=>'Closed']);
+Route::put('test/offers/close/{offer_id}', function ($id) {
+    Offer::where('id', $id)->update(['offer_state' => 'Closed']);
     return response()->json([
         'message' => 'Offer Updated Successfully'
-    ],200);
+    ], 200);
 });
 
 /// end test api ///
@@ -248,7 +256,7 @@ Route::put('test/offers/close/{offer_id}',function ($id){
 // ttf ////////
 Route::get('fonts/peshang/Peshang_Des_1_bold_.ttf', function () {
 
-    $response = Http::get('https://api.pishewer.com/storage/fonts/Peshang_Des_1_bold_.ttf');
+    $response = Http::get('https://server.pishewer.com/storage/fonts/Peshang_Des_1_bold_.ttf');
 
     if ($response->successful()) {
         $data = $response->body();
@@ -264,7 +272,7 @@ Route::get('fonts/peshang/Peshang_Des_1_bold_.ttf', function () {
 // wof //////////
 Route::get('fonts/peshang/Peshang_Des_1_bold_.woff', function () {
 
-    $response = Http::get('https://api.pishewer.com/storage/fonts/Peshang_Des_1_bold_.woff');
+    $response = Http::get('https://server.pishewer.com/storage/fonts/Peshang_Des_1_bold_.woff');
 
     if ($response->successful()) {
         $data = $response->body();
@@ -280,7 +288,7 @@ Route::get('fonts/peshang/Peshang_Des_1_bold_.woff', function () {
 // eot
 Route::get('fonts/peshang/Peshang_Des_1_bold_.eot', function () {
 
-    $response = Http::get('https://api.pishewer.com/storage/fonts/Peshang_Des_1_bold_.eot');
+    $response = Http::get('https://server.pishewer.com/storage/fonts/Peshang_Des_1_bold_.eot');
 
     if ($response->successful()) {
         $data = $response->body();
@@ -298,4 +306,3 @@ Route::get('fonts/peshang/Peshang_Des_1_bold_.eot', function () {
 
 
 // test test test
-
