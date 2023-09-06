@@ -23,14 +23,13 @@ class Job extends JsonResource
             'id' => (string)$this->id,
             'status' => $this->status,
             'favs_count' => $this->favorites_count,
-            'favorited_by_user' => $user ? $this->favorites->contains('user_id',$user->id) : false,
+            'favorited_by_user' => $user ? $this->favorites->contains('user_id', $user->id) : false,
             'job_translation' => TranslationJob::collection($this->jobtrans),
             'user' => new User($this->user),
             'category' => new JobCategory($this->category),
-            'subcategory' => new JobSubcategory($this->subcategory),
             'image' => Jobimage::collection($this->jobimages),
             'keyword' => Keyword::collection($this->keywords),
-            'addons'=>$this->addons,
+            'addons' => $this->addons,
             'reviews' => new ReviewCollection($this->reviews)
         ];
     }

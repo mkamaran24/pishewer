@@ -54,8 +54,7 @@ class JobController extends Controller
             'completein' => 'required',
             'addons' => 'required',
             'user_id' => 'required',
-            'categ_id' => 'required',
-            'subcateg_id' => 'required'
+            'categ_id' => 'required'
         );
         /// end of Validation Rules ////////////////////
 
@@ -81,8 +80,7 @@ class JobController extends Controller
                 // save $req to DB //////////////////////////////
                 $jobs = Jobs::create([
                     'user_id' => $request->user_id,
-                    'categ_id' => $request->categ_id,
-                    'subcateg_id' => $request->subcateg_id
+                    'categ_id' => $request->categ_id
                 ]);
 
 
@@ -376,8 +374,6 @@ class JobController extends Controller
                 } elseif ($db_feild == "user_id") {
                     $req_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "categ_id") {
-                    $req_obj[$db_feild] = $req_feild;
-                } elseif ($db_feild == "subcateg_id") {
                     $req_obj[$db_feild] = $req_feild;
                 }
             }
@@ -681,7 +677,6 @@ class JobController extends Controller
             // $jobs = Jobs::inRandomOrder()->groupBy('categ_id')->limit(8)->get();
 
             return JobResource::collection($jobs);
-
         } catch (\Throwable $th) {
             throw $th;
         }

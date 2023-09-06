@@ -111,12 +111,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('categories/unpopular', [CategoryController::class, "unpopular"]);
     // end of Private Category Route ////////////
 
-    // Private Subcategory Route //////////////////////////////////////////////////////////////
-    Route::post('subcategories/{categ_id}', [SubcategoryController::class, "store"]);
-    Route::get('subcategories/{subcateg_id}', [SubcategoryController::class, "show"]);
-    Route::put('subcategories/{subcateg_id}', [SubcategoryController::class, "update"]);
-    Route::delete('subcategories/{subcateg_id}', [SubcategoryController::class, "destroy"]);
-    // end of Private Subcategory Route //////////////////////////////////////////////////////////
+    // Private Subcategory Route (Cancled) //////////////////////////////////////////////////////////////
+    // Route::post('subcategories/{categ_id}', [SubcategoryController::class, "store"]);
+    // Route::get('subcategories/{subcateg_id}', [SubcategoryController::class, "show"]);
+    // Route::put('subcategories/{subcateg_id}', [SubcategoryController::class, "update"]);
+    // Route::delete('subcategories/{subcateg_id}', [SubcategoryController::class, "destroy"]);
+    // end of Private Subcategory Route (Cancled)//////////////////////////////////////////////////////////
 
     // Private Profile Route /////////////////////////////////
     Route::get('profiles', [Profile::class, "index"]);
@@ -224,7 +224,7 @@ Route::get('categories/popular', [CategoryController::class, "getpopular"]);
 // end Public of Category Route /////////////////////////
 
 // Public Subcategory Route /////////////////////////////
-Route::get('subcategories', [SubcategoryController::class, "index"]);
+// Route::get('subcategories', [SubcategoryController::class, "index"]);
 // end Public of Subcategory Route //////////////////////
 
 // Profile Route /////////////////////////////////

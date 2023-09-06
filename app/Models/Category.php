@@ -14,12 +14,6 @@ class Category extends Model
 
     public function categorytrans()
     {
-        return $this->hasMany(CategoryTrans::class,'categ_id')->where('locale', App::getLocale());
+        return $this->hasMany(CategoryTrans::class, 'categ_id')->where('locale', App::getLocale());
     }
-
-    public function subcategories()
-    {
-        return $this->hasMany(Subcategory::class,'categ_id');
-    }
-
 }

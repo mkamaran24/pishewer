@@ -10,7 +10,7 @@ class Jobs extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['status', 'sold', 'categ_id' , 'subcateg_id' , 'user_id'];
+    protected $fillable = ['status', 'sold', 'categ_id', 'subcateg_id', 'user_id'];
 
     // protected $casts = [
     //     'keyword' => 'array',
@@ -19,7 +19,7 @@ class Jobs extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function addons()
@@ -61,12 +61,6 @@ class Jobs extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class,'categ_id');
+        return $this->belongsTo(Category::class, 'categ_id');
     }
-
-    public function subcategory()
-    {
-        return $this->belongsTo(Subcategory::class,'subcateg_id');
-    }
-
 }
