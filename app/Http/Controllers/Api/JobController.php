@@ -27,9 +27,9 @@ class JobController extends Controller
 
         try {
 
-            // return Jobs::with('jobtrans')->get();
+            // return Jobs::with('jobtrans')->get(); /////
 
-            return JobResource::collection(Jobs::withCount('favorites')->get());
+            return JobResource::collection(Jobs::withCount('favorites')->simplePaginate(10));
         } catch (\Throwable $th) {
 
             // abort(code: 500, message: 'fail to fetch');
@@ -399,8 +399,8 @@ class JobController extends Controller
 
         try {
 
-            // Delete image in Storage ////////////////////
-            $img_name = DB::table('jobimages')->select('name')->where('job_id', $id)->simplePaginate(10);
+            // Delete image in Storage ///////////////////
+            $img_name = DB::table('jobimages')->select('name')->where('job_id', $id)->get();
             foreach ($img_name as $value) {
                 $img_path = "public/" . $value->name;
                 Storage::delete($img_path);
