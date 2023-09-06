@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Resources\Job;
 use App\Models\Jobs;
 use App\Models\Offer;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 // test MK Laptop
@@ -305,4 +306,44 @@ Route::get('fonts/peshang/Peshang_Des_1_bold_.eot', function () {
 // end of Assest API //////
 
 
-// test test test
+// dummy data lab //////////////////////
+
+// jobs trans table
+Route::get('dummy/jobtrans/store', function () {
+    try {
+        $data_job = [];
+        $data_jobtrans = [];
+
+        for ($i = 0; $i < 1000; $i++) {
+            $data_job[] = [
+                'sold' => 0,
+                'status' => 0,
+                'user_id' => 40,
+                'categ_id' => 12
+            ];
+        }
+
+        for ($i = 0; $i < 1000; $i++) {
+            $data_jobtrans[] = [
+                'title' => "nec molestie sed justo pellentesque viverra pede ac diam" . $i,
+                'description' => "sollicitudin mi sit amet lobortis sapien sapien non mi integer ac neque duis bibendum morbi non quam nec dui luctus rutrum nulla tellus in sagittis dui vel nisl duis ac nibh fusce lacus purus aliquet at feugiat non pretium quis lectus suspendisse potenti in eleifend quam a odio in hac habitasse platea dictumst maecenas ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque ut erat curabitur gravida nisi at nibh in hac habitasse platea dictumst aliquam augue quam sollicitudin vitae consectetuer eget rutrum at lorem integer tincidunt ante vel ipsum praesent blandit lacinia erat vestibulum sed magna at nunc commodo placerat praesent blandit nam nulla integer pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula suspendisse ornare consequat lectus in est risus auctor sed tristique in tempus sit amet sem fusce consequat nulla nisl nunc nisl duis",
+                'price' => "324",
+                'completein' => "5",
+                'locale' => "en",
+                'job_id' => $i + 41
+            ];
+        }
+
+        // Insert the data into the "job" table
+        DB::table('jobs')->insert($data_job);
+
+        // Insert the data into the "job_trans" table
+        DB::table('job_trans')->insert($data_jobtrans);
+
+        return response()->json([
+            "mesg" => "data inserted successfully"
+        ], 200);
+    } catch (\Throwable $th) {
+        throw $th;
+    }
+});
