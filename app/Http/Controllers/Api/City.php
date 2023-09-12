@@ -45,7 +45,7 @@ class City extends Controller
 
             if (is_array($request->city_trans)) {
                 foreach ($request->city_trans as $key => $ct) {
-                    
+
                     CityTranslation::create([
                         'cityname' => $ct['name'],
                         'locale' => $ct['locale'],
@@ -97,7 +97,30 @@ class City extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $city = ModelsCity::find($id);
+            if ($city != null) {
+                if (is_array($request->city_trans)) {
+                    foreach ($request->categ_trans as $key => $ct) {
+                        $decoded_ct = json_decode($ct);
+
+                        ModelsCity::where('locale', $decoded_ct->locale)->where('city_id', $id)->update(['cityname' => $decoded_ct->name]);
+                    }
+                    return new ResourcesCity($city);
+                } else {
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'city_trans is not array'
+                    ], 500);
+                }
+            } else {
+                return response()->json([
+                    'message' => "Object Not Found"
+                ], 404);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**

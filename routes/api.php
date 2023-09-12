@@ -130,6 +130,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Private City Route /////////////////////////////////////
     Route::get('city', [City::class, "index"]);
     Route::post('city', [City::class, "store"]);
+    Route::post('city/{id}', [City::class, "update"]);
     // end of Private City Route //////////////////////////////
 
     // Private Blog Category //////////////////////////////////
