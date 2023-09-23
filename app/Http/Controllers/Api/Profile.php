@@ -137,7 +137,7 @@ class Profile extends Controller
                     ////////////////////////////////////////////////////////////////////////////
                     // save image in laravel Private Storage ///////////////////////////////////
                     Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
-    
+
                     Storage::disk('public')->put($new_image_profile, file_get_contents($image_profile));
                     /////////////////////////////////////////////////////////////////////////////
                     $profile = ModelsProfile::create([
@@ -279,111 +279,45 @@ class Profile extends Controller
 
     public function updateprofile(Request $request, $id)
     {
-        //
-        //Validations Rules //////////////////////////
-        $rules = array(
-            'title' => 'required',
-            'description' => 'required',
-            'skills' => 'required',
-            'langs' => 'required',
-            'certification' => 'required',
-            'city_id' => 'required',
-            'age' => 'required',
-            'gender' => 'required',
-            'user_id' => 'required'
-        );
-        /// end of Validation Rules ////////////////////
+        try {
 
-        // Validator Check //////////////////////////////
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            $messages = $validator->messages();
-            $errors = $messages->all(); //convert them into one array
-            return response()->json([
-                'status' => false,
-                'reason' => 'Validation Fails',
-                'messages' => $errors,
-            ], 422);
-        } else {
-            # put data to DB after Succes Validation
-            try {
+            $one_natid = $request->nationalid;
+            $image_profile = $request->imageprofile;
+            $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
+            $new_image_profile = 'IMG_Profile' . random_int(100000, 999999) . '.' . $image_profile->getClientOriginalExtension();
 
-                $one_natid = $request->nationalid;
-                $image_profile = $request->imageprofile;
-                $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
-                $new_image_profile = 'IMG_Profile' . random_int(100000, 999999) . '.' . $image_profile->getClientOriginalExtension();
-                // set NatID into Global String VAR ///////////////////////////////////////////////////////////
-                // $Global_Natid = $new_one_natid . ',';
-                ////////////////////////////////////////////////////////////////////////////
-                // save image in laravel Private Storage ///////////////////////////////////
-                Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
+            // save image in laravel Private Storage ///////////////////////////////////
+            Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
 
-                Storage::disk('public')->put($new_image_profile, file_get_contents($image_profile));
-                /////////////////////////////////////////////////////////////////////////////
-
-                // $Global_Natid = '';
-                // // start of NationalID logics ////////////////////////////////////////////////////////////////
-                // if ($request->hasFile('nationalid')) {
-                //     $natinal_id = $request->file('nationalid');
-                //     if (is_array($natinal_id)) {
-                //         foreach ($natinal_id as $key => $nat_id) {
-
-                //             $new_natid_name = random_int(100000, 999999) . $key . '.' . $nat_id->getClientOriginalExtension();
-
-                //             // convert NatID from Array to String Logic ///////////////////////////////////////////////////////////
-                //             $Global_Natid = $Global_Natid . $new_natid_name . ',';
-                //             ////////////////////////////////////////////////////////////////////////////
-
-                //             // save image in laravel Private Storage ///////////////////////////////////
-                //             Storage::disk('public')->put($new_natid_name, file_get_contents($nat_id));
-                //             /////////////////////////////////////////////////////////////////////////////
-                //         }
-                //     } else {
-                //         $one_natid = $request->nationalid;
-                //         $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
-                //         // set NatID into Global String VAR ///////////////////////////////////////////////////////////
-                //         $Global_Natid = $new_one_natid . ',';
-                //         ////////////////////////////////////////////////////////////////////////////
-                //         // save image in laravel Private Storage ///////////////////////////////////
-                //         Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
-                //         /////////////////////////////////////////////////////////////////////////////
-                //     }
-                // } else {
-                //     return "File Not Found";
-                // }
-                // end of NationalID Logics /////////////////////////////////////////////////////////////////////////////////
-
-                // update $req to DB //////////////////////////////
-                $profile = ModelsProfile::find($id);
-
-                $profile->title = $request->title;
-                $profile->description = $request->description;
-                $profile->skills = implode(',', $request->skills);
-                $profile->langs = implode(',', $request->langs);
-                $profile->certification = $request->certification;
-                $profile->nationalid = $new_one_natid;
-                $profile->imageprofile = $new_image_profile;
-                $profile->city_id = $request->city_id;
-                $profile->age = $request->age;
-                $profile->gender = $request->gender;
-                $profile->user_id = $request->user_id;
-
-                $profile->save();
-                /////////////////////////////////////////////////
-
-                // return Job API Resource JSON Response //////////////
-                return new ResourcesProfile($profile);
-                ///////////////////////////////////////////////////////
+            Storage::disk('public')->put($new_image_profile, file_get_contents($image_profile));
+            /////////////////////////////////////////////////////////////////////////////
 
 
-            } catch (\Throwable $th) {
-                // abort(code: 500, message: 'fail to create');
-                //throw $th;
-                // return response()->json([
-                //     'status' => false,
-                //     'message' => $th->getMessage(),
-                // ], 500);
-            }
+            // update $req to DB //////////////////////////////
+            $profile = ModelsProfile::find($id);
+
+            $profile->title = $request->title;
+            $profile->description = $request->description;
+            $profile->skills = implode(',', $request->skills);
+            $profile->langs = implode(',', $request->langs);
+            $profile->certification = $request->certification;
+            $profile->nationalid = $new_one_natid;
+            $profile->imageprofile = $new_image_profile;
+            $profile->city_id = $request->city_id;
+            $profile->age = $request->age;
+            $profile->gender = $request->gender;
+            $profile->user_id = $request->user_id;
+
+            $profile->save();
+            /////////////////////////////////////////////////
+
+            // return Job API Resource JSON Response //////////////
+            return new ResourcesProfile($profile);
+            ///////////////////////////////////////////////////////
+
+
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 
