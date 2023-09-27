@@ -281,41 +281,59 @@ class Profile extends Controller
     {
         try {
 
-            $one_natid = $request->nationalid;
-            $image_profile = $request->imageprofile;
-            $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
-            $new_image_profile = 'IMG_Profile' . random_int(100000, 999999) . '.' . $image_profile->getClientOriginalExtension();
-
-            // save image in laravel Private Storage ///////////////////////////////////
-            Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
-
-            Storage::disk('public')->put($new_image_profile, file_get_contents($image_profile));
-            /////////////////////////////////////////////////////////////////////////////
-
-
-            // update $req to DB //////////////////////////////
             $profile = ModelsProfile::find($id);
-
-            $profile->title = $request->title;
-            $profile->description = $request->description;
-            $profile->skills = implode(',', $request->skills);
-            $profile->langs = implode(',', $request->langs);
-            $profile->certification = $request->certification;
-            $profile->nationalid = $new_one_natid;
-            $profile->imageprofile = $new_image_profile;
-            $profile->city_id = $request->city_id;
-            $profile->age = $request->age;
-            $profile->gender = $request->gender;
-            $profile->user_id = $request->user_id;
-
-            $profile->save();
-            /////////////////////////////////////////////////
-
+            $profile_req_obj = [];
+            $profile_trans_req_obj = [];
+            foreach ($request->all() as $db_feild => $req_feild) {
+                if ($db_feild == "nationalid") {
+                    // Store new image to private storage /////////////////////////
+                    $one_natid = $request->nationalid;
+                    $new_one_natid = "national_id" . time() . '.' . $one_natid->getClientOriginalExtension();
+                    Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
+                    // end of Store new image to private storage //////////////////
+                    // put the new image name to Object for update process ////
+                    $profile_req_obj[$db_feild] = $new_one_natid;
+                    // end of put the new image name to Object for update process ////
+                    // remove old image from private storage ///////
+                    $img_path = "public/" . $profile->nationalid;
+                    Storage::delete($img_path);
+                    // end of remove old image from private storage ////
+                } elseif ($db_feild == "imageprofile") {
+                    // Store new image to private storage /////////////////////////
+                    $image_profile = $request->imageprofile;
+                    $new_image_profile = "image_profile" . time() . '.' . $image_profile->getClientOriginalExtension();
+                    Storage::disk('public')->put($new_image_profile, file_get_contents($image_profile));
+                    // end of Store new image to private storage //////////////////
+                    // put the new image name to Object for update process ////
+                    $profile_req_obj[$db_feild] = $new_image_profile;
+                    // end of put the new image name to Object for update process ////
+                    // remove old image from private storage ///////
+                    $img_path = "public/" . $profile->imageprofile;
+                    Storage::delete($img_path);
+                    // end of remove old image from private storage ////
+                } elseif ($db_feild == "city_id") {
+                    $profile_req_obj[$db_feild] = $req_feild;
+                } elseif ($db_feild == "title") {
+                    $profile_trans_req_obj[$db_feild] = $req_feild;
+                } elseif ($db_feild == "description") {
+                    $profile_trans_req_obj[$db_feild] = $req_feild;
+                } elseif ($db_feild == "skills") {
+                    $profile_trans_req_obj[$db_feild] = implode(',', $req_feild);
+                } elseif ($db_feild == "langs") {
+                    $profile_trans_req_obj[$db_feild] = implode(',', $req_feild);
+                } elseif ($db_feild == "certification") {
+                    $profile_trans_req_obj[$db_feild] = $req_feild;
+                } elseif ($db_feild == "age") {
+                    $profile_trans_req_obj[$db_feild] = $req_feild;
+                } elseif ($db_feild == "gender") {
+                    $profile_trans_req_obj[$db_feild] = $req_feild;
+                }
+            }
+            ModelsProfile::where('id', $id)->update($profile_req_obj);
+            ProfileTranslation::where('profile_id', $id)->where('locale', App::getLocale())->update($profile_trans_req_obj);
             // return Job API Resource JSON Response //////////////
             return new ResourcesProfile($profile);
             ///////////////////////////////////////////////////////
-
-
         } catch (\Throwable $th) {
             throw $th;
         }
