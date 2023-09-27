@@ -329,10 +329,10 @@ class Profile extends Controller
                     $profile_trans_req_obj[$db_feild] = $req_feild;
                 }
             }
-            ModelsProfile::where('id', $id)->update($profile_req_obj);
+            $updated_profile = ModelsProfile::where('id', $id)->update($profile_req_obj);
             ProfileTranslation::where('profile_id', $id)->where('locale', App::getLocale())->update($profile_trans_req_obj);
             // return Job API Resource JSON Response //////////////
-            return new ResourcesProfile($profile);
+            return new ResourcesProfile($updated_profile);
             ///////////////////////////////////////////////////////
         } catch (\Throwable $th) {
             throw $th;
