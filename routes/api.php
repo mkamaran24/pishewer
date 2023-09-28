@@ -123,7 +123,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('profiles', [Profile::class, "index"]);
     Route::post('profiles', [Profile::class, "store"]);
     Route::delete('profiles', [Profile::class, "destroy"]);
-    Route::post('updateprofile/{id}', [Profile::class, "updateprofile"]);
+    Route::post('profiles/{id}', [Profile::class, "updateprofile"]);
     // Route::put('profiles/translate/{profile_id}',[Profile::class, "translate"]);
     // end of Private Profile Route ///////////////////////////
 
