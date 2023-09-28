@@ -220,9 +220,10 @@ class JobController extends Controller
         try {
             // its working fine
             $req_obj = [];
+            $job_trans_obj = [];
             foreach ($request->all() as $db_feild => $req_feild) {
                 if ($db_feild == "title") {
-                    $req_obj[$db_feild] = $req_feild;
+                    $job_trans_obj[$db_feild] = $req_feild;
                 }
                 // image and Not Removed Image
                 elseif ($db_feild == "image" && !array_key_exists("removed_img", $request->all())) {
@@ -333,7 +334,7 @@ class JobController extends Controller
                     // end of remove image logic ///////////////////////////////////////
 
                 } elseif ($db_feild == "description") {
-                    $req_obj[$db_feild] = $req_feild;
+                    $job_trans_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "keywords") {
                     // start of keyword Logic ////////////////////////////////////////////////////////////////////////////
                     if (is_array($request->keywords)) {
@@ -351,9 +352,9 @@ class JobController extends Controller
                     }
                     // end of keyword Logic //////////////////////////////////////////////////////////////////////////////
                 } elseif ($db_feild == "price") {
-                    $req_obj[$db_feild] = $req_feild;
+                    $job_trans_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "completein") {
-                    $req_obj[$db_feild] = $req_feild;
+                    $job_trans_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "addons") {
                     // start of addons Logic ////////////////////////////////////////////////////////////////////////////
                     if (is_array($request->addons)) {
@@ -371,16 +372,12 @@ class JobController extends Controller
                         return "Addon is not Array";
                     }
                     // end of addons Logic //////////////////////////////////////////////////////////////////////////////
-                } elseif ($db_feild == "user_id") {
-                    $req_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "categ_id") {
                     $req_obj[$db_feild] = $req_feild;
                 }
             }
-
-            Jobs::where('id', $id)
-                ->update($req_obj);
-
+            Jobs::where('id', $id)->update($req_obj);
+            JobTrans::where('job_id', $id)->where('locale', App::getLocale())->update($job_trans_obj);
             return new JobResource(Jobs::find($id));
         } catch (\Throwable $th) {
             //throw $th;

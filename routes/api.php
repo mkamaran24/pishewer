@@ -87,7 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('jobs/{job_id}', [JobController::class, "show"]);
     Route::get('jobs/user/{user_id}', [JobController::class, "getJobsperUser"]);
     Route::post('jobs', [JobController::class, "store"]);
-    Route::post('updatejob/{id}', [JobController::class, "updatejob"]);
+    Route::post('jobs/{id}', [JobController::class, "updatejob"]);
     Route::delete('jobs/{job_id}', [JobController::class, "destroy"]);
     Route::post('jobs/{job_id}/favorite', [JobController::class, "favorite"]);
     Route::delete('jobs/{job_id}/unfavorite', [JobController::class, "unfavorite"]);
