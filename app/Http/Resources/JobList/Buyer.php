@@ -20,7 +20,7 @@ class Buyer extends JsonResource
             'id' => (string)$this->id,
             // 'email'=>$this->email,
             'translation' => TranslationUser::collection($this->usertranslations),
-            'profile_image' => $this->profile->imageprofile
+            'profile_image' => $this->profile->imageprofile ?? null
         ];
     }
 }
