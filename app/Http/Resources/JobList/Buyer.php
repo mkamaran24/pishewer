@@ -17,10 +17,10 @@ class Buyer extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'=>(string)$this->id,
+            'id' => (string)$this->id,
             // 'email'=>$this->email,
-            'translation'=>TranslationUser::collection($this->usertranslations),
-            'profile_image' => new FriendProfile($this->profile)
+            'translation' => TranslationUser::collection($this->usertranslations),
+            'profile_image' => $this->profile->imageprofile
         ];
     }
 }
