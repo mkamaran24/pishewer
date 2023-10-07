@@ -59,20 +59,40 @@ class UserController extends Controller
             $user_trans_obj = [];
             foreach ($request->all() as $db_feild => $req_feild) {
                 if ($db_feild == "email") {
+                    if ($req_feild == null) {
+                        continue;
+                    }
                     $user_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "password") {
+                    if ($req_feild == null) {
+                        continue;
+                    }
                     $hashed_req_field = Hash::make($req_feild);
                     $user_obj[$db_feild] = $hashed_req_field;
                 } elseif ($db_feild == "fastpay_acc_num") {
+                    if ($req_feild == null) {
+                        continue;
+                    }
                     $user_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "phone_number") {
+                    if ($req_feild == null) {
+                        continue;
+                    }
                     $user_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "fullname") {
+                    if ($req_feild == null) {
+                        continue;
+                    }
                     $user_trans_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "username") {
+                    if ($req_feild == null) {
+                        continue;
+                    }
                     $user_trans_obj[$db_feild] = $req_feild;
                 }
             }
+
+            // dd($user_trans_obj);
 
             UserModel::where('id', $id)->update($user_obj);
             UserTranslation::where('user_id', $id)->where('locale', App::getLocale())->update($user_trans_obj);
