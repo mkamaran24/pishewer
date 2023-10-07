@@ -15,7 +15,10 @@ use Illuminate\Support\Str;
 use App\Mail\VerificationEmail;
 use App\Models\UserTranslation;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Laravel\Socialite\Facades\Socialite;
+
+
 
 class AuthController extends Controller
 {
@@ -49,6 +52,8 @@ class AuthController extends Controller
             # put data into DB
             try {
 
+                // getting langs collection from .env file and converting it to array
+                $langs = explode(',', Config::get('app.langs'));
 
                 $isEmail_Exist = UserModel::where('email', $request->email)->exists();
 
@@ -62,12 +67,14 @@ class AuthController extends Controller
 
                     $user = UserModel::create(array_merge($request->except(['password', 'username', 'fullname']), $hashed_pass));
 
-                    UserTranslation::create([
-                        'username' => $request->username,
-                        'fullname' => $request->fullname,
-                        'locale' => App::getLocale(),
-                        'user_id' => $user->id
-                    ]);
+                    foreach ($langs as $lang) {
+                        UserTranslation::create([
+                            'username' => $request->username,
+                            'fullname' => $request->fullname,
+                            'locale' => $lang,
+                            'user_id' => $user->id
+                        ]);
+                    }
 
                     $token = Str::random(64);
 
@@ -218,5 +225,4 @@ class AuthController extends Controller
             throw $th;
         }
     }
-
 }
