@@ -8,7 +8,12 @@
 </head>
 
 <body>
-    <h1>You have a new friend and sent you a message now, please check.</h1>
+    <p>Dear user,</p>
+    <p>You have an unread message. In order to read the message please login to your Pishewer account and access it from the "Messages" list.</p>
+    <p>
+        Best regards,<br>
+        Pishewer Team
+    </p>
 </body>
 
 </html>

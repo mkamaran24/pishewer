@@ -82,7 +82,7 @@ class JobListMessageController extends Controller
 
                 Mail::send('email.newFriendList', [], function ($message) use ($email) {
                     $message->to($email);
-                    $message->subject('New Friend List Mail');
+                    $message->subject('Notification: You received a new message');
                 });
 
                 // end of send mail to congrats new freind list //////////
