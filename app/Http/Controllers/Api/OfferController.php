@@ -345,33 +345,16 @@ class OfferController extends Controller
     {
         try {
 
+
+
             $attachment = Attachment::find($attach_id);
 
             if ($attachment && $attachment->zipfile) {
                 $zipfile = $attachment->zipfile;
-                $zip_path = 'storage/' . $zipfile;
-
 
                 if (Storage::exists('public/', $zipfile)) {
-                    // ZIP file exists
-
-                    // Retrieve the zip file from the storage disk
-                    // $fileContent = Storage::disk('public')->get($zip_path);
-
-                    $headers = [
-                        'Content-Type' => 'application/zip',
-                        'Content-Disposition' => 'attachment; filename="' . $zip_path . '"',
-                    ];
-
-                    return new StreamedResponse(function () use ($zip_path) {
-                        readfile($zip_path);
-                    }, 200, $headers);
-
-                    // // Return the zip file as a download response
-                    // return response($fileContent, 200, [
-                    //     'Content-Type' => 'application/zip',
-                    //     'Content-Disposition' => 'attachment; filename="' . $zip_path . '"',
-                    // ]);
+                    $zip_path = 'app/public/' . $zipfile;
+                    return response()->download(storage_path($zip_path));
                 } else {
                     // ZIP file does not exist
                     return response()->json([
@@ -387,18 +370,18 @@ class OfferController extends Controller
                 ], 404);
             }
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
-    public function testdownload()
-    {
-        try {
+    // public function testdownload()
+    // {
+    //     try {
 
-            $zip_path = storage_path('app/public/1696705329_Peshang_Des_1_bold_ (1).zip');
-            return response()->download($zip_path);
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-    }
+    //         $zip_path = storage_path('app/public/1696705329_Peshang_Des_1_bold_ (1).zip');
+    //         return response()->download($zip_path);
+    //     } catch (\Throwable $th) {
+    //         //throw $th;
+    //     }
+    // }
 }

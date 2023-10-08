@@ -349,6 +349,3 @@ Route::get('dummy/jobtrans/store', function () {
         throw $th;
     }
 });
-
-
-Route::get('test/offers/download', [OfferController::class, "testdownload"]);
