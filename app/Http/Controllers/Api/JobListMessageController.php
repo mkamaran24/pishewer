@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class JobListMessageController extends Controller
@@ -41,20 +42,20 @@ class JobListMessageController extends Controller
             # put data to DB after Succes Validation
             try {
 
-                $is_friend = FriendList::where('user_id',$request->user_id)->where('friend_id',$request->friend_id)->exists();
+                $is_friend = FriendList::where('user_id', $request->user_id)->where('friend_id', $request->friend_id)->exists();
 
-                
-                
+
+
                 if ($is_friend) {
-                    
+
                     return response()->json([
                         "message" => "Objects Already Exist",
-                        "ftc_code" => FriendList::where('user_id',$request->user_id)->where('friend_id',$request->friend_id)->value('ftc_code')
+                        "ftc_code" => FriendList::where('user_id', $request->user_id)->where('friend_id', $request->friend_id)->value('ftc_code')
                     ], 200);
                 }
 
                 // creating ftc_code with seconds ////////////////////////////////////
-                $ftc_code = time(); 
+                $ftc_code = time();
                 //////////////////////////////////////////////////////////////////////
 
                 // Save to DB ///////////////////////////////////////////
@@ -74,6 +75,17 @@ class JobListMessageController extends Controller
                 ]);
 
                 /////////////////////////////////////////////////////////
+
+                // send mail to congrats new freind list ////////////////
+
+                $email = DB::table('users')->where('id', $request->friend_id)->value('email');
+
+                Mail::send('email.newFriendList', [], function ($message) use ($email) {
+                    $message->to($email);
+                    $message->subject('New Friend List Mail');
+                });
+
+                // end of send mail to congrats new freind list //////////
 
                 // return Job API Resource JSON Response //////////////
                 return response()->json([
@@ -128,10 +140,10 @@ class JobListMessageController extends Controller
             // ->where('friend_lists.friend_id', '!=', 58)
             // ->get();
 
-            $all_friend_list = FriendList::select(['id','friend_id','user_id','ftc_code','created_at'])->where('user_id',$userid)->where('friend_id','!=',$userid)->get();
+            $all_friend_list = FriendList::select(['id', 'friend_id', 'user_id', 'ftc_code', 'created_at'])->where('user_id', $userid)->where('friend_id', '!=', $userid)->get();
 
             return JLR::collection($all_friend_list);
-            
+
             // $getJBL = DB::table('job_list_messages')->select('id')->where('seller_id', $userid)->orWhere('buyer_id',$userid)->get();
 
             // $getJBL = JLM::where('seller_id', $userid)->orWhere('buyer_id', $userid)->get();
