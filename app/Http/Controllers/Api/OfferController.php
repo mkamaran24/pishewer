@@ -97,8 +97,7 @@ class OfferController extends Controller
 
     public function OffersperUsers($user_id)
     {
-        try 
-        {
+        try {
             $all_offers = ModelsOffer::where('seller_id', $user_id)->orWhere('buyer_id', $user_id)->get();
 
             $specific_property_count = $all_offers->countBy('offer_state');
@@ -106,7 +105,7 @@ class OfferController extends Controller
             return response()->json([
                 'count_states' => $specific_property_count,
                 'offers_detail' => ResourceOffer::collection($all_offers)
-            ],200);
+            ], 200);
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -236,7 +235,7 @@ class OfferController extends Controller
             //throw $th;
         }
     }
-    
+
     public function reject($id)
     {
         try {
@@ -387,6 +386,17 @@ class OfferController extends Controller
                     'messages' => 'Attachment not found or ZIP file column is empty',
                 ], 404);
             }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function testdownload()
+    {
+        try {
+
+            $zip_path = storage_path('app/public/1696705329_Peshang_Des_1_bold_ (1).zip');
+            return response()->download($zip_path);
         } catch (\Throwable $th) {
             //throw $th;
         }

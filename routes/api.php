@@ -164,6 +164,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('offers/cancel/{offer_id}', [OfferController::class, "cancel"]);
     Route::post('offers/upload/{offer_id}', [OfferController::class, "upload"]);
     Route::get('offers/download/{offer_id}', [OfferController::class, "download"]);
+
     //
     Route::get('offers/payment/getall', [OrderController::class, "index"]);
     Route::get('offers/payment/{buyer_id}', [OrderController::class, "show"]);
@@ -348,3 +349,6 @@ Route::get('dummy/jobtrans/store', function () {
         throw $th;
     }
 });
+
+
+Route::get('test/offers/download', [OfferController::class, "testdownload"]);
