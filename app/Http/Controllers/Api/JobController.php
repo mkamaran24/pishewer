@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Config;
+
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -75,6 +77,8 @@ class JobController extends Controller
             # put data to DB after Succes Validation
             try {
 
+                // getting langs collection from .env file and converting it to array
+                $langs = explode(',', Config::get('app.langs'));
 
 
                 // save $req to DB //////////////////////////////
@@ -83,15 +87,18 @@ class JobController extends Controller
                     'categ_id' => $request->categ_id
                 ]);
 
+                foreach ($langs as $lang) {
+                    JobTrans::create([
+                        'title' => $request->title,
+                        'description' => $request->description,
+                        'price' => $request->price,
+                        'completein' => $request->completein,
+                        'locale' => $lang,
+                        'job_id' => $jobs->id
+                    ]);
+                }
 
-                $job_translation = JobTrans::create([
-                    'title' => $request->title,
-                    'description' => $request->description,
-                    'price' => $request->price,
-                    'completein' => $request->completein,
-                    'locale' => App::getLocale(),
-                    'job_id' => $jobs->id
-                ]);
+
 
                 /////////////////////////////////////////////////
 

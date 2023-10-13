@@ -17,6 +17,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -60,6 +61,9 @@ class Profile extends Controller
         } else {
             # put data to DB after Succes Validation
             try {
+
+                // getting langs collection from .env file and converting it to array
+                $langs = explode(',', Config::get('app.langs'));
 
                 // start of NationalID logics ////////////////////////////////////////////////////////////////
                 // if ($request->hasFile('nationalid')) {
@@ -147,18 +151,20 @@ class Profile extends Controller
                         'user_id' => $request->user_id
                     ]);
 
-                    ProfileTranslation::create([
-                        'title' => $request->title,
-                        'description' => $request->description,
-                        'skills' => implode(',', $request->skills),
-                        'langs' => implode(',', $request->langs),
-                        'certification' => $request->certification,
-                        'age' => $request->age,
-                        'gender' => $request->gender,
-                        'locale' => $request->locale,
-                        'profile_id' => $profile->id
-                    ]);
-
+                    foreach ($langs as $lang) {
+                        # code...
+                        ProfileTranslation::create([
+                            'title' => $request->title,
+                            'description' => $request->description,
+                            'skills' => implode(',', $request->skills),
+                            'langs' => implode(',', $request->langs),
+                            'certification' => $request->certification,
+                            'age' => $request->age,
+                            'gender' => $request->gender,
+                            'locale' => $lang,
+                            'profile_id' => $profile->id
+                        ]);
+                    }
 
                     /////////////////////////////////////////////////
 
