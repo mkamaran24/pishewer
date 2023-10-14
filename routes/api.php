@@ -163,7 +163,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('offers/reject/{offer_id}', [OfferController::class, "reject"]);
     Route::put('offers/cancel/{offer_id}', [OfferController::class, "cancel"]);
     Route::post('offers/upload/{offer_id}', [OfferController::class, "upload"]);
-    Route::get('offers/download/{offer_id}', [OfferController::class, "download"]);
 
     //
     Route::get('offers/payment/getall', [OrderController::class, "index"]);
@@ -240,6 +239,9 @@ Route::post('freelance-community', [FreelanceCommunityController::class, 'store'
 Route::put('freelance-community/{id}', [FreelanceCommunityController::class, 'update']);
 Route::delete('freelance-community/{id}', [FreelanceCommunityController::class, 'destroy']);
 // end of Freelance Community Route ////////////////
+
+// Public Download 
+Route::get('offers/download/{offer_id}', [OfferController::class, "download"]);
 
 
 // test api ///
