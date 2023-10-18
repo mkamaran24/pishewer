@@ -150,19 +150,21 @@ class JobController extends Controller
                 // end of Image Logics /////////////////////////////////////////////////////////////////////////////////
 
                 // start of Keword Logic ////////////////////////////////////////////////////////////////////////////
-                if (is_array($request->keywords)) {
+                if (!isEmpty($request->keywords)) {
+                    if (is_array($request->keywords)) {
 
-                    foreach ($request->keywords as $keyword) {
+                        foreach ($request->keywords as $keyword) {
+                            Keyword::create([
+                                'keyname' => $keyword,
+                                'job_id' => $jobs->id
+                            ]);
+                        }
+                    } else {
                         Keyword::create([
-                            'keyname' => $keyword,
+                            'keyname' => $request->keywords,
                             'job_id' => $jobs->id
                         ]);
                     }
-                } else {
-                    Keyword::create([
-                        'keyname' => $request->keywords,
-                        'job_id' => $jobs->id
-                    ]);
                 }
                 // end of Keyword Logic //////////////////////////////////////////////////////////////////////////////
 
