@@ -51,7 +51,6 @@ class JobController extends Controller
             'title' => 'required',
             'image' => 'required',
             'description' => 'required',
-            'keywords' => 'required',
             'price' => 'required',
             'completein' => 'required',
             'addons' => 'required',
@@ -88,14 +87,22 @@ class JobController extends Controller
                 ]);
 
                 foreach ($langs as $lang) {
-                    JobTrans::create([
-                        'title' => $request->title,
-                        'description' => $request->description,
-                        'price' => $request->price,
-                        'completein' => $request->completein,
-                        'locale' => $lang,
-                        'job_id' => $jobs->id
-                    ]);
+                    DB::insert('insert into job_trans (title,description,price,completein,locale,job_id) values (?,?,?,?,?,?)', ([
+                        $request->title,
+                        $request->description,
+                        $request->price,
+                        $request->completein,
+                        $lang,
+                        $jobs->id
+                    ]));
+                    // JobTrans::create([
+                    //     'title' => $request->title,
+                    //     'description' => $request->description,
+                    //     'price' => $request->price,
+                    //     'completein' => $request->completein,
+                    //     'locale' => $lang,
+                    //     'job_id' => $jobs->id
+                    // ]);
                 }
 
 
