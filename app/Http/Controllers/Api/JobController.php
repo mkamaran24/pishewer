@@ -297,7 +297,7 @@ class JobController extends Controller
                     if (is_array($request->keywords)) {
 
                         // when getting an empty request
-                        if (empty($request->keywords)) {
+                        if (isEmpty($request->keywords)) {
                             Keyword::where('job_id', $id)->delete();
                             continue;
                         } else {
