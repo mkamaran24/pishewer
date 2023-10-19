@@ -115,7 +115,7 @@ class JobController extends Controller
                     if (is_array($imgs)) {
                         foreach ($imgs as $key => $img) {
 
-                            $new_img_name = random_int(100000, 999999) . $key . '.' . $img->getClientOriginalExtension();
+                            $new_img_name = now() . $key . '.' . $img->getClientOriginalExtension();
 
                             // save image name into DB ///////////////////////////////////////////////////////////
                             Jobimage::create([
@@ -240,13 +240,20 @@ class JobController extends Controller
             foreach ($request->all() as $db_feild => $req_feild) {
                 if ($db_feild == "title") {
                     $job_trans_obj[$db_feild] = $req_feild;
-                }
-                // image and Not Removed Image
-                elseif ($db_feild == "image" && !array_key_exists("removed_img", $request->all())) {
+                } elseif ($db_feild == "image") {
                     // start of image logics ////////////////////////////////////////////////////////////////
                     if ($request->hasFile('image')) {
                         $imgs = $request->file('image');
                         if (is_array($imgs)) {
+                            // Delete image in Storage and DB ///////////////////
+                            $img_name = DB::table('jobimages')->select('name')->where('job_id', $id)->get();
+                            foreach ($img_name as $value) {
+                                $img_path = "public/" . $value->name;
+                                Storage::delete($img_path);
+                            }
+                            Jobimage::where('job_id', $id)->delete();
+                            // end of Delete image in storage and DB ///////////
+                            // add image to DB
                             foreach ($imgs as $key => $img) {
 
                                 $new_img_name = random_int(100000, 999999) . $key . '.' . $img->getClientOriginalExtension();
@@ -282,73 +289,6 @@ class JobController extends Controller
                         ]);
                     }
                     // end of Image Logics /////////////////////////////////////////////////////////////////////////////////
-                }
-                // Not Image and Removed Image
-                elseif (!array_key_exists("image", $request->all()) && $db_feild == "removed_img") {
-                    if (is_array($request->removed_img)) {
-                        foreach ($request->removed_img as $rmImage) {
-                            Jobimage::where("name", $rmImage)->delete();
-                            $img_path = "public/" . $rmImage;
-                            Storage::delete($img_path);
-                        }
-                    } else {
-                        return "Removed Images is Not Array";
-                    }
-                }
-                // both Image and Remvoed image
-                elseif ($db_feild == "image" && array_key_exists("removed_img", $request->all())) {
-                    // start of image logics ////////////////////////////////////////////////////////////////
-                    if ($request->hasFile('image')) {
-                        $imgs = $request->file('image');
-                        if (is_array($imgs)) {
-                            foreach ($imgs as $key => $img) {
-
-                                $new_img_name = random_int(100000, 999999) . $key . '.' . $img->getClientOriginalExtension();
-
-                                // save image name into DB ///////////////////////////////////////////////////////////
-                                Jobimage::create([
-                                    'name' => $new_img_name,
-                                    'job_id' => $id
-                                ]);
-                                ////////////////////////////////////////////////////////////////////////////
-
-                                // save image in laravel Private Storage ///////////////////////////////////
-                                Storage::disk('public')->put($new_img_name, file_get_contents($img));
-                                /////////////////////////////////////////////////////////////////////////////
-                            }
-                        } else {
-                            $one_img = $request->image;
-                            $new_one_img = random_int(100000, 999999) . '.' . $one_img->getClientOriginalExtension();
-                            // save image name into DB ///////////////////////////////////////////////////////////
-                            Jobimage::create([
-                                'name' => $new_one_img,
-                                'job_id' => $id
-                            ]);
-                            ////////////////////////////////////////////////////////////////////////////
-                            // save image in laravel Private Storage ///////////////////////////////////
-                            Storage::disk('public')->put($new_one_img, file_get_contents($one_img));
-                            /////////////////////////////////////////////////////////////////////////////
-                        }
-                    } else {
-                        Jobimage::create([
-                            'name' => "File Not Founde",
-                            'job_id' => $id
-                        ]);
-                    }
-                    // end of Image Logics /////////////////////////////////////////////////////////////////////////////////
-
-                    // start of remove image logic//////////////////////////////////
-                    if (is_array($request->removed_img)) {
-                        foreach ($request->removed_img as $rmImage) {
-                            Jobimage::where("name", $rmImage)->delete();
-                            $img_path = "public/" . $rmImage;
-                            Storage::delete($img_path);
-                        }
-                    } else {
-                        return "Removed Images is Not Array";
-                    }
-                    // end of remove image logic ///////////////////////////////////////
-
                 } elseif ($db_feild == "description") {
                     $job_trans_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "keywords") {
@@ -356,18 +296,19 @@ class JobController extends Controller
                     // start of keyword Logic ////////////////////////////////////////////////////////////////////////////
                     if (is_array($request->keywords)) {
 
+                        // when getting an empty request
                         if (empty($request->keywords)) {
+                            Keyword::where('job_id', $id)->delete();
+                            continue;
+                        } else {
+                            Keyword::where('job_id', $id)->delete();
+                            foreach ($request->keywords as $keyword) {
+                                Keyword::create([
+                                    'keyname' => $keyword,
+                                    'job_id' => $id
+                                ]);
+                            }
                         }
-
-                        // foreach ($request->keywords as $key => $keywordArray) {
-                        //     $decoded_keyword = json_decode($keywordArray);
-                        //     Keyword::where('job_id', $id)
-                        //         ->where('id', $decoded_keyword->id)
-                        //         ->update([
-                        //             'keyname' => $decoded_keyword->keyname,
-                        //             'job_id' => $id
-                        //         ]);
-                        // }
                     } else {
                         return "Keyword is not Array";
                     }
@@ -380,15 +321,14 @@ class JobController extends Controller
                     // rebwar will send you addon data as post data not update, it means customer updated or not updated, rebwar will send the data, and you should remove old data
                     // start of addons Logic ////////////////////////////////////////////////////////////////////////////
                     if (is_array($request->addons)) {
-                        foreach ($request->addons as $key => $addonArray) {
-                            $decoded_addon = json_decode($addonArray);
-                            AddonModel::where('job_id', $id)
-                                ->where('id', $decoded_addon->id)
-                                ->update([
-                                    'title' => $decoded_addon->title,
-                                    'price' => $decoded_addon->price,
-                                    'job_id' => $id
-                                ]);
+                        AddonModel::where('job_id', $id)->delete();
+                        foreach ($request->addons as $addon) {
+                            $decoded_addon = json_decode($addon);
+                            AddonModel::create([
+                                "title" => $decoded_addon->title,
+                                "price" => $decoded_addon->price,
+                                "job_id" => $id
+                            ]);
                         }
                     } else {
                         return "Addon is not Array";
