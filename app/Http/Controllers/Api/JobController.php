@@ -352,17 +352,22 @@ class JobController extends Controller
                 } elseif ($db_feild == "description") {
                     $job_trans_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "keywords") {
+                    // we should remove old data and add new data, and if we recevie empty keywords we will remove all keywords from DB
                     // start of keyword Logic ////////////////////////////////////////////////////////////////////////////
                     if (is_array($request->keywords)) {
-                        foreach ($request->keywords as $key => $keywordArray) {
-                            $decoded_keyword = json_decode($keywordArray);
-                            Keyword::where('job_id', $id)
-                                ->where('id', $decoded_keyword->id)
-                                ->update([
-                                    'keyname' => $decoded_keyword->keyname,
-                                    'job_id' => $id
-                                ]);
+
+                        if (empty($request->keywords)) {
                         }
+
+                        // foreach ($request->keywords as $key => $keywordArray) {
+                        //     $decoded_keyword = json_decode($keywordArray);
+                        //     Keyword::where('job_id', $id)
+                        //         ->where('id', $decoded_keyword->id)
+                        //         ->update([
+                        //             'keyname' => $decoded_keyword->keyname,
+                        //             'job_id' => $id
+                        //         ]);
+                        // }
                     } else {
                         return "Keyword is not Array";
                     }
@@ -372,6 +377,7 @@ class JobController extends Controller
                 } elseif ($db_feild == "completein") {
                     $job_trans_obj[$db_feild] = $req_feild;
                 } elseif ($db_feild == "addons") {
+                    // rebwar will send you addon data as post data not update, it means customer updated or not updated, rebwar will send the data, and you should remove old data
                     // start of addons Logic ////////////////////////////////////////////////////////////////////////////
                     if (is_array($request->addons)) {
                         foreach ($request->addons as $key => $addonArray) {
