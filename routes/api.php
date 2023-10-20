@@ -213,6 +213,7 @@ Route::get('jobs/getjobsbycategory/{categid}', [JobController::class, "getjobsby
 Route::get('jobs/search/query', [JobController::class, "searchjobs"]);
 Route::get('jobs/search/hero', [JobController::class, "search_hero"]);
 Route::get('jobs/featured/query', [JobController::class, "featured"]);
+Route::get('jobs/user/{user_id}', [JobController::class, "getJobsperUser"]);
 // end of Public Jobs Route /////////////////////////
 
 // Addon Route ///////////////////////////////
