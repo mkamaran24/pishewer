@@ -135,7 +135,7 @@ class OrderController extends Controller
             // $custom_now = $now->addHours(3);
 
             $order = ModelsOrder::find($payment_id);
-            if (!$order->isEmpty()) {
+            if ($order) {
                 $offer = Offer::find($order->offer_id);
 
                 // Add days to the expiry date
