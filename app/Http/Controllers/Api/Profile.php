@@ -200,7 +200,7 @@ class Profile extends Controller
                 $user = User::where('id', $id)->get();
                 $jobs = Jobs::where('user_id', $id)->get();
                 $messages = DB::select('select msg_time,resp_time from messages where recever_id = ? AND status = ?', [$id, 1]);
-                $number_of_buyers = Offer::where('seller_id', $id)->where('offer_state')->count();
+                $number_of_buyers = Offer::where('seller_id', $id)->where('offer_state', 'Closed')->count();
 
                 $avg_resp_time = null;
                 if ($messages) {
