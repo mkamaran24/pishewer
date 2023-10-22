@@ -10,6 +10,7 @@ use App\Http\Resources\ViewProfile\AllJobProfile;
 use App\Models\City;
 use App\Models\Jobs;
 use App\Models\Message;
+use App\Models\Offer;
 use App\Models\Profile as ModelsProfile;
 use App\Models\ProfileTranslation;
 use App\Models\Review;
@@ -199,6 +200,7 @@ class Profile extends Controller
                 $user = User::where('id', $id)->get();
                 $jobs = Jobs::where('user_id', $id)->get();
                 $messages = DB::select('select msg_time,resp_time from messages where recever_id = ? AND status = ?', [$id, 1]);
+                $number_of_buyers = Offer::where('seller_id', $id)->where('offer_state')->count();
 
                 $avg_resp_time = null;
                 if ($messages) {
@@ -260,6 +262,7 @@ class Profile extends Controller
                     "location" => isset($city_name[0]->citytranslations[0]->cityname) ? $city_name[0]->citytranslations[0]->cityname : null,
                     "member_since" => $new_date,
                     "avg_response_time" => $avg_resp_time,
+                    "number_of_buyers" => $number_of_buyers,
                     "description" => isset($profile[0]->profiletranslation[0]->description) ? $profile[0]->profiletranslation[0]->description : null,
                     "skills" => isset($profile[0]->profiletranslation[0]->skills) ? preg_split("/$pattern/u", $profile[0]->profiletranslation[0]->skills) : null,
                     "certification" => isset($profile[0]->profiletranslation[0]->certification) ? $profile[0]->profiletranslation[0]->certification : null,
