@@ -114,7 +114,7 @@ class OrderController extends Controller
             /////////////////////////////////////
 
             $order = ModelsOrder::where('buyer_id', $id)->get();
-            if ($order) {
+            if (!$order->isEmpty()) {
                 return  ResourceOrder::collection($order);
             } else {
                 return response()->json([
@@ -123,41 +123,48 @@ class OrderController extends Controller
                 ], 404);
             }
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
 
-    public function update($order_id)
+    public function update($payment_id)
     {
         try {
             $now = Carbon::now();
             // $custom_now = $now->addHours(3);
 
-            $order = ModelsOrder::find($order_id);
-            $offer = Offer::find($order->offer_id);
+            $order = ModelsOrder::find($payment_id);
+            if (!$order->isEmpty()) {
+                $offer = Offer::find($order->offer_id);
 
-            // Add days to the expiry date
-            $numberOfDays = $offer->delivery_period; // Example: adding 7 days
+                // Add days to the expiry date
+                $numberOfDays = $offer->delivery_period; // Example: adding 7 days
 
 
-            $offer->offer_expiry = $now->addDays($numberOfDays);
-            $order->status = 1;
-            $offer->offer_state = "inProgress";
-            $order->save();
-            $offer->save();
-            //
+                $offer->offer_expiry = $now->addDays($numberOfDays);
+                $order->status = 1;
+                $offer->offer_state = "inProgress";
+                $order->save();
+                $offer->save();
+                //
 
-            Invoice::create([
-                'offer_id' => $order->offer_id,
-                'seller_id' => $offer->seller_id,
-                'offer_amount' => $order->total_price,
-                'status' => 'Pending'
-            ]);
+                Invoice::create([
+                    'offer_id' => $order->offer_id,
+                    'seller_id' => $offer->seller_id,
+                    'offer_amount' => $order->total_price,
+                    'status' => 'Pending'
+                ]);
 
-            return new ResourceOrder($order);
+                return new ResourceOrder($order);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'messages' => "Object Not Found"
+                ], 404);
+            }
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
