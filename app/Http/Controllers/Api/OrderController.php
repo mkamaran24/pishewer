@@ -19,7 +19,7 @@ class OrderController extends Controller
     public function index()
     {
         //
-        return ResourceOrder::collection(ModelsOrder::all());
+        return ResourceOrder::collection(ModelsOrder::simplePaginate(10));
     }
 
 
@@ -82,7 +82,7 @@ class OrderController extends Controller
                 }
 
                 // update offer state from payment to Pendingpayment ////////////////////////////////////
-                Offer::where('id',$request->offer_id)->update(['offer_state'=>'Pendingpayment']);
+                Offer::where('id', $request->offer_id)->update(['offer_state' => 'Pendingpayment']);
                 /////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -113,7 +113,7 @@ class OrderController extends Controller
 
             /////////////////////////////////////
 
-            $order = ModelsOrder::where('buyer_id',$id)->get();
+            $order = ModelsOrder::where('buyer_id', $id)->get();
             if ($order) {
                 return  ResourceOrder::collection($order);
             } else {
@@ -136,10 +136,10 @@ class OrderController extends Controller
 
             $order = ModelsOrder::find($order_id);
             $offer = Offer::find($order->offer_id);
-        
+
             // Add days to the expiry date
             $numberOfDays = $offer->delivery_period; // Example: adding 7 days
-            
+
 
             $offer->offer_expiry = $now->addDays($numberOfDays);
             $order->status = 1;
