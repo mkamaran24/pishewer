@@ -31,15 +31,13 @@ class JobController extends Controller
 
             // return Jobs::with('jobtrans')->get(); /////
 
-            return JobResource::collection(Jobs::withCount('favorites')->simplePaginate(10));
+            return JobResource::collection(Jobs::withCount('favorites')->where('status', 1)->simplePaginate(10));
         } catch (\Throwable $th) {
-
-            // abort(code: 500, message: 'fail to fetch');
-            //throw $th; this throwble should be used for logs details
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage(),
-            ], 500);
+            throw $th; //this throwble should be used for logs details
+            // return response()->json([
+            //     'status' => false,
+            //     'message' => $th->getMessage(),
+            // ], 500);
         }
     }
 
@@ -197,11 +195,11 @@ class JobController extends Controller
 
 
             } catch (\Throwable $th) {
-                //throw $th;
-                return response()->json([
-                    'status' => false,
-                    'message' => $th->getMessage(),
-                ], 500);
+                throw $th;
+                // return response()->json([
+                //     'status' => false,
+                //     'message' => $th->getMessage(),
+                // ], 500);
             }
         }
         //// end of Validator Check ///////////////////////
@@ -217,7 +215,7 @@ class JobController extends Controller
 
             /////////////////////////////////////
 
-            $job = Jobs::withCount('favorites')->find($id);
+            $job = Jobs::withCount('favorites')->where('status', 1)->find($id);
             if ($job) {
                 return new JobResource($job);
             } else {
@@ -227,7 +225,7 @@ class JobController extends Controller
                 ], 404);
             }
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -342,11 +340,7 @@ class JobController extends Controller
             JobTrans::where('job_id', $id)->where('locale', App::getLocale())->update($job_trans_obj);
             return new JobResource(Jobs::find($id));
         } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage(),
-            ], 500);
+            throw $th;
         }
     }
 
@@ -384,7 +378,7 @@ class JobController extends Controller
             }
             // end of delete in DB //////////////
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
             //Logs implementation goes down herer
 
 
@@ -406,8 +400,7 @@ class JobController extends Controller
                 "message" => "Job Approved Successfully"
             ], 200);
         } catch (\Throwable $th) {
-            //throw $th;
-
+            throw $th;
         }
     }
 
@@ -417,17 +410,17 @@ class JobController extends Controller
             $status = DB::select('select status from jobs where id = :id', ['id' => $id]);
             return response()->json($status);
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
     public function getjobsbycateg($id)
     {
         try {
-            $jobs = Jobs::where('categ_id', $id)->paginate(3);
+            $jobs = Jobs::where('categ_id', $id)->where('status', 1)->simplePaginate(3);
             return JobResource::collection($jobs);
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -500,15 +493,11 @@ class JobController extends Controller
                 });
             }
 
-            $jobs = $jobsQuery->paginate(10);
+            $jobs = $jobsQuery->where('status', 1)->simplePaginate(10);
 
             return JobResource::collection($jobs);
         } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage(),
-            ], 500);
+            throw $th;
         }
     }
 
@@ -525,7 +514,7 @@ class JobController extends Controller
 
             $jobs_id = JobTrans::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($keyword) . '%'])->pluck('job_id');
 
-            $jobs = Jobs::find($jobs_id);
+            $jobs = Jobs::where('status', 1)->find($jobs_id);
 
             return JobResource::collection($jobs);
 
@@ -561,7 +550,7 @@ class JobController extends Controller
                 ], 409);
             }
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -589,17 +578,17 @@ class JobController extends Controller
                 ///////////////////////////////////////////////////////
             }
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
     public function getJobsperUser($user_id)
     {
         try {
-            $jobs_per_user = Jobs::withCount('favorites')->where('user_id', $user_id)->get();
+            $jobs_per_user = Jobs::withCount('favorites')->where('user_id', $user_id)->where('status', 1)->get();
             return JobResource::collection($jobs_per_user);
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -623,7 +612,7 @@ class JobController extends Controller
             ///////////////////////////////////////////////////////
 
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -631,7 +620,7 @@ class JobController extends Controller
     {
         try {
 
-            $jobs = Jobs::inRandomOrder()->take(8)->get();
+            $jobs = Jobs::inRandomOrder()->take(8)->where('status', 1)->get();
 
             // $jobs = Jobs::inRandomOrder()->groupBy('categ_id')->limit(8)->get();
 

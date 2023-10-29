@@ -19,11 +19,15 @@ class Job extends JsonResource
     {
         $user = auth('sanctum')->user();
 
+        $total_buyers = Offer::where('seller_id', $user->id)->where('offer_state', 'Closed')->count();
+
         return [
             'id' => (string)$this->id,
             'status' => $this->status,
             'favs_count' => $this->favorites_count,
             'favorited_by_user' => $user ? $this->favorites->contains('user_id', $user->id) : false,
+            'total_buyers' => $total_buyers,
+            'average_resp_time' => '10 minute',
             'job_translation' => TranslationJob::collection($this->jobtrans),
             'user' => new User($this->user),
             'category' => new JobCategory($this->category),
