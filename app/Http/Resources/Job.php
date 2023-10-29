@@ -20,7 +20,7 @@ class Job extends JsonResource
     {
         $user = auth('sanctum')->user();
 
-        $total_buyers = Offer::where('seller_id', $user->id)->where('offer_state', 'Closed')->count();
+        $total_buyers = Offer::where('seller_id', $this->user_id)->where('offer_state', 'Closed')->count();
 
         return [
             'id' => (string)$this->id,
