@@ -9,6 +9,7 @@ use App\Http\Resources\ViewJob\JobCategory;
 use App\Http\Resources\ViewJob\JobSubcategory;
 use App\Http\Resources\ViewJob\ReviewCollection;
 use App\Models\Favorite;
+use App\Models\Offer;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 
