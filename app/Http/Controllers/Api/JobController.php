@@ -585,7 +585,7 @@ class JobController extends Controller
     public function getJobsperUser($user_id)
     {
         try {
-            $jobs_per_user = Jobs::withCount('favorites')->where('user_id', $user_id)->where('status', 1)->get();
+            $jobs_per_user = Jobs::withCount('favorites')->where('user_id', $user_id)->get();
             return JobResource::collection($jobs_per_user);
         } catch (\Throwable $th) {
             throw $th;
