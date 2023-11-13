@@ -21,5 +21,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('account/verify/{token}', [AuthController::class, 'verifyAccount'])->name('user.verify');
 
 Route::get('test', function () {
-    view('welcome');
+    return view('welcome');
 });
