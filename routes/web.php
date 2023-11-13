@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('verfiedMessage', function () {
-//     return view('email.verifiedMesage');
-// });
+Route::get('verfiedMessage', function () {
+    return view('email.verifiedMesage');
+});
 
 Route::get('account/verify/{token}', [AuthController::class, 'verifyAccount'])->name('user.verify');
 
-Route::get('test', function () {
-    return view('welcome');
-});
+// Route::get('test', function () {
+//     return view('welcome');
+// });
