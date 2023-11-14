@@ -51,7 +51,7 @@ class JobController extends Controller
             'description' => 'required',
             'price' => 'required',
             'completein' => 'required',
-            'addons' => 'required',
+            // 'addons' => 'required',
             'user_id' => 'required',
             'categ_id' => 'required'
         );
