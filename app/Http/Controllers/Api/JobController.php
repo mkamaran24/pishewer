@@ -180,8 +180,6 @@ class JobController extends Controller
                             "job_id" => $jobs->id
                         ]);
                     }
-                } else {
-                    return "Addon is not Array";
                 }
 
                 //////////////////////////////////////
