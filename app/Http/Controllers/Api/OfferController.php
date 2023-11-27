@@ -31,11 +31,14 @@ class OfferController extends Controller
     public function getAlljobs($user_id)
     {
         try {
-            return Job::collection(Jobs::where('user_id', $user_id)->get());
+            return Job::collection(Jobs::where('user_id', $user_id)->where('status', 1)->get());
         } catch (\Throwable $th) {
             //throw $th;
         }
     }
+
+
+
 
     // public function storeExistjobs(Request $request)
     // {

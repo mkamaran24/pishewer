@@ -111,9 +111,12 @@ class JobController extends Controller
                 if ($request->hasFile('image')) {
                     $imgs = $request->file('image');
                     if (is_array($imgs)) {
+                        $withoutSpaces = str_replace(' ', '', now());
+                        // Remove symbols using regular expression
+                        $withoutSymbols = preg_replace('/[^a-zA-Z0-9]/', '', $withoutSpaces);
                         foreach ($imgs as $key => $img) {
 
-                            $new_img_name = now() . $key . '.' . $img->getClientOriginalExtension();
+                            $new_img_name = $withoutSymbols . $key . '.' . $img->getClientOriginalExtension();
 
                             // save image name into DB ///////////////////////////////////////////////////////////
                             Jobimage::create([
@@ -127,8 +130,11 @@ class JobController extends Controller
                             /////////////////////////////////////////////////////////////////////////////
                         }
                     } else {
+                        $withoutSpaces = str_replace(' ', '', now());
+                        // Remove symbols using regular expression
+                        $withoutSymbols = preg_replace('/[^a-zA-Z0-9]/', '', $withoutSpaces);
                         $one_img = $request->image;
-                        $new_one_img = random_int(100000, 999999) . '.' . $one_img->getClientOriginalExtension();
+                        $new_one_img = $withoutSymbols .  '.' . $one_img->getClientOriginalExtension();
                         // save image name into DB ///////////////////////////////////////////////////////////
                         Jobimage::create([
                             'name' => $new_one_img,
@@ -173,12 +179,15 @@ class JobController extends Controller
                     foreach ($request->addons as $addon) {
 
                         $decoded_addon = json_decode($addon);
+                        if (!empty($decoded_addon->title)) {
+                            $numbersOnly = preg_replace("/[^0-9]/", "", $decoded_addon->price);
 
-                        AddonModel::create([
-                            "title" => $decoded_addon->title,
-                            "price" => $decoded_addon->price,
-                            "job_id" => $jobs->id
-                        ]);
+                            AddonModel::create([
+                                "title" => $decoded_addon->title,
+                                "price" => $numbersOnly,
+                                "job_id" => $jobs->id
+                            ]);
+                        }
                     }
                 }
 
@@ -213,6 +222,7 @@ class JobController extends Controller
 
             /////////////////////////////////////
 
+
             $job = Jobs::withCount('favorites')->where('status', 1)->find($id);
             if ($job) {
                 return new JobResource($job);
@@ -241,6 +251,9 @@ class JobController extends Controller
                     if ($request->hasFile('image')) {
                         $imgs = $request->file('image');
                         if (is_array($imgs)) {
+                            $withoutSpaces = str_replace(' ', '', now());
+                            // Remove symbols using regular expression
+                            $withoutSymbols = preg_replace('/[^a-zA-Z0-9]/', '', $withoutSpaces);
                             // Delete image in Storage and DB ///////////////////
                             $img_name = DB::table('jobimages')->select('name')->where('job_id', $id)->get();
                             foreach ($img_name as $value) {
@@ -252,7 +265,7 @@ class JobController extends Controller
                             // add image to DB
                             foreach ($imgs as $key => $img) {
 
-                                $new_img_name = random_int(100000, 999999) . $key . '.' . $img->getClientOriginalExtension();
+                                $new_img_name = $withoutSymbols . $key . '.' . $img->getClientOriginalExtension();
 
                                 // save image name into DB ///////////////////////////////////////////////////////////
                                 Jobimage::create([
@@ -267,7 +280,10 @@ class JobController extends Controller
                             }
                         } else {
                             $one_img = $request->image;
-                            $new_one_img = random_int(100000, 999999) . '.' . $one_img->getClientOriginalExtension();
+                            $withoutSpaces = str_replace(' ', '', now());
+                            // Remove symbols using regular expression
+                            $withoutSymbols = preg_replace('/[^a-zA-Z0-9]/', '', $withoutSpaces);
+                            $new_one_img = $withoutSymbols . '.' . $one_img->getClientOriginalExtension();
                             // save image name into DB ///////////////////////////////////////////////////////////
                             Jobimage::create([
                                 'name' => $new_one_img,
@@ -320,11 +336,14 @@ class JobController extends Controller
                         AddonModel::where('job_id', $id)->delete();
                         foreach ($request->addons as $addon) {
                             $decoded_addon = json_decode($addon);
-                            AddonModel::create([
-                                "title" => $decoded_addon->title,
-                                "price" => $decoded_addon->price,
-                                "job_id" => $id
-                            ]);
+                            if (!empty($decoded_addon->title)) {
+                                $numbersOnly = preg_replace("/[^0-9]/", "", $decoded_addon->price);
+                                AddonModel::create([
+                                    "title" => $decoded_addon->title,
+                                    "price" => $numbersOnly,
+                                    "job_id" => $id
+                                ]);
+                            }
                         }
                     } else {
                         return "Addon is not Array";

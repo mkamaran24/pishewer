@@ -11,6 +11,8 @@ use App\Models\OfferAddon as AddonModel;
 use Carbon\Carbon;
 use Carbon\CarbonTimeZone;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -131,6 +133,7 @@ class OrderController extends Controller
     public function update($payment_id)
     {
         try {
+
             $now = Carbon::now();
             // $custom_now = $now->addHours(3);
 
@@ -155,6 +158,15 @@ class OrderController extends Controller
                     'offer_amount' => $order->total_price,
                     'status' => 'Pending'
                 ]);
+
+                $email = DB::table('users')->where('id', $offer->seller_id)->value('email');
+
+                $job_title = DB::table('job_trans')->where('job_id', $offer->job_id)->where('locale', 'en')->value('title');
+
+                Mail::send('email.buyerpaymentAccept', ['job_id' => $offer->job_id, 'job_title' => $job_title], function ($message) use ($email) {
+                    $message->to($email);
+                    $message->subject('Congratulations! You have a new task');
+                });
 
                 return new ResourceOrder($order);
             } else {
