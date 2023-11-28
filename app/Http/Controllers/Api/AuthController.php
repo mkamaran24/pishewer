@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 use App\Mail\VerificationEmail;
+use App\Models\Profile;
 use App\Models\UserTranslation;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
@@ -142,9 +143,12 @@ class AuthController extends Controller
                 if ($isEmail_verifed) {
                     $user = UserModel::where('email', $request->email)->first();
 
+                    $is_profile = Profile::where('user_id', $user->id)->exists();
+
                     return response()->json([
                         'status' => 'true',
                         'user_id' => (string)$user->id,
+                        'have_profile' => $is_profile,
                         'message' => 'User Logged In Successfully',
                         'token' => $user->createToken("API TOKEN")->plainTextToken
                     ], 200);
