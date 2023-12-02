@@ -451,6 +451,7 @@ class JobController extends Controller
             $dd = $request->query('delivery_time');
             $top_rated_seller = $request->query('top_rated_seller');
             $new_sller = $request->query('new_seller');
+            $search = $request->query('search');
 
             $jobsQuery = Jobs::query();
 
@@ -507,6 +508,12 @@ class JobController extends Controller
             if ($dd != 0) {
                 $jobsQuery->whereHas('jobtrans', function ($query) use ($dd) {
                     $query->where('completein', '>=', $dd);
+                });
+            }
+
+            if ($search != null) {
+                $jobsQuery->whereHas('jobtrans', function ($query) use ($search) {
+                    $query->where('title', 'LIKE', "%{$search}%");
                 });
             }
 

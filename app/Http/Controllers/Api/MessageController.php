@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Models\Message as ModelsMessage;
 
 
 class MessageController extends Controller
@@ -71,6 +72,17 @@ class MessageController extends Controller
 
     public function show($id)
     {
-        
+    }
+
+    public function total_unread_msg($user_id)
+    {
+        try {
+            $t_u_m = ModelsMessage::where('status', '=', false)->where('recever_id', $user_id)->count();
+            return response()->json([
+                'total_unread_messages' => $t_u_m
+            ], 200);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

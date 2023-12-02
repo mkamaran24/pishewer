@@ -192,6 +192,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Private Messages Route //////////////////////////////////////
     Route::post('friendlist', [JobListMessageController::class, "store"]);
     Route::post('message', [MessageController::class, "store"]);
+    Route::get('message/total-unread-msg/{user_id}', [MessageController::class, "total_unread_msg"]);
     // Route::get('joblistmessage', [JobListMessageController::class, "show"]);
     Route::get('friendlist/getuserfriendlists/{userid}', [JobListMessageController::class, "getuserjoblist"]);
     Route::get('friendlist/textmessagesperfriendlist/{ftc_code}/{userid}', [JobListMessageController::class, "textmessagesperjoblist"]);
