@@ -195,7 +195,7 @@ class Profile extends Controller
                 $city_name = City::where('id', $profile[0]->city_id)->get();
                 $user = User::where('id', $id)->get();
                 $jobs = Jobs::where('user_id', $id)->get();
-                $messages = DB::select('select msg_time,resp_time from messages where recever_id = ? AND status = ?', [$id, 1]);
+                $messages = DB::select('select msg_time,resp_time from messages where recever_id = ? AND status = ? ORDER BY msg_time DESC LIMIT 10', [$id, 1]);
                 $number_of_buyers = Offer::where('seller_id', $id)->where('offer_state', 'Closed')->count();
 
                 $avg_resp_time = null;
@@ -211,14 +211,14 @@ class Profile extends Controller
                     $avg_resp_time_in_sec = array_sum($seconds) / count($seconds);
 
                     if ($avg_resp_time_in_sec < 3600 && $avg_resp_time_in_sec >= 60) {
-                        $avg_resp_time_in_min = $avg_resp_time_in_sec / 60;
-                        $avg_resp_time = round($avg_resp_time_in_min)  . "minute";
+                        $avg_resp_time = 1;
                     } elseif ($avg_resp_time_in_sec >= 3600) {
                         $avg_resp_time_in_min = $avg_resp_time_in_sec / 60;
                         $avg_resp_time_in_hour = $avg_resp_time_in_min / 60;
-                        $avg_resp_time = round($avg_resp_time_in_hour) . "hour";
-                    } else {
-                        $avg_resp_time = round($avg_resp_time_in_sec) . "second";
+                        $avg_resp_time = round($avg_resp_time_in_hour);
+                        if ($avg_resp_time > 10) {
+                            $avg_resp_time = 10;
+                        }
                     }
                 }
                 // end of avg resp time log //////////////////////////////////////
