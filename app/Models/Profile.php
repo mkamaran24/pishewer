@@ -11,25 +11,23 @@ class Profile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nationalid',
         'imageprofile',
         'city_id',
         'user_id'
     ];
 
-    public function user(){
-        return $this->belongsTo(User::class,'user_id');
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function city(){
-        return $this->belongsTo(City::class,'city_id');
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id');
     }
 
     public function profiletranslation()
     {
-        return $this->hasMany(ProfileTranslation::class,'profile_id')->where('locale',App::getLocale());
+        return $this->hasMany(ProfileTranslation::class, 'profile_id')->where('locale', App::getLocale());
     }
-
 }
-
-

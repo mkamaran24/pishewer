@@ -133,20 +133,16 @@ class Profile extends Controller
                         ///////////////////////////////////////////////////////
                     }
                 } else {
-                    $one_natid = $request->nationalid;
                     $image_profile = $request->imageprofile;
-                    $new_one_natid = random_int(100000, 999999) . '.' . $one_natid->getClientOriginalExtension();
                     $new_image_profile = 'IMG_Profile' . random_int(100000, 999999) . '.' . $image_profile->getClientOriginalExtension();
                     // set NatID into Global String VAR ///////////////////////////////////////////////////////////
                     // $Global_Natid = $new_one_natid . ',';
                     ////////////////////////////////////////////////////////////////////////////
                     // save image in laravel Private Storage ///////////////////////////////////
-                    Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
 
                     Storage::disk('public')->put($new_image_profile, file_get_contents($image_profile));
                     /////////////////////////////////////////////////////////////////////////////
                     $profile = ModelsProfile::create([
-                        'nationalid' => $new_one_natid,
                         "imageprofile" => $new_image_profile,
                         'city_id' => $request->city_id,
                         'user_id' => $request->user_id
@@ -294,20 +290,7 @@ class Profile extends Controller
             $profile_req_obj = [];
             $profile_trans_req_obj = [];
             foreach ($request->all() as $db_feild => $req_feild) {
-                if ($db_feild == "nationalid") {
-                    // Store new image to private storage /////////////////////////
-                    $one_natid = $request->nationalid;
-                    $new_one_natid = "national_id" . time() . '.' . $one_natid->getClientOriginalExtension();
-                    Storage::disk('public')->put($new_one_natid, file_get_contents($one_natid));
-                    // end of Store new image to private storage //////////////////
-                    // put the new image name to Object for update process ////
-                    $profile_req_obj[$db_feild] = $new_one_natid;
-                    // end of put the new image name to Object for update process ////
-                    // remove old image from private storage ///////
-                    $img_path = "public/" . $profile->nationalid;
-                    Storage::delete($img_path);
-                    // end of remove old image from private storage ////
-                } elseif ($db_feild == "imageprofile") {
+                if ($db_feild == "imageprofile") {
                     // Store new image to private storage /////////////////////////
                     $image_profile = $request->imageprofile;
                     $new_image_profile = "image_profile" . time() . '.' . $image_profile->getClientOriginalExtension();

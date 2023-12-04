@@ -30,10 +30,10 @@ class AuthController extends Controller
         //Validations Rules //////////////////////////
         $rules = array(
             'email' => 'required',
-            'fullname' => 'required',
+            // 'fullname' => 'required',
             'username' => 'required',
-            'fastpay_acc_num' => 'required',
-            'phone_number' => 'required',
+            // 'fastpay_acc_num' => 'required',
+            // 'phone_number' => 'required',
         );
         /// end of Validation Rules ////////////////////
 
@@ -71,7 +71,7 @@ class AuthController extends Controller
                     foreach ($langs as $lang) {
                         UserTranslation::create([
                             'username' => $request->username,
-                            'fullname' => $request->fullname,
+                            // 'fullname' => $request->fullname,
                             'locale' => $lang,
                             'user_id' => $user->id
                         ]);
