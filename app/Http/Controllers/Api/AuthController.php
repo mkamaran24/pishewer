@@ -86,10 +86,10 @@ class AuthController extends Controller
 
                     // Mail::to($request->email)->send(new VerificationEmail("Ahmed", "account/verify/"));
 
-                    Mail::send('email.emailVerificationEmail', ['token' => $token], function ($message) use ($request) {
-                        $message->to($request->email);
-                        $message->subject('Reset Password Mail');
-                    });
+                    // Mail::send('email.emailVerificationEmail', ['token' => $token], function ($message) use ($request) {
+                    //     $message->to($request->email);
+                    //     $message->subject('Reset Password Mail');
+                    // });
 
                     // return User API Resource JSON Response //////////////
                     return response()->json([
@@ -138,7 +138,7 @@ class AuthController extends Controller
                     'message' => 'Email & Password does not match with our record.',
                 ], 401);
             } else {
-                $isEmail_verifed = UserModel::where('email', $request->email)->where('is_email_verfied', 1)->exists();
+                $isEmail_verifed = UserModel::where('email', $request->email)->where('is_email_verfied', 0)->exists();
 
                 if ($isEmail_verifed) {
                     $user = UserModel::where('email', $request->email)->first();
