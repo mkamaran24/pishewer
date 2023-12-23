@@ -103,7 +103,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('jobs/{job_id}', [JobController::class, "destroy"]);
     Route::post('jobs/{job_id}/favorite', [JobController::class, "favorite"]);
     Route::delete('jobs/{job_id}/unfavorite', [JobController::class, "unfavorite"]);
-    Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"]);
+    Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"])->middleware('checkrole');
     Route::get('jobs/getjobstatus/{jobid}', [JobController::class, "getjobstatus"]);
     Route::post('jobs/translation/{jobid}', [JobController::class, "updatelang"]);
     ///////////////////////////////////////////////////////////////////////////////////////////

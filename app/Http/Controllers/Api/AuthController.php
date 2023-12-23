@@ -17,6 +17,7 @@ use App\Models\Profile;
 use App\Models\UserTranslation;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 
 
@@ -145,10 +146,13 @@ class AuthController extends Controller
 
                     $is_profile = Profile::where('user_id', $user->id)->exists();
 
+                    $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
+
                     return response()->json([
                         'status' => 'true',
                         'user_id' => (string)$user->id,
                         'have_profile' => $is_profile,
+                        'is_admin' => $check_role,
                         'message' => 'User Logged In Successfully',
                         'token' => $user->createToken("API TOKEN")->plainTextToken
                     ], 200);

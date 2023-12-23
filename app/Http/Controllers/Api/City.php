@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\TestMid;
 use App\Http\Resources\City as ResourcesCity;
 use App\Models\City as ModelsCity;
 use App\Models\CityTranslation;
@@ -11,17 +13,18 @@ use Illuminate\Support\Facades\Validator;
 
 class City extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware(CheckRole::class); // First Middleware
+        // $this->middleware(TestMid::class); // Second Middleware
+    }
+
     public function index()
     {
         //
         try {
             //code...
-            return ResourcesCity::collection(ModelsCity::paginate(9));
+            return ResourcesCity::collection(ModelsCity::simplePaginate(10));
         } catch (\Throwable $th) {
             //throw $th;
         }
