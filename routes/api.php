@@ -116,12 +116,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // end of User Route /////////////////////////
 
     // Private Category Route ////////////////////
-    Route::post('categories', [CategoryController::class, "store"]);
+    Route::post('categories', [CategoryController::class, "store"])->middleware('checkrole');
     // Route::get('categories/{categ_id}', [CategoryController::class, "show"]);
-    Route::post('categories/{categ_id}', [CategoryController::class, "update"]);
-    Route::delete('categories/{categ_id}', [CategoryController::class, "destroy"]);
-    Route::put('categories/popular', [CategoryController::class, "popular"]);
-    Route::put('categories/unpopular', [CategoryController::class, "unpopular"]);
+    Route::post('categories/{categ_id}', [CategoryController::class, "update"])->middleware('checkrole');
+    Route::delete('categories/{categ_id}', [CategoryController::class, "destroy"])->middleware('checkrole');
+    Route::put('categories/popular', [CategoryController::class, "popular"])->middleware('checkrole');
+    Route::put('categories/unpopular', [CategoryController::class, "unpopular"])->middleware('checkrole');
     // end of Private Category Route ////////////
 
     // Private Subcategory Route (Cancled) //////////////////////////////////////////////////////////////
@@ -180,12 +180,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('offers/payment/getall', [OrderController::class, "index"]);
     Route::get('offers/payment/{buyer_id}', [OrderController::class, "show"]);
     Route::post('offers/payment', [OrderController::class, "store"]);
-    Route::put('offers/payment/accept/{payment_id}', [OrderController::class, "update"]);
+    Route::put('offers/payment/accept/{payment_id}', [OrderController::class, "update"])->middleware('checkrole');
 
     //
-    Route::get('invoice', [InvoiceController::class, "index"]);
+    Route::get('invoice', [InvoiceController::class, "index"])->middleware('checkrole');
     Route::get('invoice/{seller_id}', [InvoiceController::class, "getInvoices"]);
-    Route::put('invoice/{invoice_id}', [InvoiceController::class, "update"]);
+    Route::put('invoice/{invoice_id}', [InvoiceController::class, "update"])->middleware('checkrole');
     // end of Private Offer Route /////////////////////////////////
 
     // Private Order Route ////////////////////////////////////////
