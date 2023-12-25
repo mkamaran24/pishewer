@@ -32,25 +32,6 @@ use App\Models\Offer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
-// test MK Laptop
-
-// korek test test korek okrektelecom
-
-// Mare Test Mre test
-
-// disan mare test 
-
-//My PC 
-
-// My Laptop again
-
-//pc master
-
-// testststststststststts
-
-// test kwi bram
-
-// test la dw test wara baba wara wara era
 
 /*
 |--------------------------------------------------------------------------
