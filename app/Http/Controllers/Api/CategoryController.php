@@ -258,8 +258,8 @@ class CategoryController extends Controller
                 ], 404);
             }
         } catch (\Throwable $th) {
-            //throw $th;
-            abort(code: 500, message: 'fail to delete');
+            throw $th;
+            // abort(code: 500, message: 'fail to delete');
             //Logs implementation goes down herer
 
 

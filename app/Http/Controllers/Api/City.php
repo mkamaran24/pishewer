@@ -136,5 +136,29 @@ class City extends Controller
     public function destroy($id)
     {
         //
+        //
+        try {
+            $city = ModelsCity::where('id', $id)->delete();
+            if ($city) {
+                return response()->json([
+                    'status' => true,
+                    'messages' => "Delete Success",
+                    "data" => []
+                ], 200);
+            } else {
+                # code...
+                return response()->json([
+                    'status' => false,
+                    'messages' => "Object Not Found"
+                ], 404);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+            // abort(code: 500, message: 'fail to delete');
+            //Logs implementation goes down herer
+
+
+            ////////////////////////////////////////////
+        }
     }
 }
