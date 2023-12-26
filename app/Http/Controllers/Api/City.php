@@ -106,9 +106,9 @@ class City extends Controller
             if ($city != null) {
                 if (is_array($request->city_trans)) {
                     foreach ($request->city_trans as $key => $ct) {
-                        $decoded_ct = json_decode($ct);
+                        // $decoded_ct = json_decode($ct);
 
-                        CityTranslation::where('locale', $decoded_ct->locale)->where('city_id', $id)->update(['cityname' => $decoded_ct->name]);
+                        CityTranslation::where('locale', $ct['locale'])->where('city_id', $id)->update(['cityname' => $ct['name']]);
                     }
                     return new ResourcesCity($city);
                 } else {
