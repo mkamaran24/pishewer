@@ -433,6 +433,23 @@ class JobController extends Controller
             throw $th;
         }
     }
+    public function unAppprove($id)
+    {
+        try {
+            $job = Jobs::find($id);
+
+            $job->status = 0;
+
+            $job->save();
+
+            return response()->json([
+                "status" => "success",
+                "message" => "Job Status Rejected Successfully"
+            ], 200);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 
     public function getjobstatus($id)
     {

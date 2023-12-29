@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
-    
+
 
     public function index()
     {
@@ -126,6 +126,26 @@ class InvoiceController extends Controller
             }
         } catch (\Throwable $th) {
             //throw $th;
+        }
+    }
+
+    public function block($invoice_id)
+    {
+        try {
+            $invoice = ModelsInvoice::find($invoice_id);
+            if ($invoice) {
+                $invoice->update([
+                    'status' => 'Blocked'
+                ]);
+                return new Invoice($invoice);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'messages' => "Object Not Found"
+                ], 404);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 }

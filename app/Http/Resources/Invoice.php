@@ -26,6 +26,7 @@ class Invoice extends JsonResource
         }
 
         return [
+            'id' => $this->id,
             'offer_code' => $this->offer->offer_code,
             'offer_expiry' => $this->offer->offer_expiry,
             'remaining_date' => $expiryDate,

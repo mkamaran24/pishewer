@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('jobs/{job_id}/favorite', [JobController::class, "favorite"]);
     Route::delete('jobs/{job_id}/unfavorite', [JobController::class, "unfavorite"]);
     Route::get('jobs/updatestatus/{jobid}', [JobController::class, "updatestatus"])->middleware('checkrole');
+    Route::get('jobs/updatestatus/unapprove/{jobid}', [JobController::class, "unAppprove"])->middleware('checkrole');
     Route::get('jobs/getjobstatus/{jobid}', [JobController::class, "getjobstatus"]);
     Route::post('jobs/translation/{jobid}', [JobController::class, "updatelang"]);
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -168,6 +169,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('invoice', [InvoiceController::class, "index"])->middleware('checkrole');
     Route::get('invoice/{seller_id}', [InvoiceController::class, "getInvoices"]);
     Route::put('invoice/{invoice_id}', [InvoiceController::class, "update"])->middleware('checkrole');
+    Route::put('invoice/block/{invoice_id}', [InvoiceController::class, "block"])->middleware('checkrole');
     // end of Private Offer Route /////////////////////////////////
 
     // Private Order Route ////////////////////////////////////////
