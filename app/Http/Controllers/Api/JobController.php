@@ -35,6 +35,14 @@ class JobController extends Controller
     public function index()
     {
         try {
+            $user = auth('sanctum')->user();
+
+            if ($user) {
+                $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
+                if ($check_role) {
+                    return JobResource::collection(Jobs::withCount('favorites')->simplePaginate(10));
+                }
+            }
             return JobResource::collection(Jobs::withCount('favorites')->where('status', 1)->simplePaginate(10));
         } catch (\Throwable $th) {
             throw $th; //this throwble should be used for logs details
@@ -221,14 +229,6 @@ class JobController extends Controller
 
 
             /////////////////////////////////////
-
-            $user = auth('sanctum')->user();
-            $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
-
-            if ($check_role) {
-                $job = Jobs::withCount('favorites')->find($id);
-            }
-
             $job = Jobs::withCount('favorites')->where('status', 1)->find($id);
             if ($job) {
                 return new JobResource($job);
@@ -457,13 +457,9 @@ class JobController extends Controller
     public function getjobsbycateg($id)
     {
         try {
-            $user = auth('sanctum')->user();
-            $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
-            if ($check_role) {
-                $jobs = Jobs::where('categ_id', $id)->simplePaginate(3);
-            } else {
-                $jobs = Jobs::where('categ_id', $id)->where('status', 1)->simplePaginate(3);
-            }
+
+            $jobs = Jobs::where('categ_id', $id)->where('status', 1)->simplePaginate(3);
+
 
             return JobResource::collection($jobs);
         } catch (\Throwable $th) {
@@ -546,18 +542,18 @@ class JobController extends Controller
                     $query->where('title', 'LIKE', "%{$search}%");
                 });
             }
-
             $user = auth('sanctum')->user();
-            $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
+            if ($user) {
+                $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
+            } else {
+                $check_role = false;
+            }
 
             if ($check_role) {
                 $jobs = $jobsQuery->simplePaginate(10);
             } else {
                 $jobs = $jobsQuery->where('status', 1)->simplePaginate(10);
             }
-
-
-
             return JobResource::collection($jobs);
         } catch (\Throwable $th) {
             throw $th;
@@ -578,7 +574,11 @@ class JobController extends Controller
             $jobs_id = JobTrans::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($keyword) . '%'])->pluck('job_id');
 
             $user = auth('sanctum')->user();
-            $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
+            if ($user) {
+                $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
+            } else {
+                $check_role = false;
+            }
 
             if ($check_role) {
                 $jobs = Jobs::find($jobs_id);
