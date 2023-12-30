@@ -35,13 +35,6 @@ class JobController extends Controller
     public function index()
     {
         try {
-
-            $user = auth('sanctum')->user();
-            $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
-
-            if ($check_role) {
-                return JobResource::collection(Jobs::withCount('favorites')->simplePaginate(10));
-            }
             return JobResource::collection(Jobs::withCount('favorites')->where('status', 1)->simplePaginate(10));
         } catch (\Throwable $th) {
             throw $th; //this throwble should be used for logs details
