@@ -689,13 +689,9 @@ class JobController extends Controller
     {
         try {
 
-            $user = auth('sanctum')->user();
-            $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
-            if ($check_role) {
-                $jobs = Jobs::inRandomOrder()->take(8)->get();
-            } else {
-                $jobs = Jobs::inRandomOrder()->take(8)->where('status', 1)->get();
-            }
+
+            $jobs = Jobs::inRandomOrder()->take(8)->where('status', 1)->get();
+
             // $jobs = Jobs::inRandomOrder()->groupBy('categ_id')->limit(8)->get();
             return JobResource::collection($jobs);
         } catch (\Throwable $th) {
