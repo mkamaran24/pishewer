@@ -17,7 +17,7 @@ class InvoiceController extends Controller
     public function index()
     {
         try {
-            $all_invoice = ModelsInvoice::paginate(9);
+            $all_invoice = ModelsInvoice::simplePaginate(10);
             return Invoice::collection($all_invoice);
         } catch (\Throwable $th) {
             //throw $th;

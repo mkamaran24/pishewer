@@ -563,17 +563,10 @@ class JobController extends Controller
     public function search_hero(Request $request)
     {
         try {
+            $user = auth('sanctum')->user();
             $keyword = $request->query('keyword'); // The search keyword entered by the user
-
-            // $jobs = Jobs::whereHas('jobtrans', function ($query) use ($keyword){
-            //     $query->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($keyword) . '%']);
-            // })->get();
-
-            // return $jobs;
-
             $jobs_id = JobTrans::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($keyword) . '%'])->pluck('job_id');
 
-            $user = auth('sanctum')->user();
             if ($user) {
                 $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
             } else {
@@ -581,13 +574,17 @@ class JobController extends Controller
             }
 
             if ($check_role) {
-                $jobs = Jobs::find($jobs_id);
-            } else {
-                $jobs = Jobs::where('status', 1)->find($jobs_id);
+                if ($keyword == "Unapproved") { // get approved jobs
+                    return JobResource::collection(Jobs::where('status', 0)->simplePaginate(10));
+                } elseif ($keyword == "Approved") { // get un-approved jobs 
+                    return JobResource::collection(Jobs::where('status', 1)->simplePaginate(10));
+                } else { // get jobs per keywords for search in title
+                    $jobs = Jobs::whereIn('id', $jobs_id)->simplePaginate(10);
+                }
+            } else { // search for normal user
+                $jobs = Jobs::whereIn('id', $jobs_id)->where('status', 1)->simplePaginate(10);
             }
             return JobResource::collection($jobs);
-
-            // return HeroJobTrans::collection($jobs);
         } catch (\Throwable $th) {
             throw $th;
         }
