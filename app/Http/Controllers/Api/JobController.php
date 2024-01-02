@@ -229,7 +229,22 @@ class JobController extends Controller
 
 
             /////////////////////////////////////
-            $job = Jobs::withCount('favorites')->where('status', 1)->find($id);
+
+            // admin logic part ////
+
+            $user = auth('sanctum')->user();
+
+            if ($user) {
+                $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
+                if ($check_role) {
+                    $job = Jobs::withCount('favorites')->find($id);
+                } else {
+                    $job = Jobs::withCount('favorites')->where('status', 1)->find($id);
+                }
+            }
+
+            // end admin logic part //////
+
             if ($job) {
                 return new JobResource($job);
             } else {
