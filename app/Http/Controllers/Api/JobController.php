@@ -236,11 +236,13 @@ class JobController extends Controller
 
             if ($user) {
                 $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
-                if ($check_role) {
+                if ($check_role) { // admin
                     $job = Jobs::withCount('favorites')->find($id);
-                } else {
+                } else { // Normal user with auth 
                     $job = Jobs::withCount('favorites')->where('status', 1)->find($id);
                 }
+            } else { // Normal user without auth 
+                $job = Jobs::withCount('favorites')->where('status', 1)->find($id);
             }
 
             // end admin logic part //////
