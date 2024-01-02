@@ -218,7 +218,7 @@ class OfferController extends Controller
             $offer = ModelsOffer::find($id);
             $offer->offer_state = "payment";
             $offer->save();
-            $commission_fee = $offer->price * 0.05;
+            $commission_fee = $offer->price * 0.15;
             $total_price = $offer->price + $commission_fee;
             return response()->json([
                 'status' => true,
@@ -229,7 +229,7 @@ class OfferController extends Controller
                     // 'seller_name' => $offer->user->username,
                     'addons' => Addon::collection($offer->job->addons),
                     'offer_price' => $offer->price,
-                    'commission_percentage' => "0.05",
+                    'commission_percentage' => "0.15",
                     'commission_fee' => (string) $commission_fee,
                     'total_price' => (string) $total_price
                 ]
