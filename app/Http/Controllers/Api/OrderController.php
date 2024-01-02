@@ -21,7 +21,7 @@ class OrderController extends Controller
     public function index()
     {
         //
-        return ResourceOrder::collection(ModelsOrder::simplePaginate(10));
+        return ResourceOrder::collection(ModelsOrder::paginate(10));
     }
 
 

@@ -40,10 +40,10 @@ class JobController extends Controller
             if ($user) {
                 $check_role = DB::table('users')->where('id', $user->id)->where("role", 1)->exists();
                 if ($check_role) {
-                    return JobResource::collection(Jobs::withCount('favorites')->simplePaginate(10));
+                    return JobResource::collection(Jobs::withCount('favorites')->paginate(10));
                 }
             }
-            return JobResource::collection(Jobs::withCount('favorites')->where('status', 1)->simplePaginate(10));
+            return JobResource::collection(Jobs::withCount('favorites')->where('status', 1)->paginate(10));
         } catch (\Throwable $th) {
             throw $th; //this throwble should be used for logs details
         }
@@ -569,7 +569,7 @@ class JobController extends Controller
             if ($check_role) {
                 $jobs = $jobsQuery->simplePaginate(10);
             } else {
-                $jobs = $jobsQuery->where('status', 1)->simplePaginate(10);
+                $jobs = $jobsQuery->where('status', 1)->paginate(10);
             }
             return JobResource::collection($jobs);
         } catch (\Throwable $th) {
@@ -592,14 +592,14 @@ class JobController extends Controller
 
             if ($check_role) {
                 if ($keyword == "Unapproved") { // get approved jobs
-                    return JobResource::collection(Jobs::where('status', 0)->simplePaginate(10));
+                    return JobResource::collection(Jobs::where('status', 0)->paginate(10));
                 } elseif ($keyword == "Approved") { // get un-approved jobs 
-                    return JobResource::collection(Jobs::where('status', 1)->simplePaginate(10));
+                    return JobResource::collection(Jobs::where('status', 1)->paginate(10));
                 } else { // get jobs per keywords for search in title
-                    $jobs = Jobs::whereIn('id', $jobs_id)->simplePaginate(10);
+                    $jobs = Jobs::whereIn('id', $jobs_id)->paginate(10);
                 }
             } else { // search for normal user
-                $jobs = Jobs::whereIn('id', $jobs_id)->where('status', 1)->simplePaginate(10);
+                $jobs = Jobs::whereIn('id', $jobs_id)->where('status', 1)->paginate(10);
             }
             return JobResource::collection($jobs);
         } catch (\Throwable $th) {

@@ -135,7 +135,7 @@ class UserController extends Controller
         $keyword = $request->query('keyword');
         $users = UserModel::whereHas('usertranslations', function ($query) use ($keyword) {
             $query->where('username', 'like', '%' . $keyword . '%');
-        })->orWhere('email', 'like', '%' . $keyword . '%')->simplePaginate(10);
+        })->orWhere('email', 'like', '%' . $keyword . '%')->paginate(10);
         return UserResource::collection($users);
     }
 }

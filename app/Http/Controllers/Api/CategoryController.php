@@ -41,7 +41,7 @@ class CategoryController extends Controller
             //     $query->where('locale', $locale);
             // }])->get();
 
-            $categories = CategoryModel::with('categorytrans')->simplePaginate(10);
+            $categories = CategoryModel::with('categorytrans')->paginate(10);
             return CategoryResource::collection($categories);
         } catch (\Throwable $th) {
             // abort(code: 500, message: 'fail to fetch');

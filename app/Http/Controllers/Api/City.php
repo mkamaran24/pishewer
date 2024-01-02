@@ -24,7 +24,7 @@ class City extends Controller
         //
         try {
             //code...
-            return ResourcesCity::collection(ModelsCity::simplePaginate(10));
+            return ResourcesCity::collection(ModelsCity::paginate(10));
         } catch (\Throwable $th) {
             //throw $th;
         }
