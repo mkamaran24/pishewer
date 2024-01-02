@@ -133,15 +133,9 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $keyword = $request->query('keyword');
-        $userTranslations = UserTranslation::whereHas('user', function ($query) use ($keyword) {
-            $query->where('email', function ($subquery) use ($keyword) {
-                $subquery->select('email')
-                    ->from('users')
-                    ->where('username', $keyword);
-            });
-        })->get();
-        return response()->json([
-            "data" => $userTranslations
-        ], 200);
+        $users = UserModel::whereHas('usertranslations', function ($query) use ($keyword) {
+            $query->where('username', 'like', '%' . $keyword . '%');
+        })->orWhere('email', 'like', '%' . $keyword . '%')->simplePaginate(10);
+        return UserResource::collection($users);
     }
 }
