@@ -475,7 +475,7 @@ class JobController extends Controller
     {
         try {
 
-            $jobs = Jobs::where('categ_id', $id)->where('status', 1)->simplePaginate(3);
+            $jobs = Jobs::where('categ_id', $id)->where('status', 1)->paginate(3);
 
 
             return JobResource::collection($jobs);
