@@ -15,7 +15,7 @@ class City extends Controller
 {
     public function __construct()
     {
-        $this->middleware(CheckRole::class); // First Middleware
+        // $this->middleware(CheckRole::class); // First Middleware
         // $this->middleware(TestMid::class); // Second Middleware
     }
 
