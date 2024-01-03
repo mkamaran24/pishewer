@@ -91,7 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     // Private User Route ////////////////////////////////
-    Route::get('users', [UserController::class, "index"])->middleware('checkrole');
+    Route::get('users', [UserController::class, "index"]);
     Route::get('users/search', [UserController::class, 'search'])->middleware('checkrole');
     Route::get('users/{user_id}', [UserController::class, "show"]);
     Route::put('users/{user_id}', [UserController::class, "update"]);
