@@ -28,6 +28,7 @@ class Invoice extends JsonResource
         return [
             'id' => $this->id,
             'offer_code' => $this->offer->offer_code,
+            'job_id' => $this->offer->job_id,
             'offer_expiry' => $this->offer->offer_expiry,
             'remaining_date' => $expiryDate,
             'block_remaining_days' => $remainingDays,
