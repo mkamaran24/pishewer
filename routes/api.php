@@ -101,6 +101,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Private Category Route ////////////////////
     Route::post('categories', [CategoryController::class, "store"])->middleware('checkrole');
+    Route::get('categories/search', [CategoryController::class, "search"])->middleware('checkrole');
     // Route::get('categories/{categ_id}', [CategoryController::class, "show"]);
     Route::post('categories/{categ_id}', [CategoryController::class, "update"])->middleware('checkrole');
     Route::delete('categories/{categ_id}', [CategoryController::class, "destroy"])->middleware('checkrole');
@@ -125,6 +126,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Private City Route /////////////////////////////////////
     Route::get('city', [City::class, "index"]);
+    Route::get('city/search', [City::class, "search"])->middleware('checkrole');
     Route::post('city', [City::class, "store"])->middleware('checkrole');
     Route::put('city/{id}', [City::class, "update"])->middleware('checkrole');
     Route::delete('city/{id}', [City::class, "destroy"])->middleware('checkrole');

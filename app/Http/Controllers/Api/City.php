@@ -161,4 +161,16 @@ class City extends Controller
             ////////////////////////////////////////////
         }
     }
+
+
+    public function search(Request $request)
+    {
+        $keyword = $request->query('city_name'); // The search keyword entered by the user
+
+        $city_id = CityTranslation::whereRaw('LOWER(cityname) LIKE ?', ['%' . strtolower($keyword) . '%'])->pluck('city_id');
+
+        $city = ModelsCity::whereIn('id', $city_id)->get();
+
+        return ResourcesCity::collection($city);
+    }
 }

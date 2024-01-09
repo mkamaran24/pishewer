@@ -332,4 +332,15 @@ class CategoryController extends Controller
             throw $th;
         }
     }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->query('category_name'); // The search keyword entered by the user
+
+        $categ_id = CategoryTrans::whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($keyword) . '%'])->pluck('categ_id');
+
+        $categ = CategoryModel::whereIn('id', $categ_id)->get();
+
+        return CategoryResource::collection($categ);
+    }
 }
