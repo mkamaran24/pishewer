@@ -22,6 +22,7 @@ class Order extends JsonResource
             'total_addon_price' => $this->total_addon_price,
             'comision_fee' => $this->comision_fee,
             // 'buyer_id' => $this->buyer_id,
+            'created_at' => $this->created_at,
             'offer' => new Offer($this->offer),
             'status' => $this->status
         ];
