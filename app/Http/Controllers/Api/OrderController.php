@@ -185,4 +185,17 @@ class OrderController extends Controller
     {
         //
     }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->query('created_at'); // The search keyword entered by the user
+
+        $order = ModelsOrder::query();
+
+        $order->where('created_at', $keyword);
+
+        $orders = $order->paginate(10);
+
+        return ResourceOrder::collection($orders);
+    }
 }

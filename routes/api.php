@@ -165,6 +165,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //
     Route::get('offers/payment/getall', [OrderController::class, "index"]);
+    Route::get('offers/payment/search', [OrderController::class, 'search'])->middleware('checkrole');
     Route::get('offers/payment/{buyer_id}', [OrderController::class, "show"]);
     Route::post('offers/payment', [OrderController::class, "store"]);
     Route::put('offers/payment/accept/{payment_id}', [OrderController::class, "update"])->middleware('checkrole');

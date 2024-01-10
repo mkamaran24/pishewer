@@ -567,7 +567,7 @@ class JobController extends Controller
             }
 
             if ($check_role) {
-                $jobs = $jobsQuery->simplePaginate(10);
+                $jobs = $jobsQuery->paginate(10);
             } else {
                 $jobs = $jobsQuery->where('status', 1)->paginate(10);
             }
