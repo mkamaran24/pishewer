@@ -151,7 +151,7 @@ class InvoiceController extends Controller
 
     public function search(Request $request)
     {
-        $keyword = $request->query('created_at'); // The search keyword entered by the user
+        $keyword = $request->query('offer_expiry'); // The search keyword entered by the user
 
         $order = ModelsInvoice::query();
 
