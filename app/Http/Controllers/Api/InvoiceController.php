@@ -148,4 +148,19 @@ class InvoiceController extends Controller
             throw $th;
         }
     }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->query('created_at'); // The search keyword entered by the user
+
+        $order = ModelsInvoice::query();
+
+        $order->whereHas('offer', function ($q) use ($keyword) {
+            $q->where('offer_expiry', $keyword);
+        });
+
+        $orders = $order->paginate(10);
+
+        return Invoice::collection($orders);
+    }
 }

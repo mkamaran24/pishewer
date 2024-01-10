@@ -172,6 +172,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //
     Route::get('invoice', [InvoiceController::class, "index"])->middleware('checkrole');
+    Route::get('invoice/search', [InvoiceController::class, "search"])->middleware('checkrole');
     Route::get('invoice/{seller_id}', [InvoiceController::class, "getInvoices"]);
     Route::put('invoice/{invoice_id}', [InvoiceController::class, "update"])->middleware('checkrole');
     Route::put('invoice/block/{invoice_id}', [InvoiceController::class, "block"])->middleware('checkrole');
