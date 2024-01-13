@@ -45,6 +45,7 @@ use Illuminate\Support\Facades\Http;
 */
 
 //test
+// test api
 
 // Auth Routes ///////////////////////////
 Route::post('/auth/register', [AuthController::class, 'createUser']);
