@@ -49,6 +49,8 @@ use Illuminate\Support\Facades\Http;
 
 // tests api again 
 
+// update routes
+
 // Auth Routes ///////////////////////////
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
