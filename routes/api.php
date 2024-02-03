@@ -51,6 +51,8 @@ use Illuminate\Support\Facades\Http;
 
 // update routes
 
+// update ray tracing
+
 // Auth Routes ///////////////////////////
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
