@@ -25,3 +25,5 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // update migration lists
+
+// list miration extracted
